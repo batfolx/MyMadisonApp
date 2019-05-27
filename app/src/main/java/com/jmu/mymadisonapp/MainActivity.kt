@@ -1,50 +1,55 @@
 package com.jmu.mymadisonapp
 
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
+import android.view.Menu
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import android.view.Menu
+import com.google.android.material.snackbar.Snackbar
+import com.jmu.mymadisonapp.data.loginUser
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import okhttp3.OkHttpClient
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 	
 	private lateinit var appBarConfiguration: AppBarConfiguration
+
+	val client: OkHttpClient by inject()
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
-		val toolbar: Toolbar = findViewById(R.id.toolbar)
 		setSupportActionBar(toolbar)
-		
-		val fab: FloatingActionButton = findViewById(R.id.fab)
+
+		checkPermissions()
+
 		fab.setOnClickListener { view ->
 			Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 				.setAction("Action", null).show()
 		}
-		val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-		val navView: NavigationView = findViewById(R.id.nav_view)
 		val navController = findNavController(R.id.nav_host_fragment)
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
 		appBarConfiguration = AppBarConfiguration(
 			setOf(
 				R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-				R.id.nav_tools, R.id.nav_share, R.id.nav_send), drawerLayout)
+				R.id.nav_tools, R.id.nav_share, R.id.nav_send), drawer_layout)
 		setupActionBarWithNavController(navController, appBarConfiguration)
-		navView.setupWithNavController(navController)
+		nav_view.setupWithNavController(navController)
+		lifecycleScope.launchWhenStarted {
+			log("LoginResult", "Data: ${loginUser(YOUR_EID, YOUR_PASSWORD).body()?.string() ?:"Empty Body"}")
+		}
 	}
 	
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		menuInflater.inflate(R.menu.main, menu)
+		menuInflater.inflate(R.menu.menu_main, menu)
 		return true
 	}
 	
