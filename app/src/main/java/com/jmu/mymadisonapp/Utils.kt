@@ -100,6 +100,9 @@ infix fun Long.zeros(zeros: Int) = "%0${zeros}d".format(this)
 infix fun Float.zeros(zeros: Int) = "%0${zeros}f".format(this)
 infix fun Double.zeros(zeros: Int) = "%0${zeros}f".format(this)
 
+inline fun <T> Boolean.ifDo(block: () -> T, orElse: () -> T) = if (this) block() else orElse()
+inline fun Boolean.ifDo(block: () -> Unit) = if (this) block() else Unit
+
 val tempDir: File by lazy {
     File(getExternalStorageDirectory(), "/openPH/openPH_cache.json")
         .also { file -> file.takeUnless { it.exists() }?.createNewFile() }

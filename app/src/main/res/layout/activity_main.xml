@@ -8,8 +8,9 @@
 	android:fitsSystemWindows="true"
 	tools:openDrawer="start">
 
-	<include
-		layout="@layout/app_bar_main"
+    <fragment
+        android:id="@+id/main_fragment"
+        android:name="com.jmu.mymadisonapp.MainFragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
 

@@ -15,7 +15,7 @@ sealed class Result<out T>(open val data: T?) {
     }
 
     companion object {
-        fun <T> success(data: T, index: Long): Result<T> = Success(data, index)
+        fun <T> success(data: T, index: Long = -1): Result<T> = Success(data, index)
 
         fun <T> error(exception: Exception, data: T?): Result<T> = Error(exception, data)
 

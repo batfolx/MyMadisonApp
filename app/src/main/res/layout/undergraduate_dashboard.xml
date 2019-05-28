@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    tools:showIn="@layout/content_main">
+
+    <TextView
+        android:id="@+id/holds_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        tools:text="0 Holds" />
+
+    <TextView
+        android:id="@+id/to_dos_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        tools:text="0 To Dos" />
+
+    <TextView
+        android:id="@+id/cum_gpa_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        tools:text="0.000\nCumulative GPA" />
+
+    <TextView
+        android:id="@+id/last_sem_gpa_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        tools:text="0.000\nSpring 2019 GPA" />
+
+    <TextView
+        android:id="@+id/hours_enrolled_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        tools:text="Summer: 3\nFall: 15\nHours Enrolled" />
+
+    <TextView
+        android:id="@+id/major_minor_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        tools:text="Major: Computer Science - BS (GPA 0.000)\nMinor: Robotics (GPA 0.000)\nMajor/Minor GPA Last Updated: 00/00/0000" />
+</LinearLayout>
