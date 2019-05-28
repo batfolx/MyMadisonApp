@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.jmu.mymadisonapp.ui.MainViewModel
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 import kotlinx.android.synthetic.main.undergraduate_dashboard.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -40,10 +41,13 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         // Notify that the user is logged in on return from the BrowserFragment
-        fragmentManager?.addOnBackStackChangedListener(this::onLoggedIn)
+        fragmentManager?.addOnBackStackChangedListener {
+            if (fragmentManager?.backStackEntryCount == 0)
+                onLoggedIn()
+        }
 
         // Launch in a background coroutine keeping with lifecycle states to cancel the process if the user exits the app
-        lifecycleScope.launch {
+        lifecycleScope.launch(lifecycleScope.coroutineContext + Dispatchers.IO) {
             // If not logged in, open the login browser, otherwise update UI
             if (!mainViewModel.isLoggedIn())
                 MainScope().launch {
@@ -70,7 +74,7 @@ class MainFragment : Fragment() {
         })
     }
 
-    private fun onLoggedIn() = mainViewModel.getUndergraduateDashboard()
+    private fun onLoggedIn() = mainViewModel.onLoggedIn()
 
 
 }

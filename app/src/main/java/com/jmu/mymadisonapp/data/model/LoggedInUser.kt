@@ -2,6 +2,7 @@ package com.jmu.mymadisonapp.data.model
 
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
+import com.jmu.mymadisonapp.moshi
 import org.jsoup.nodes.Element
 import pl.droidsonroids.jspoon.ElementConverter
 import pl.droidsonroids.jspoon.annotation.Selector
@@ -74,4 +75,79 @@ data class DeclaredSubject(
     val minor: String = "",
     val minorGPA: Float = 0f,
     val gpaLastUpdated: Date = Calendar.getInstance().time
+)
+
+class SAMLResponseConverter : ElementConverter<String> {
+    override fun convert(node: Element, selector: Selector): String = node.`val`()
+}
+
+data class SAMLResponse(
+    @Selector(
+        "div[data-role=\"content\"] > form[method=\"post\"] > input[name=\"SAMLResponse\"]",
+        converter = SAMLResponseConverter::class
+    )
+    var value: String = ""
+)
+
+class CanvasProfileConverter : ElementConverter<CanvasProfileInfo> {
+    override fun convert(node: Element, selector: Selector): CanvasProfileInfo =
+        moshi.adapter(CanvasProfileInfo::class.java)
+            .fromJson(
+                node.data().run {
+                    val start = "\"current_user\":".let { indexOf(it) + it.length }
+                    substring(start, indexOf("}", start) + 1)
+                }
+            ) ?: CanvasProfileInfo("Unknown", "")
+}
+
+data class CanvasProfileInfo(
+    var display_name: String = "",
+    var avatar_image_url: String = ""
+)
+
+data class CurrentUser(
+    @Selector("div#application > script", converter = CanvasProfileConverter::class)
+    var current_user: CanvasProfileInfo = CanvasProfileInfo()
+)
+
+class TermPostDataConverter : ElementConverter<Map<String, String>> {
+    override fun convert(node: Element, selector: Selector): Map<String, String> =
+        node.select("input")?.associate { it.attr("id") to it.`val`() } ?: emptyMap()
+}
+
+@Selector("div#ptifrmcontent > div#ptifrmtarget iframe#ptifrmtgtframe html.chrome > body.PSPAGE")
+data class GradeTerms(
+    @Selector(
+        "div#win0divPSHIDDENFIELDS",
+        converter = TermPostDataConverter::class
+    ) var termPostData: Map<String, String> = emptyMap(),
+    @Selector("table.PSLEVEL2GRID tr[id^=trSSR_DUMMY_RECV1$0_row]") var terms: List<Term> = emptyList()
+)
+
+data class Term(
+    @Selector("div[id^=win0divTERM_CAR] > span.PSEDITBOX_DISPONLY") var term: String = "",
+    @Selector("div[id^=win0divCAREER] > span.PSEDITBOX_DISPONLY") var career: String = "",
+    @Selector("div[id^=win0divINSTITUTION] > span.PSEDITBOX_DISPONLY") var institution: String = ""
+)
+
+@Selector("form#SSR_SSENRL_GRADE > div.ps_pagecontainer table.PSPAGECONTAINER > tbody > tr div#win0divDERIVED_SSS_GRD_GROUPBOX2 table#ACE_DERIVED_SSS_GRD_GROUPBOX2")
+data class ClassGrades(
+    @Selector("tr[id^=trTERM_CLASSES$0_row]") var grades: List<Grade> = emptyList()
+)
+
+class FloatConverter : ElementConverter<Float> {
+    override fun convert(node: Element, selector: Selector): Float =
+        node.text().toFloatOrNull() ?: 0f
+}
+
+data class Grade(
+    @Selector("div[id^=win0divCLS_LINK] a[id^=CLS_LINK]") var className: String = "",
+    @Selector("div[id^=win0divCLASS_TBL_VW_DESCR]") var description: String = "",
+    @Selector("div[id^=win0divSTDNT_ENRL_SSV1_UNT_TAKEN]", converter = FloatConverter::class) var units: Float = 0f,
+    @Selector("div[id^=win0divGRADING_BASIS]") var grading: String = "",
+    @Selector("div[id^=win0divSTDNT_ENRL_SSV1_CRSE_GRADE_OFF]") var grade: String = "",
+    @Selector(
+        "div[id^=win0divSTDNT_ENRL_SSV1_GRADE_POINTS]",
+        converter = FloatConverter::class
+    ) var gradePoints: Float = 0f
 )

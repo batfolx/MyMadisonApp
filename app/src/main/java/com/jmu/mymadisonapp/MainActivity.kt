@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.fragment_browser.*
 
 /**
  * The default activity to load upon startup.
@@ -59,5 +60,10 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
-
+	override fun onBackPressed() {
+		when {
+			supportFragmentManager.backStackEntryCount == 1 && browser_view.canGoBack() -> browser_view.goBack()
+			else -> super.onBackPressed()
+		}
+	}
 }

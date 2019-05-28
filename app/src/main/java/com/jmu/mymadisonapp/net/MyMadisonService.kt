@@ -1,9 +1,12 @@
 package com.jmu.mymadisonapp.net
 
-import com.jmu.mymadisonapp.data.model.StudentUndergradInfo
+import com.jmu.mymadisonapp.data.model.*
 import kotlinx.coroutines.Deferred
 import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.ResponseBody
+import org.koin.core.context.GlobalContext.get
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -31,8 +34,11 @@ interface MyMadisonService {
     @POST("/oam/server/auth_cred_submit")
     fun loginAsync(@Body body: FormBody): Deferred<Response<ResponseBody>>
 
+    @GET("/psp/pprd/JMU/CUST/h/?tab=DEFAULT")
+    fun checkLoggedIn(): Deferred<Response<ResponseBody>>
+
     @GET("/psp/pprd/JMU/CUST/h/")
-    fun getStudentInfo(@QueryMap(encoded = false) infoQueries: Map<String, String>): Deferred<Response<ResponseBody>>
+    fun getStudentInfo(@QueryMap(encoded = false) infoQueries: Map<String, String>, @Query("search") searchQuery: String): Deferred<Response<ResponseBody>>
 
     /**
      * Get information for the Undergraduate Dashboard.
@@ -40,5 +46,33 @@ interface MyMadisonService {
     @GET("/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_UG_DB")
     fun getUndergraduateDashboard(): Deferred<Response<StudentUndergradInfo>>
 
+    @GET("/psc/pprd/JMU/CUST/s/WEBLIB_JMU_APPS.JMU_CANVAS.FieldFormula.IScript_Canvas_SSO_Pagelet")
+    fun getSAMLResponse(): Deferred<Response<SAMLResponse>>
+
+    @FormUrlEncoded
+    @POST("https://canvas.jmu.edu/saml_consume")
+    fun getCanvasProfileInfo(@Field("SAMLResponse") samlResponse: String): Deferred<Response<CurrentUser>>
+
+
+    @GET("/psp/pprd/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=JMU_STUDENTCENTER_MAINMENU&FolderPath=PORTAL_ROOT_OBJECT.JMU_STUDENT_MAINMENU.JMU_STUDENTCENTER_MAINMENU&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder")
+    fun getStudentCenter(): Deferred<Response<ResponseBody>>
+
+    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_GRADE.GBL")
+    fun getMyGradeTerms(): Deferred<Response<GradeTerms>>
+
+    @FormUrlEncoded
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_GRADE.GBL")
+    fun getMyGradesForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassGrades>>
+
 }
 
+fun checkLoggedIn(): Boolean =
+    get().koin.get<OkHttpClient>().newBuilder().followRedirects(false).followSslRedirects(false).build()
+        .newCall(
+            Request.Builder()
+                .url("$MYMADISON_BASE_URL/psp/pprd/JMU/CUST/h/?tab=DEFAULT")
+                .get()
+                .build()
+        )
+        .execute().isSuccessful
