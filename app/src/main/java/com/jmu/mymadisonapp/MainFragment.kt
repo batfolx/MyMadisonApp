@@ -1,3 +1,20 @@
+/*
+ * Copyright 2019 Timothy Logan
+ * Copyright 2019 Victor Velea
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.jmu.mymadisonapp
 
 
@@ -68,7 +85,7 @@ class MainFragment : Fragment() {
             hours_enrolled_text.text =
                 "${it.hoursEnrolled.entries.joinToString("\n") { (name, amount) -> "$name: $amount" }}\nHours Enrolled"
             major_minor_text.text =
-                "Major: ${it.subject.major} (GPA ${it.subject.majorGPA})\nMinor: ${it.subject.minor} (GPA ${it.subject.minorGPA}\nMajor/Minor GPA Last Updated: ${SimpleDateFormat(
+                "Major: ${it.subject.major} (GPA ${it.subject.majorGPA})\nMinor: ${it.subject.minor} (GPA ${it.subject.minorGPA})\nMajor/Minor GPA Last Updated: ${SimpleDateFormat(
                     "MM/dd/yyyy"
                 ).format(it.subject.gpaLastUpdated)}"
         })
