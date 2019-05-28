@@ -1,5 +1,7 @@
 package com.jmu.mymadisonapp.data
 
+import com.jmu.mymadisonapp.net.MyMadisonService
+
 class StudentRepository(private val client: MyMadisonService) {
 
 

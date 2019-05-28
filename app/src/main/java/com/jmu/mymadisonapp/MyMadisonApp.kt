@@ -10,6 +10,7 @@ class MyMadisonApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // Start Koin for dependency injection
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@MyMadisonApp)

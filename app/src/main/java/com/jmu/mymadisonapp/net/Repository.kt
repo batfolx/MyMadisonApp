@@ -1,4 +1,4 @@
-package com.timmahh.openph.data
+package com.jmu.mymadisonapp.net
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData

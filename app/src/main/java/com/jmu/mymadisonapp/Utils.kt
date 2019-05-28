@@ -3,21 +3,15 @@ package com.jmu.mymadisonapp
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.os.Environment.getExternalStorageDirectory
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import java.io.File
 import kotlin.reflect.KClass
 
 
 val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-/*fun createGson(typeAdapters: Map<Type, Any> = emptyMap()): Gson = GsonBuilder()
-    .setPrettyPrinting()
-    .apply { typeAdapters.forEach { registerTypeAdapter(it.key, it.value) } }
-    .create()*/
 
 inline fun <reified T : Any?> T.toJson(): String =
     this?.let { moshi.adapter(T::class.java).indent("    ").toJson(this) } ?: "null value"
@@ -38,14 +32,12 @@ val nullEmpty = Collection<Any?>::nullEmpty
 val notNullOrEmpty = Collection<Any?>::notNullOrEmpty
 
 
-fun isAppInstalled(pkg: String = "", manager: PackageManager): Boolean {
-    return try {
-        manager.getPackageInfo(pkg, 0)
-        true
+fun PackageManager.isAppInstalled(pkg: String = ""): Boolean =
+    try {
+        getPackageInfo(pkg, 0); true
     } catch (e: PackageManager.NameNotFoundException) {
         false
     }
-}
 
 fun Activity.checkPermissions(
     vararg permissions: String = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE),
@@ -63,7 +55,7 @@ fun splitMessage(msg: String, maxSize: Int = 4000) =
 fun Any.getSimpleName(value: KClass<out Any>? = this::class): String =
     value?.java?.simpleName ?: "UnknownName"
 
-fun logMsg(tag: String, msg: String, splitLong: Boolean, logger: (String, String) -> Int): Unit =
+inline fun logMsg(tag: String, msg: String, splitLong: Boolean, logger: (String, String) -> Int): Unit =
     if (splitLong) splitMessage(msg).forEach { logger(tag, it) }
     else { logger(tag, msg); Unit }
 
@@ -73,37 +65,43 @@ fun Any.logD(tag: String = getSimpleName(), msg: String = "Empty", splitLong: Bo
 
 fun Any.logE(tag: String = getSimpleName(), msg: String = "Empty", splitLong: Boolean = true) = logMsg(tag, msg, splitLong, Log::e)
 
-val log = Any::log
-val logD = Any::logD
-val logE = Any::logE
 
-/*suspend fun tryCatch(
-    tryBlock: suspend CoroutineScope.() -> Unit,
-    catchBlock: suspend CoroutineScope.(Throwable) -> Unit
-) {
-    coroutineScope {
-        try {
-            tryBlock()
-        } catch (e: Throwable) {
-            if (e !is CancellationException) catchBlock(e)
-        }
-    }
-}*/
-
-/*suspend fun CoroutineScope.launchOnUI(block: suspend CoroutineScope.() -> Unit) =
-    coroutineScope { launch(Dispatchers.Main) { block() } }*/
+/**
+ * Helper to format a Float with a max [digits] number of digits after the decimal.
+ */
 infix fun Float.digits(digits: Int) = "%.${digits}f".format(this)
+
+/**
+ * Helper to format a Double with a max [digits] number of digits after the decimal.
+ */
 infix fun Double.digits(digits: Int) = "%.${digits}f".format(this)
 
+/**
+ * Helper to format a number with [zeros] leading zeros.
+ */
 infix fun Int.zeros(zeros: Int) = "%0${zeros}d".format(this)
+
+/**
+ * Helper to format a number with [zeros] leading zeros.
+ */
 infix fun Long.zeros(zeros: Int) = "%0${zeros}d".format(this)
+
+/**
+ * Helper to format a number with [zeros] leading zeros.
+ */
 infix fun Float.zeros(zeros: Int) = "%0${zeros}f".format(this)
+
+/**
+ * Helper to format a number with [zeros] leading zeros.
+ */
 infix fun Double.zeros(zeros: Int) = "%0${zeros}f".format(this)
 
+/**
+ * Helper to Boolean checks with an else block.
+ */
 inline fun <T> Boolean.ifDo(block: () -> T, orElse: () -> T) = if (this) block() else orElse()
-inline fun Boolean.ifDo(block: () -> Unit) = if (this) block() else Unit
 
-val tempDir: File by lazy {
-    File(getExternalStorageDirectory(), "/openPH/openPH_cache.json")
-        .also { file -> file.takeUnless { it.exists() }?.createNewFile() }
-}
+/**
+ * Helper to Boolean checks.
+ */
+inline fun Boolean.ifDo(block: () -> Unit) = ifDo(block) {}

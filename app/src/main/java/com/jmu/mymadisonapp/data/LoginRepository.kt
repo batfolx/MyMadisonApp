@@ -2,7 +2,7 @@ package com.jmu.mymadisonapp.data
 
 import com.jmu.mymadisonapp.data.model.LoggedInUser
 import com.jmu.mymadisonapp.log
-import com.timmahh.openph.data.Result
+import com.jmu.mymadisonapp.net.Result
 import okhttp3.ResponseBody
 
 /**

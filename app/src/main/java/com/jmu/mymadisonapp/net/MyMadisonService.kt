@@ -1,4 +1,4 @@
-package com.jmu.mymadisonapp.data
+package com.jmu.mymadisonapp.net
 
 import com.jmu.mymadisonapp.data.model.StudentUndergradInfo
 import kotlinx.coroutines.Deferred
@@ -9,9 +9,10 @@ import retrofit2.http.*
 
 const val MYMADISON_BASE_URL = "https://mymadison.ps.jmu.edu"
 const val MYMADISON_LOGIN_BASE_URL = "https://mymadison.ps.jmu.edu/psp/pprd/?cmd=start"
-const val MYMADISON_UG_URL =
-    "https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_UG_DB&tab=STUDENTADMINISTRATION&PORTALPARAM_COMPWIDTH=Narrow&bNoGlobal=Y&ptlayout=N"
 
+/**
+ * The MyMadison Retrofit service.
+ */
 interface MyMadisonService {
 
     @Headers(
@@ -33,7 +34,10 @@ interface MyMadisonService {
     @GET("/psp/pprd/JMU/CUST/h/")
     fun getStudentInfo(@QueryMap(encoded = false) infoQueries: Map<String, String>): Deferred<Response<ResponseBody>>
 
-    @GET("/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_UG_DB&tab=STUDENTADMINISTRATION&PORTALPARAM_COMPWIDTH=Narrow&bNoGlobal=Y&ptlayout=N")
+    /**
+     * Get information for the Undergraduate Dashboard.
+     */
+    @GET("/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_UG_DB")
     fun getUndergraduateDashboard(): Deferred<Response<StudentUndergradInfo>>
 
 }

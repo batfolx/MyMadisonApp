@@ -12,14 +12,19 @@ import kotlinx.coroutines.launch
 class MainViewModel(application: Application, private val repository: StudentRepository) :
     AndroidViewModel(application) {
 
+    // Observable LiveData for the result of getting the Undergraduate Dashboard information.
     val undergradInfoLiveData: MutableLiveData<StudentUndergradInfo> = MutableLiveData()
 
-    suspend fun isLoggedIn(): Boolean = try {
-        repository.getUndergraduateDashboard(); true
-    } catch (e: IllegalArgumentException) {
-        false
-    }
+    suspend fun isLoggedIn(): Boolean =
+        try {
+            repository.getUndergraduateDashboard(); true
+        } catch (e: IllegalArgumentException) {
+            false
+        }
 
+    /**
+     * Requests Undergraduate Dashboard data from the repository and posts it to any observers.
+     */
     fun getUndergraduateDashboard() {
         viewModelScope.launch {
             undergradInfoLiveData.postValue(repository.getUndergraduateDashboard().also {

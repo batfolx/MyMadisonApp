@@ -1,4 +1,4 @@
-package com.timmahh.openph.data
+package com.jmu.mymadisonapp.net
 
 /**
  * A generic class that holds a value with its loading status.
@@ -15,9 +15,11 @@ sealed class Result<out T>(open val data: T?) {
     }
 
     companion object {
-        fun <T> success(data: T, index: Long = -1): Result<T> = Success(data, index)
+        fun <T> success(data: T, index: Long = -1): Result<T> =
+            Success(data, index)
 
-        fun <T> error(exception: Exception, data: T?): Result<T> = Error(exception, data)
+        fun <T> error(exception: Exception, data: T?): Result<T> =
+            Error(exception, data)
 
         fun <T> loading(data: T?): Result<T> = Loading(data)
     }

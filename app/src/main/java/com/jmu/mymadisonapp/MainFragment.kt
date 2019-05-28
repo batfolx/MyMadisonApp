@@ -19,10 +19,11 @@ import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
- * A simple [Fragment] subclass.
+ * The main [Fragment] to manage navigation and determine if the user must login.
  */
 class MainFragment : Fragment() {
 
+    // Inject the ViewModel into this Fragment
     private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreateView(
@@ -38,9 +39,12 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        // Notify that the user is logged in on return from the BrowserFragment
         fragmentManager?.addOnBackStackChangedListener(this::onLoggedIn)
 
+        // Launch in a background coroutine keeping with lifecycle states to cancel the process if the user exits the app
         lifecycleScope.launch {
+            // If not logged in, open the login browser, otherwise update UI
             if (!mainViewModel.isLoggedIn())
                 MainScope().launch {
                     fragmentManager?.commit {
@@ -50,6 +54,8 @@ class MainFragment : Fragment() {
                 }
             else MainScope().launch { onLoggedIn() }
         }
+
+        // Observe the result of getting the Undergraduate Dashboard information to display to the user
         mainViewModel.undergradInfoLiveData.observe(this, Observer {
             holds_text.text = "${it.holds}\nHolds"
             to_dos_text.text = "${it.toDos}\nTo Dos"
@@ -64,9 +70,7 @@ class MainFragment : Fragment() {
         })
     }
 
-    private fun onLoggedIn() {
-        mainViewModel.getUndergraduateDashboard()
-    }
+    private fun onLoggedIn() = mainViewModel.getUndergraduateDashboard()
 
 
 }

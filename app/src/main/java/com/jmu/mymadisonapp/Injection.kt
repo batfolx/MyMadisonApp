@@ -2,7 +2,11 @@ package com.jmu.mymadisonapp
 
 import android.util.Log
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.jmu.mymadisonapp.data.*
+import com.jmu.mymadisonapp.data.LoginDataSource
+import com.jmu.mymadisonapp.data.LoginRepository
+import com.jmu.mymadisonapp.data.StudentRepository
+import com.jmu.mymadisonapp.net.MYMADISON_BASE_URL
+import com.jmu.mymadisonapp.net.MyMadisonService
 import com.jmu.mymadisonapp.net.WebViewCookieJar
 import com.jmu.mymadisonapp.ui.MainViewModel
 import com.jmu.mymadisonapp.ui.login.LoginViewModel
@@ -15,10 +19,13 @@ import pl.droidsonroids.retrofit2.JspoonConverterFactory
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
+// Provide network resources
 val netModule = module {
 
+    // Provide a singleton CookieJar so Cookies can be shared between OkHttp/Retrofit and WebView's.
     single<CookieJar> { WebViewCookieJar() }
 
+    // Provide a singleton OkHttpClient to be shared with Retrofit and custom network requests.
     single<OkHttpClient> {
         OkHttpClient.Builder()
             .addInterceptor(
@@ -53,6 +60,7 @@ val netModule = module {
             .build()
     }
 
+    // Provide a singleton Retrofit service with the singleton OkHttpClient and the JspoonConverterFactory for parsing HTML responses
     single<MyMadisonService> {
         Retrofit.Builder()
             .client(get())
@@ -64,6 +72,7 @@ val netModule = module {
 
 }
 
+// Provide data sources and repositories for ViewModel's
 val appModule = module {
 
     single { LoginDataSource(get(), get()) }
