@@ -40,7 +40,7 @@ class LoginViewModel(application: Application, private val loginRepository: Logi
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
         viewModelScope.launch {
-            val result = loginRepository.login(username, password)
+            //val result = loginRepository.login(username, password)
             MainScope().launch {
                 //                if (result is Success) {
 //                    _loginResult.value = LoginResult(success = LoggedInUserView(displayName = result.data.displayName))

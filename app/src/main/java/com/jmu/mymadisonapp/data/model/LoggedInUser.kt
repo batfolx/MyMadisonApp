@@ -50,17 +50,17 @@ class DeclaredSubjectConverter : ElementConverter<DeclaredSubject> {
                         it.substring(0, it.indexOf(" (")) to
                                 it.substringAfter("GPA ")
                     }
-            val minor =
+/*            val minor =
                 getOrElse(1) { "Undeclared (GPA 0.000)" }
                     .let {
                         it.substring(0, it.indexOf(" (")) to
                                 it.substringAfter("GPA ")
-                    }
-            val lastUpdated = SimpleDateFormat("MM/dd/yyyy").parse(getOrElse(2) { "00/00/0000" })
+                    } */
+            val lastUpdated = SimpleDateFormat("MM/dd/yyyy").parse(getOrElse(1) { "00/00/0000" })
             DeclaredSubject(
                 major.first, major.second.toFloat(),
-                minor.first, minor.second.toFloat(),
-                lastUpdated
+                //minor.first, minor.second.toFloat(),
+                gpaLastUpdated=lastUpdated
             )
         }
 }
@@ -76,7 +76,7 @@ data class StudentUndergradInfo(
         converter = HoursEnrolledConverter::class
     ) var hoursEnrolled: Map<String, Int> = emptyMap(),
     @Selector(
-        "span.PROGRAMCLASS5",
+        "div#SSSGROUPBOXRIGHTNBO7_WRAPPER > span",
         converter = DeclaredSubjectConverter::class
     ) var subject: DeclaredSubject = DeclaredSubject()
 )

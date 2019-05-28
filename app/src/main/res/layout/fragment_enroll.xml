@@ -10,38 +10,38 @@
         android:id="@+id/swap_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="380dp"
+        android:layout_marginTop="576dp"
         app:layout_constraintStart_toEndOf="@+id/add_button"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Swap" />
-
-    <Button
-        android:id="@+id/drop_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="380dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Drop" />
-
-    <Button
-        android:id="@+id/add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="380dp"
-        app:layout_constraintStart_toEndOf="@+id/drop_button"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Add" />
+        android:text="@string/swap_button" />
 
     <Button
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="380dp"
+        android:layout_marginTop="576dp"
         app:layout_constraintStart_toEndOf="@+id/swap_button"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Edit" />
+        android:text="@string/edit_button" />
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="576dp"
+        app:layout_constraintStart_toEndOf="@+id/drop_button"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/add_button" />
+
+    <Button
+        android:id="@+id/drop_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="576dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/drop_button" />
 
     <Button
         android:id="@+id/student_center_button"
@@ -49,7 +49,7 @@
         android:layout_height="47dp"
         android:layout_marginStart="4dp"
         android:layout_marginBottom="4dp"
-        tools:text="Back to student center"
+        android:text="@string/student_center_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -57,9 +57,11 @@
         android:id="@+id/jmu_text_view"
         android:layout_width="356dp"
         android:layout_height="34dp"
-        tools:text="Welcome to James Madison University"
-        tools:textColor="@color/colorPrimary"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/jmu_text_view"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
