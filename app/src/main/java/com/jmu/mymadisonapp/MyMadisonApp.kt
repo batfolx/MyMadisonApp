@@ -34,4 +34,5 @@ class MyMadisonApp : Application() {
             modules(netModule, databaseModule, appModule)
         }
     }
+
 }

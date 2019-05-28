@@ -1,23 +1,6 @@
-/*
- * Copyright 2019 Timothy Logan
- * Copyright 2019 Victor Velea
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.jmu.mymadisonapp
 
-import androidx.room.Room
+import android.util.Log
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jmu.mymadisonapp.data.LoginDataSource
 import com.jmu.mymadisonapp.data.LoginRepository
@@ -25,10 +8,10 @@ import com.jmu.mymadisonapp.data.StudentRepository
 import com.jmu.mymadisonapp.net.MYMADISON_BASE_URL
 import com.jmu.mymadisonapp.net.MyMadisonService
 import com.jmu.mymadisonapp.net.WebViewCookieJar
-import com.jmu.mymadisonapp.room.MyMadisonDatabase
 import com.jmu.mymadisonapp.ui.MainViewModel
 import com.jmu.mymadisonapp.ui.login.LoginViewModel
-import okhttp3.*
+import okhttp3.CookieJar
+import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -42,38 +25,35 @@ val netModule = module {
     // Provide a singleton CookieJar so Cookies can be shared between OkHttp/Retrofit and WebView's.
     single<CookieJar> { WebViewCookieJar() }
 
-    single<Interceptor> {
-        object : Interceptor {
-            val cookieJar: CookieJar = get()
-            override fun intercept(chain: Interceptor.Chain): Response =
-                chain.proceed(
-                    chain.request().newBuilder().apply {
-                        cookieJar.loadForRequest(chain.request().url())
-                            .forEach { cookie -> addHeader("Cookie", cookie.toString()) }
-                    }.build()
-                ).let { response ->
-                    cookieJar.saveFromResponse(
-                        response.request().url(), Cookie.parseAll(response.request().url(), response.headers())
-                        /*.also { log("ResponseCookies", it.joinToString("\nSet-Cookie: ")) }*/
-                    )
-                    response
-                }
-        }
-    }
-
     // Provide a singleton OkHttpClient to be shared with Retrofit and custom network requests.
     single<OkHttpClient> {
         OkHttpClient.Builder()
-            .addNetworkInterceptor(get())
-            .addNetworkInterceptor(
-                HttpLoggingInterceptor { logD("OkHttp", it, false) }
+            .addInterceptor(
+                HttpLoggingInterceptor(
+                    HttpLoggingInterceptor.Logger { message ->
+                        Log.d("OkHttp", message)
+                    })
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-//            .connectionSpecs(mutableListOf(ConnectionSpec))
-            .connectionPool(ConnectionPool(10, 10, TimeUnit.MINUTES))
+            /*.addInterceptor {
+                it.proceed(with(it.request().newBuilder()) {
+                    get<CookieJar>().loadForRequest(it.request().url())
+                        .forEach {
+                            addHeader("Cookie", it.toString())
+                        }
+                    build()
+                })
+            }
+            .addInterceptor {
+                with(it.proceed(it.request())) {
+                    get<CookieJar>().saveFromResponse(
+                        request().url(), Cookie.parseAll(request().url(), headers()))
+                    this
+                }
+            }*/
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
             .cookieJar(get())
             .followRedirects(true)
             .followSslRedirects(true)
@@ -92,13 +72,7 @@ val netModule = module {
 
 }
 
-val databaseModule = module {
 
-    single { Room.databaseBuilder(get(), MyMadisonDatabase::class.java, "mymadison-db").build() }
-
-    single { get<MyMadisonDatabase>().studentDao() }
-
-}
 
 // Provide data sources and repositories for ViewModel's
 val appModule = module {

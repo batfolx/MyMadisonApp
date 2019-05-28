@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Dao
 import com.google.android.material.snackbar.Snackbar
 import com.jmu.mymadisonapp.ui.MainViewModel
 import kotlinx.android.synthetic.main.app_bar_main.view.*

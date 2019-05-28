@@ -28,6 +28,8 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlin.reflect.KClass
 
 
+
+
 val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
 inline fun <reified T : Any?> T.toJson(): String =
