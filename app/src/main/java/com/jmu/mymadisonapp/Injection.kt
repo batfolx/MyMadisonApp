@@ -19,6 +19,7 @@ package com.jmu.mymadisonapp
 
 import androidx.room.Room
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.jmu.mymadisonapp.data.GradeRepository
 import com.jmu.mymadisonapp.data.LoginDataSource
 import com.jmu.mymadisonapp.data.LoginRepository
 import com.jmu.mymadisonapp.data.StudentRepository
@@ -27,10 +28,12 @@ import com.jmu.mymadisonapp.net.MyMadisonService
 import com.jmu.mymadisonapp.net.WebViewCookieJar
 import com.jmu.mymadisonapp.room.MyMadisonDatabase
 import com.jmu.mymadisonapp.ui.MainViewModel
+import com.jmu.mymadisonapp.ui.gallery.GradesViewModel
+import com.jmu.mymadisonapp.ui.home.HomeViewModel
 import com.jmu.mymadisonapp.ui.login.LoginViewModel
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import pl.droidsonroids.retrofit2.JspoonConverterFactory
 import retrofit2.Retrofit
@@ -66,14 +69,14 @@ val netModule = module {
         OkHttpClient.Builder()
             .addNetworkInterceptor(get())
             .addNetworkInterceptor(
-                HttpLoggingInterceptor { logD("OkHttp", it, false) }
-                    .setLevel(HttpLoggingInterceptor.Level.BODY)
+                HttpLoggingInterceptor { if (!it.startsWith("Cookie")) logD("OkHttp", it, false) }
+                    .setLevel(HttpLoggingInterceptor.Level.HEADERS)
             )
             .connectTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
 //            .connectionSpecs(mutableListOf(ConnectionSpec))
-            .connectionPool(ConnectionPool(10, 10, TimeUnit.MINUTES))
+//            .connectionPool(ConnectionPool(10, 10, TimeUnit.MINUTES))
             .cookieJar(get())
             .followRedirects(true)
             .followSslRedirects(true)
@@ -98,6 +101,8 @@ val databaseModule = module {
 
     single { get<MyMadisonDatabase>().studentDao() }
 
+    single { get<MyMadisonDatabase>().termDao() }
+
 }
 
 // Provide data sources and repositories for ViewModel's
@@ -107,7 +112,13 @@ val appModule = module {
 
     single { LoginRepository(get()) }
 
-    single { StudentRepository(get()) }
+    single { GradeRepository(get(), get()) }
+
+    single { StudentRepository(get(), get()) }
+
+    viewModel { HomeViewModel() }
+
+    viewModel { GradesViewModel(get(), get()) }
 
     viewModel { MainViewModel(get(), get()) }
 

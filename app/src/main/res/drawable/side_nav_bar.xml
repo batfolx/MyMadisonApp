@@ -15,12 +15,25 @@
   ~ limitations under the License.
   -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <gradient
-        android:angle="135"
-        android:centerColor="#009688"
-        android:endColor="#00695C"
-        android:startColor="#4DB6AC"
-        android:type="linear" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/jmu_seal_purple">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="135"
+                android:centerColor="@color/blue"
+                android:endColor="@color/darkBlue"
+                android:startColor="@color/lightBlue"
+                android:type="linear" />
+        </shape>
+    </item>
+    <item
+        android:width="130dp"
+        android:height="130dp"
+        android:bottom="@dimen/item_decoration_margin"
+        android:drawable="@drawable/jmu_seal_purple"
+        android:end="@dimen/fab_margin"
+        android:gravity="end|bottom"
+        android:top="@dimen/fab_margin" />
+
+</layer-list>

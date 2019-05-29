@@ -48,6 +48,8 @@ fun Collection<Any?>.notNullOrEmpty(): Boolean = !nullEmpty()
 val nullEmpty = Collection<Any?>::nullEmpty
 val notNullOrEmpty = Collection<Any?>::notNullOrEmpty
 
+fun String.pluralize(amount: Int, pluralExt: String = "s") = if (amount == 1) this else this + pluralExt
+fun String.pluralize(amount: Float, pluralExt: String = "s") = if (amount == 1f) this else this + pluralExt
 
 fun PackageManager.isAppInstalled(pkg: String = ""): Boolean =
     try {

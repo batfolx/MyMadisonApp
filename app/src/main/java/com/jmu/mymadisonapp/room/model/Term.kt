@@ -15,16 +15,28 @@
  * limitations under the License.
  */
 
-package com.jmu.mymadisonapp.ui.gallery
+package com.jmu.mymadisonapp.room.model
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.room.Entity
 
-class GalleryViewModel : ViewModel() {
+@Entity(tableName = "terms", primaryKeys = ["semester", "year"])
+data class Term(
+    val semester: String,
+    val year: Int,
+    val career: String,
+    val institution: String,
+    val courses: List<Course>,
+    val semesterGPA: Float,
+    val academicStanding: String
+)
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is gallery Fragment"
-    }
-    val text: LiveData<String> = _text
-}
+@Entity(tableName = "courses", primaryKeys = ["department", "number"])
+data class Course(
+    val department: String,
+    val number: String,
+    val description: String,
+    val credits: Float,
+    val grading: String,
+    val grade: String,
+    val gradePoints: Float
+)

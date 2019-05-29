@@ -21,14 +21,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.jmu.mymadisonapp.ui.MainViewModel
+import com.jmu.mymadisonapp.ui.gallery.GradesViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_browser.*
+import kotlinx.android.synthetic.main.nav_header_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * The default activity to load upon startup.
@@ -36,6 +46,8 @@ import kotlinx.android.synthetic.main.fragment_browser.*
 class MainActivity : AppCompatActivity() {
 
 	private lateinit var appBarConfiguration: AppBarConfiguration
+	private val mainViewModel: MainViewModel by viewModel()
+	private val gradesViewModel: GradesViewModel by viewModel()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -45,6 +57,12 @@ class MainActivity : AppCompatActivity() {
 
 		// Check if permissions have been granted
 		checkPermissions()
+
+		// Notify that the user is logged in on return from the BrowserFragment
+		supportFragmentManager.addOnBackStackChangedListener {
+			if (supportFragmentManager.backStackEntryCount == 0)
+				onLoggedIn()
+		}
 
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
@@ -57,7 +75,35 @@ class MainActivity : AppCompatActivity() {
 			setupActionBarWithNavController(this, appBarConfiguration)
 			nav_view.setupWithNavController(this)
 		}
+		mainViewModel.studentInfoLiveData.observe(this, Observer {
+			log("StudentInfo", "New value: $it")
+			GlideApp.with(this)
+				.load(it.avatar)
+				.circleCrop()
+				.into(user_avatar)
+			display_name.text = it.displayName
+			eID.text = it.eID
+		})
+		gradesViewModel.gradesLiveData.observe(this, Observer {
+			log("TermData", "Content: ${it.joinToString("\n")}")
+		})
+
+
+		// Launch in a background coroutine keeping with lifecycle states to cancel the process if the user exits the app
+		lifecycleScope.launch(lifecycleScope.coroutineContext + Dispatchers.IO) {
+			// If not logged in, open the login browser, otherwise update UI
+			if (!mainViewModel.isLoggedIn())
+				MainScope().launch {
+					supportFragmentManager.commit {
+						replace(R.id.content_container, BrowserFragment())
+						addToBackStack(null)
+					}
+				}
+			else MainScope().launch { onLoggedIn() }
+		}
 	}
+
+	private fun onLoggedIn() = mainViewModel.onLoggedIn().also { gradesViewModel.getAllGrades() }
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		// Inflate the menu; this adds items to the action bar if it is present.

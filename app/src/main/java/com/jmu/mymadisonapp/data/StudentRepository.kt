@@ -17,22 +17,78 @@
 
 package com.jmu.mymadisonapp.data
 
+import com.jmu.mymadisonapp.data.model.CurrentUser
+import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
 import com.jmu.mymadisonapp.net.checkLoggedIn
+import com.jmu.mymadisonapp.net.isValid
+import com.jmu.mymadisonapp.net.singleResource
+import com.jmu.mymadisonapp.room.StudentDao
+import com.jmu.mymadisonapp.room.model.DegreeGPA
+import com.jmu.mymadisonapp.room.model.SemesterUnits
+import com.jmu.mymadisonapp.room.model.Student
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import okhttp3.ResponseBody
+import org.jsoup.Jsoup
+import retrofit2.Response
+import java.util.*
 
-class StudentRepository(private val client: MyMadisonService) {
+class StudentRepository(private val client: MyMadisonService, private val studentDao: StudentDao) {
 
-    suspend fun isLoggedIn() = checkLoggedIn()
+    fun isLoggedIn() = checkLoggedIn()
 
-    suspend fun getUndergraduateDashboard() = client.getUndergraduateDashboard().await()
-
-    suspend fun getCanvasProfileInfo() =
-        client.getSAMLResponse().await().body()?.value?.let {
-            client.getCanvasProfileInfo(it).await()
+    suspend fun getStudentData(eID: String = "") =
+        singleResource<Student> {
+            loadFromDb { studentDao.tryGetStudent(eID) }
+            createCall { getDashAndProfileAsync(eID) }
+            saveResult { studentDao.upsert(it) }
+            shouldFetch { it?.eID?.isEmpty() ?: true }
         }
 
-    suspend fun getMyGradeTerms() = client.getMyGradeTerms().await()
+    private fun getDashAndProfileAsync(eID: String) = GlobalScope.async {
+        val response = parseEID()
+        val profile = getCanvasProfileInfo()
+        val ug = getUndergraduateDashboard()
+        if (profile.isValid() && ug.isValid())
+            Response.success(200,
+                Student(
+                    response.takeUnless { it.isEmpty() } ?: eID,
+                    profile.body()!!.current_user.display_name,
+                    profile.body()!!.current_user.avatar_image_url,
+                    ug.body()!!.holds,
+                    ug.body()!!.toDos,
+                    ug.body()!!.cumGPA.gpa,
+                    ug.body()!!.lastSemGPA.gpa,
+                    ug.body()!!.hoursEnrolled.map { SemesterUnits(it.key, it.value) },
+                    ug.body()!!.subject.majors.map { DegreeGPA(it.name, it.gpa) },
+                    ug.body()!!.subject.minors.map { DegreeGPA(it.name, it.gpa) },
+                    ug.body()!!.subject.gpaLastUpdated
+                )
+            )
+        else Response.error(
+            (profile.code() + ug.code()),
+            profile.errorBody() ?: ug.errorBody() ?: ResponseBody.create(null, "No data")
+        )
+    }
 
-    suspend fun getMyGradesForTerm(body: Map<String, String>) = client.getMyGradesForTerm(body).await()
+    private suspend fun parseEID() = Jsoup.parse(
+        client.checkLoggedIn().await()
+            .body()?.string()
+    )
+        .select("header#top > table.eppbr_header_bg.EPPBRLAYOUTTABLE > tbody > tr:nth-child(2) > td:nth-child(7) > table:nth-child(1) > tbody > tr > td:nth-child(1) > nobr")
+        .text().toLowerCase(Locale.getDefault())
+        .also { log("eIDResponse", "eID: $it") }
+
+
+    suspend fun getUndergraduateDashboard() = client.getUndergraduateDashboard().await()
+        .also { log("UndergraduateDashboard", "Content: ${it.body() ?: "Empty body: $it"}}") }
+
+    suspend fun getCanvasProfileInfo(): Response<CurrentUser> =
+        (client.getSAMLResponse().await().body()?.value?.let {
+            client.getCanvasProfileInfo(it).await()
+        } ?: Response.success(299, CurrentUser()))
+            .also { log("CanvasProfileInfo", "Current User: ${it.body() ?: "Empty body: $it"}") }
+
 
 }

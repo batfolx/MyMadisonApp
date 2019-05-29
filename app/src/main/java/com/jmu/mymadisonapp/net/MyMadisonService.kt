@@ -82,7 +82,13 @@ interface MyMadisonService {
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_GRADE.GBL")
     fun getMyGradesForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassGrades>>
 
+
+//    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")
+//    fun getUnofficialTranscript()
+
 }
+
+fun <T> Response<T>.isValid() = isSuccessful && body() != null
 
 fun checkLoggedIn(): Boolean =
     get().koin.get<OkHttpClient>().newBuilder().followRedirects(false).followSslRedirects(false).build()

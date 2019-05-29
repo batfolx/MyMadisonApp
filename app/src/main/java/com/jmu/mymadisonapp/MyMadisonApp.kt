@@ -18,6 +18,8 @@
 package com.jmu.mymadisonapp
 
 import android.app.Application
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -35,3 +37,6 @@ class MyMadisonApp : Application() {
         }
     }
 }
+
+@GlideModule
+class MyMadisonModule : AppGlideModule()

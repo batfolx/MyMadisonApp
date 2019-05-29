@@ -29,9 +29,9 @@
 
 	<fragment
 		android:id="@+id/nav_gallery"
-		android:name="com.jmu.mymadisonapp.ui.gallery.GalleryFragment"
-		android:label="@string/menu_gallery"
-		tools:layout="@layout/fragment_gallery" />
+        android:name="com.jmu.mymadisonapp.ui.gallery.GradesFragment"
+        android:label="@string/menu_grades"
+        tools:layout="@layout/fragment_grades" />
 
 	<fragment
 		android:id="@+id/nav_slideshow"

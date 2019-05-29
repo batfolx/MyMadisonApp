@@ -18,6 +18,8 @@
 package com.jmu.mymadisonapp.room
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import androidx.room.*
 import com.jmu.mymadisonapp.room.model.Student
 
@@ -32,6 +34,15 @@ abstract class StudentDao {
         return insertIndex
     }
 
+    open fun tryGetStudent(eID: String) = liveData {
+        getStudent(eID).let {
+            emitSource(
+                if (it.value != null) (it as LiveData<Student?>)
+                else getStudents().map { students -> students.firstOrNull { student -> student.eID.isNotBlank() } }
+            )
+        }
+    }
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertStudent(student: Student): Long
 
@@ -41,7 +52,10 @@ abstract class StudentDao {
     @Delete
     abstract fun deleteStudent(student: Student)
 
-    @Query("SELECT * FROM student WHERE eID=:eID")
+    @Query("SELECT * FROM students WHERE eID=:eID")
     abstract fun getStudent(eID: String): LiveData<Student>
+
+    @Query("SELECT * FROM students")
+    abstract fun getStudents(): LiveData<List<Student>>
 
 }

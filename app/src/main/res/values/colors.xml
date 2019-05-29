@@ -15,8 +15,40 @@
   ~ limitations under the License.
   -->
 
+
+<!--
+Never put JMU Purple with yellow.
+Never use tints of the red or yellow accent colors.
+Red is only used for inline icons, warnings, link hover, etc.
+Blue and green may be used as:
+	background color
+	border
+	banner
+Never combine JMU Purple or Gold with green, blue, or yellow.
+Never use red or yellow as a background color.
+-->
 <resources>
 	<color name="colorPrimary">#008577</color>
 	<color name="colorPrimaryDark">#00574B</color>
 	<color name="colorAccent">#D81B60</color>
+    <!-- JMU Primary Colors -->
+    <color name="darkPurple">#450084</color>
+    <color name="purple">#B599CE</color>
+    <color name="lightPurple">#DACCE6</color>
+    <color name="darkGold">#AD0C65</color>
+    <color name="gold">#CBB677</color>
+    <color name="lightGold">#F4EFE1</color>
+    <color name="slate">#333333</color>
+    <color name="darkGray">#595959</color>
+    <color name="gray">#B2B2B2</color>
+    <color name="lightGray">#D6D6D6</color>
+    <!-- JMU Accent Colors -->
+    <color name="darkGreen">#5F791C</color>
+    <color name="green">#ADCC23</color>
+    <color name="lightGreen">#DEEBA7</color>
+    <color name="darkBlue">#3C738B</color>
+    <color name="blue">#5498B6</color>
+    <color name="lightBlue">#D2EBF5</color>
+    <color name="red">#A4232B</color>
+    <color name="yellow">#FFBD00</color>
 </resources>
