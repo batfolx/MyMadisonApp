@@ -1,18 +1,14 @@
-package com.jmu.mymadisonapp
+package com.jmu.mymadisonapp.studentcenter
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import kotlinx.android.synthetic.main.fragment_enroll.*
+import com.jmu.mymadisonapp.R
 import kotlinx.android.synthetic.main.fragment_studentcenter.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 class StudentCenterFragment : Fragment()
 {
@@ -46,12 +42,12 @@ class StudentCenterFragment : Fragment()
                 {
 
                     fragmentManager?.commit {
-                      replace(R.id.student_center_layout, EnrollFragment())
+                      replace(
+                          R.id.student_center_layout,
+                          EnrollFragment()
+                      )
                       addToBackStack(null)
                     }
-
-
-                    student_center_textField.text="You selected enroll."
                 }
 
 
