@@ -54,6 +54,7 @@ class StudentCenterFragment : Fragment()
                     fragmentManager?.commit {
                         replace(R.id.student_center_layout, SchedulePlannerFragment())
                         addToBackStack(null)
+
                     }
                 }
 
