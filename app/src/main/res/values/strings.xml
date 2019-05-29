@@ -65,6 +65,20 @@
     </string-array>
 
 
+
+
+    //for the fragment_scheduleplanner.xml
+    <string name="go_to_schedule_planner_button">CLICKING HERE</string>
+    <string name="instructions">Go to schedule planner by</string>
+
+
+
+    //for the fragment_academicplanner.xml
+
+
+    //for the fragment_academicrequirements.xml
+    <string name="academic_requirements_textField">This is the academic requirements fragment</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="show_courses">Show Courses</string>
