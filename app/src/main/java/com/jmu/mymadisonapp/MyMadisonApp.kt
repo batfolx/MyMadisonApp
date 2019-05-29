@@ -33,9 +33,10 @@ class MyMadisonApp : Application() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@MyMadisonApp)
-            modules(netModule, databaseModule, appModule)
+            modules(netModule, appModule)
         }
     }
+
 }
 
 @GlideModule

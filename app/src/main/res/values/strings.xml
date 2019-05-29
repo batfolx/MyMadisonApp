@@ -40,6 +40,30 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="enroll">Enroll</string>
+    <string name="student_center_fragment">Student Center</string>
+
+    //for the fragment_enroll.xml
+    <string name="drop_button">Drop</string>
+    <string name="edit_button">Edit</string>
+    <string name="add_button">Add</string>
+    <string name="swap_button">Swap</string>
+    <string name="student_center_button">Back to student center</string>
+    <string name="jmu_text_view">Welcome to Tim and Victors app!</string>
+
+
+    //for the fragment_studentcenter.xml
+    <string name="student_center_textField">Welcome to the Student Center</string>
+    <string-array name="academics_spinner">
+        <item>Search</item>
+        <item>Enroll(Add, Drop, Edit, Swap)</item>
+        <item>Schedule Planner</item>
+        <item>Academic Planner</item>
+        <item>Academic Requirements</item>
+        <item>Buy Books</item>
+        <item>Class Schedule</item>
+    </string-array>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
