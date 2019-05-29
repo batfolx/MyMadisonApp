@@ -66,6 +66,7 @@ class BrowserFragment : Fragment() {
                     && path == "/psp/pprd/JMU/CUST/h/"
                     && query == "tab=DEFAULT")
 
+
         }
 
         // Set WebView settings to load images, enable JavaScript, cache, and disable geolocation tracking.

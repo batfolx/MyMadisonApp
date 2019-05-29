@@ -12,9 +12,9 @@ import kotlinx.android.synthetic.main.fragment_studentcenter.*
 
 class StudentCenterFragment : Fragment()
 {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-
-        inflater.inflate(R.layout.fragment_studentcenter, container, false).apply{}
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+                   return inflater.inflate(R.layout.fragment_studentcenter, container, false)
+        }
 
 
 
@@ -30,7 +30,6 @@ class StudentCenterFragment : Fragment()
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
 
 
                 if (position == 0) //Search is selected
@@ -72,9 +71,6 @@ class StudentCenterFragment : Fragment()
                         addToBackStack(null)
                     }
                 }
-
-
-
             }
         }
 
