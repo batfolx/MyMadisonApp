@@ -12,10 +12,10 @@ import kotlinx.android.synthetic.main.fragment_studentcenter.*
 
 class StudentCenterFragment : Fragment()
 {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
 
-        return inflater.inflate(R.layout.fragment_studentcenter, container, false)
-    }
+        inflater.inflate(R.layout.fragment_studentcenter, container, false).apply{}
+
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -33,12 +33,12 @@ class StudentCenterFragment : Fragment()
 
 
 
-                if (position == 0)
+                if (position == 0) //Search is selected
                 {
                     student_center_textField.  text="You selected search!"
 
                 }
-                else if (position == 1)
+                else if (position == 1) //Enroll is selected
                 {
 
                     fragmentManager?.commit {
@@ -49,6 +49,29 @@ class StudentCenterFragment : Fragment()
                       addToBackStack(null)
                     }
                 }
+                else if (position == 2) //schedule planner is selected
+                {
+                    fragmentManager?.commit {
+                        replace(R.id.student_center_layout, SchedulePlannerFragment())
+                        addToBackStack(null)
+                    }
+                }
+
+                else if (position == 3) //academic Planner is selected
+                {
+                    fragmentManager?.commit {
+                        replace(R.id.student_center_layout, AcademicPlannerFragment())
+                        addToBackStack(null)
+                    }
+                }
+                else if (position == 4) //Academic requirements is selected
+                {
+                    fragmentManager?.commit {
+                        replace(R.id.student_center_layout, AcademicRequirementsFragment())
+                        addToBackStack(null)
+                    }
+                }
+
 
 
             }
