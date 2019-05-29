@@ -22,11 +22,8 @@ import android.util.Patterns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.data.LoginRepository
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application, private val loginRepository: LoginRepository) :
     AndroidViewModel(application) {
@@ -37,10 +34,10 @@ class LoginViewModel(application: Application, private val loginRepository: Logi
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun login(username: String, password: String) {
+/*    fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
         viewModelScope.launch {
-            //val result = loginRepository.login(username, password)
+//            val result = loginRepository.login(username, password)
             MainScope().launch {
                 //                if (result is Success) {
 //                    _loginResult.value = LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
@@ -50,7 +47,7 @@ class LoginViewModel(application: Application, private val loginRepository: Logi
             }
 
         }
-    }
+    }*/
 
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {

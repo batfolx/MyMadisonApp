@@ -19,10 +19,23 @@ package com.jmu.mymadisonapp.room.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
-@Entity(tableName = "student")
+@Entity(tableName = "students")
 data class Student(
     @PrimaryKey val eID: String,
     val displayName: String,
-    val avatar: String
+    val avatar: String,
+    val holds: Int,
+    val toDos: Int,
+    val cumulativeGPA: Float,
+    val lastSemesterGPA: Float,
+    val hoursEnrolled: List<SemesterUnits>,
+    val majors: List<DegreeGPA>,
+    val minors: List<DegreeGPA>,
+    val gpaLastUpdated: Date
 )
+
+data class SemesterUnits(val semester: String, val hours: Int)
+
+data class DegreeGPA(val name: String, val gpa: Float)

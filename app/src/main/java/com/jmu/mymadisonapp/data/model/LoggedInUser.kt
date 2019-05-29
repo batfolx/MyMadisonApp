@@ -41,38 +41,61 @@ class HoursEnrolledConverter : ElementConverter<Map<String, Int>> {
             .toMap()
 }
 
+//Major: Computer Science - BS (GPA 2.837)<br>
+//Minor: Robotics (GPA 3.105)<br>
+//<br>Major/Minor GPA Last Updated: 05/24/2019
+
 class DeclaredSubjectConverter : ElementConverter<DeclaredSubject> {
     override fun convert(node: Element, selector: Selector): DeclaredSubject =
-        with(node.text().trim().split(Regex(": |\\)\\s")).filter { it.isNotBlank() && it.contains(Regex("\\(|\\d{2}/\\d{2}/\\d{4}")) }) {
-            val major =
+        with(node.text().trim()
+            .split(Regex("\\)\\s"))
+            .filter { it.isNotBlank() }
+            .groupBy({ it.substringBefore(":") }) { it.substringAfter(": ") }) {
+
+            /*val major =
                 getOrElse(0) { "Undeclared (GPA 0.000)" }
                     .let {
                         it.substring(0, it.indexOf(" (")) to
                                 it.substringAfter("GPA ")
                     }
-/*            val minor =
+            val minor =
                 getOrElse(1) { "Undeclared (GPA 0.000)" }
                     .let {
                         it.substring(0, it.indexOf(" (")) to
                                 it.substringAfter("GPA ")
-                    } */
-            val lastUpdated = SimpleDateFormat("MM/dd/yyyy").parse(getOrElse(1) { "00/00/0000" })
+                    }
+            val lastUpdated = SimpleDateFormat("MM/dd/yyyy").parse(getOrElse(2) { "00/00/0000" })*/
             DeclaredSubject(
-                major.first, major.second.toFloat(),
-                //minor.first, minor.second.toFloat(),
-                gpaLastUpdated=lastUpdated
+                this.getOrDefault("Major", emptyList()).map {
+                    Subject(
+                        it.substring(0, it.indexOf(" (")),
+                        it.substringAfter("GPA ").toFloat()
+                    )
+                },
+                this.getOrDefault("Minor", emptyList()).map {
+                    Subject(
+                        it.substring(0, it.indexOf(" (")),
+                        it.substringAfter("GPA ").toFloat()
+                    )
+                },
+                SimpleDateFormat("MM/dd/yyyy").parse(
+                    this.getOrDefault(
+                        "Major/Minor GPA Last Updated",
+                        emptyList()
+                    ).firstOrNull() ?: "00/00/0000"
+                )
             )
         }
 }
 
-@Selector("div[data-role=\"content\"]")
+//@Selector("div[data-role=\"content\"]")
 data class StudentUndergradInfo(
-    @Selector("span.SSSGROUPBOXRIGHTNBO2 > span.PSHYPERLINKDISABLED") var holds: Int = 0,
-    @Selector("span.SSSGROUPBOXRIGHTNBO3 > span.PSHYPERLINKDISABLED") var toDos: Int = 0,
-    @Selector("span.SSSGROUPBOXRIGHTNBO4") var cumGPA: GPA = GPA(),
-    @Selector("span.SSSGROUPBOXRIGHTNBO5") var lastSemGPA: GPA = GPA(),
+    @Selector("div#SSSGROUPBOXRIGHTNBO2_WRAPPER span.PSHYPERLINKDISABLED") var holds: Int = 0,
+    @Selector("div#SSSGROUPBOXRIGHTNBO3_WRAPPER span.PSHYPERLINKDISABLED") var toDos: Int = 0,
+    @Selector("div#SSSGROUPBOXRIGHTNBO4_WRAPPER > span") var cumGPA: GPA = GPA(),
+    @Selector("div#SSSGROUPBOXRIGHTNBO5_WRAPPER > span") var lastSemGPA: GPA = GPA(),
     @Selector(
-        "span.SSSGROUPBOXRIGHTNBO6",
+        "div#SSSGROUPBOXRIGHTNBO6_WRAPPER > span",
         converter = HoursEnrolledConverter::class
     ) var hoursEnrolled: Map<String, Int> = emptyMap(),
     @Selector(
@@ -87,12 +110,12 @@ data class GPA(
 )
 
 data class DeclaredSubject(
-    val major: String = "",
-    val majorGPA: Float = 0f,
-    val minor: String = "",
-    val minorGPA: Float = 0f,
+    val majors: List<Subject> = emptyList(),
+    val minors: List<Subject> = emptyList(),
     val gpaLastUpdated: Date = Calendar.getInstance().time
 )
+
+data class Subject(val name: String = "", val gpa: Float = 0f)
 
 class SAMLResponseConverter : ElementConverter<String> {
     override fun convert(node: Element, selector: Selector): String = node.`val`()
@@ -100,7 +123,7 @@ class SAMLResponseConverter : ElementConverter<String> {
 
 data class SAMLResponse(
     @Selector(
-        "div[data-role=\"content\"] > form[method=\"post\"] > input[name=\"SAMLResponse\"]",
+        "form[method=\"post\"] > input[name=\"SAMLResponse\"]",
         converter = SAMLResponseConverter::class
     )
     var value: String = ""
@@ -147,9 +170,14 @@ data class Term(
     @Selector("div[id^=win0divINSTITUTION] > span.PSEDITBOX_DISPONLY") var institution: String = ""
 )
 
-@Selector("form#SSR_SSENRL_GRADE > div.ps_pagecontainer table.PSPAGECONTAINER > tbody > tr div#win0divDERIVED_SSS_GRD_GROUPBOX2 table#ACE_DERIVED_SSS_GRD_GROUPBOX2")
+@Selector("form#SSR_SSENRL_GRADE > div.ps_pagecontainer > table.PSPAGECONTAINER > tbody")
 data class ClassGrades(
-    @Selector("tr[id^=trTERM_CLASSES$0_row]") var grades: List<Grade> = emptyList()
+    @Selector("tr div#win0divDERIVED_SSS_GRD_GROUPBOX2 table#ACE_DERIVED_SSS_GRD_GROUPBOX2 tr[id^=trTERM_CLASSES$0_row]") var grades: List<Grade> = emptyList(),
+    @Selector(
+        "tr div#win0divDERIVED_SSS_GRD_GROUPBOX4 table#ACE_DERIVED_SSS_GRD_GROUPBOX4 tr[id=trTERM_STATS$0_row14] div[id=win0divSTATS_TERM$13] > span[id=STATS_TERM$13]",
+        defValue = "0.0"
+    ) var semesterGPA: Float = 0f,
+    @Selector("tr div#win0divDERIVED_SSS_GRD_GROUPBOX4 table#ACE_DERIVED_SSS_GRD_GROUPBOX4 span#ACAD_STACTN_TBL_DESCRFORMAL") var academicStanding: String = ""
 )
 
 class FloatConverter : ElementConverter<Float> {

@@ -19,9 +19,23 @@ package com.jmu.mymadisonapp.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.jmu.mymadisonapp.room.model.Converters
 import com.jmu.mymadisonapp.room.model.Student
+import com.jmu.mymadisonapp.room.model.Term
 
-@Database(entities = [Student::class], version = 1)
+@Database(entities = [Student::class, Term::class], version = 1)
+@TypeConverters(Converters::class)
 abstract class MyMadisonDatabase : RoomDatabase() {
     abstract fun studentDao(): StudentDao
+    abstract fun termDao(): TermDao
+}
+
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP TABLE terms")
+        database.execSQL("CREATE TABLE IF NOT EXISTS terms (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, semester TEXT NOT NULL, year INTEGER NOT NULL, career TEXT NOT NULL, institution TEXT NOT NULL, courses TEXT NOT NULL, semesterGPA REAL NOT NULL, academicStanding TEXT NOT NULL)")
+    }
 }
