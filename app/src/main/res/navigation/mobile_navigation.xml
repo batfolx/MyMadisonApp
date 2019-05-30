@@ -63,11 +63,6 @@
 		android:name="com.jmu.mymadisonapp.studentcenter.StudentCenterFragment"
 		tools:layout="@layout/fragment_studentcenter"/>
 
-	<fragment
-		android:id="@+id/enroll"
-		android:label="Enroll"
-		android:name="com.jmu.mymadisonapp.studentcenter.EnrollFragment"
-		tools:layout="@layout/fragment_enroll" />
 
 
 

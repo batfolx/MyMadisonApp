@@ -39,5 +39,6 @@ class MyMadisonApp : Application() {
 
 }
 
+//helps with loading images
 @GlideModule
 class MyMadisonModule : AppGlideModule()

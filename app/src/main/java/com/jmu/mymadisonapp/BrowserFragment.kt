@@ -66,6 +66,7 @@ class BrowserFragment : Fragment() {
                     && path == "/psp/pprd/JMU/CUST/h/"
                     && query == "tab=DEFAULT")
 
+
         }
         browser_view.setInitialScale(0)
 
