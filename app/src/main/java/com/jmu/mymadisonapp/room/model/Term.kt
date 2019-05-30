@@ -18,6 +18,7 @@
 package com.jmu.mymadisonapp.room.model
 
 import androidx.room.Entity
+import java.util.*
 
 @Entity(tableName = "terms", primaryKeys = ["semester", "year"])
 data class Term(
@@ -38,5 +39,15 @@ data class Course(
     val credits: Float,
     val grading: String,
     val grade: String,
-    val gradePoints: Float
+    val gradePoints: Float,
+    val status: String = "",
+    val statusReason: String = "",
+    val classNumber: Int = 0,
+    val section: Int = 0,
+    val component: String = "",
+    val dateTimes: List<String> = emptyList(),
+    val rooms: List<String> = emptyList(),
+    val instructors: List<String> = emptyList(),
+    val startEndDate: List<Pair<Date, Date>> = emptyList(),
+    val aidEligible: String = ""
 )

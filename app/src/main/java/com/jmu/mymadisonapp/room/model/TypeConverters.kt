@@ -21,7 +21,10 @@ import android.icu.text.SimpleDateFormat
 import androidx.room.TypeConverter
 import com.jmu.mymadisonapp.moshi
 import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonReader
+import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Types
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import java.util.*
 
 class Converters {
@@ -63,4 +66,32 @@ class Converters {
     @TypeConverter
     fun stringToDegree(degreeGPAs: String) = degreeAdapter.fromJson(degreeGPAs)
 
+}
+
+class DatePairJsonAdapter : JsonAdapter<Pair<Date, Date>>() {
+    override fun fromJson(reader: JsonReader): Pair<Date, Date>? {
+        reader.beginObject()
+        return try {
+            reader.skipName()
+            (Rfc3339DateJsonAdapter().fromJson(reader)
+                ?: Date()).also { reader.skipName() } to (Rfc3339DateJsonAdapter().fromJson(reader)
+                ?: Date()).also { reader.endObject() }
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+//            SimpleDateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").run { parse(reader.nextString()) to parse(reader.nextString()) }
+//            reader.endObject()
+            return null
+        }
+    }
+
+    override fun toJson(writer: JsonWriter, value: Pair<Date, Date>?) {
+        writer.beginObject()
+        Rfc3339DateJsonAdapter().apply {
+            writer.name("start")
+            this.toJson(writer, value?.first)
+            writer.name("end")
+            this.toJson(writer, value?.second)
+        }
+        writer.endObject()
+    }
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.jmu.mymadisonapp.ui.gallery
+package com.jmu.mymadisonapp.ui.grades
 
 import android.graphics.Rect
 import android.os.Bundle

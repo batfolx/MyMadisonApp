@@ -74,18 +74,29 @@ interface MyMadisonService {
     @GET("/psp/pprd/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=JMU_STUDENTCENTER_MAINMENU&FolderPath=PORTAL_ROOT_OBJECT.JMU_STUDENT_MAINMENU.JMU_STUDENTCENTER_MAINMENU&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder")
     fun getStudentCenter(): Deferred<Response<ResponseBody>>
 
-    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_GRADE.GBL")
-    fun getMyGradeTerms(): Deferred<Response<GradeTerms>>
+    @GET("/psc/ecampus/JMU/SPRD/c/{terms}")
+    fun getTermsList(@Path("terms") terms: String): Deferred<Response<GradeTerms>>
 
     @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_GRADE.GBL")
     fun getMyGradesForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassGrades>>
 
+    @FormUrlEncoded
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_LIST.GBL")
+    fun getMyClassScheduleForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassSchedule>>
+
 
 //    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")
 //    fun getUnofficialTranscript()
 
+}
+
+fun MutableMap<String, String>.updateTermPostBody(termIndex: Int): Map<String, String> {
+    this["ICAction"] = "DERIVED_SSS_SCT_SSR_PB_GO"
+    this["ICBcDomData"] = "UnknownValue"
+    return this + ("SSR_DUMMY_RECV1\$sels\$$termIndex\$\$0" to "$termIndex")
 }
 
 fun <T> Response<T>.isValid() = isSuccessful && body() != null

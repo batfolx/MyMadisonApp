@@ -23,14 +23,17 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.jmu.mymadisonapp.room.model.DatePairJsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.util.*
 import kotlin.reflect.KClass
 
 
-
-
-val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+val moshi: Moshi = Moshi.Builder()
+    .add(Types.newParameterizedType(Pair::class.java, Date::class.java, Date::class.java), DatePairJsonAdapter())
+    .add(KotlinJsonAdapterFactory()).build()
 
 inline fun <reified T : Any?> T.toJson(): String =
     this?.let { moshi.adapter(T::class.java).indent("    ").toJson(this) } ?: "null value"

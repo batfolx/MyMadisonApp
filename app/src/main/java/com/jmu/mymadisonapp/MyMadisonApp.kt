@@ -33,7 +33,7 @@ class MyMadisonApp : Application() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@MyMadisonApp)
-            modules(netModule, appModule)
+            modules(netModule, databaseModule, appModule)
         }
     }
 

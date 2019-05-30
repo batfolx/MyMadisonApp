@@ -23,6 +23,7 @@ import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
 import com.jmu.mymadisonapp.net.isValid
 import com.jmu.mymadisonapp.net.singleResource
+import com.jmu.mymadisonapp.net.updateTermPostBody
 import com.jmu.mymadisonapp.room.TermDao
 import com.jmu.mymadisonapp.room.model.Course
 import com.jmu.mymadisonapp.room.model.Term
@@ -30,7 +31,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import retrofit2.Response
 
-class GradeRepository(private val client: MyMadisonService, private val termDao: TermDao) {
+class TermRepository(private val client: MyMadisonService, private val termDao: TermDao) {
 
 
     suspend fun getAllMyGrades() =
@@ -51,16 +52,10 @@ class GradeRepository(private val client: MyMadisonService, private val termDao:
         termDao.upsertTerms(*terms.toTypedArray())
 
     private fun getAllTerms() = GlobalScope.async {
-        with(getMyGradeTerms().takeIf { it.isValid() }
-            ?.body() ?: GradeTerms()) {
+        with(getMyGradeTerms().takeIf { it.isValid() }?.body() ?: GradeTerms()) {
             log("InitialGradeTerms", "Content: $this")
             terms.mapIndexed { index, term ->
-                getMyGradesForTerm(
-                    termPostData.toMutableMap()
-                        .apply {
-                            this["ICAction"] = "DERIVED_SSS_SCT_SSR_PB_GO"
-                            this["ICBcDomData"] = "UnknownValue"
-                        } + ("SSR_DUMMY_RECV1\$sels\$$index\$\$0" to "$index")).body()?.let {
+                getMyGradesForTerm(termPostData.toMutableMap().updateTermPostBody(index)).body()?.let {
                     Term(
                         term.term.substringBefore(" "),
                         term.term.substringAfterLast(" ").toInt(),
@@ -86,8 +81,10 @@ class GradeRepository(private val client: MyMadisonService, private val termDao:
         }.let { Response.success(it) }
     }
 
-    suspend fun getMyGradeTerms() = client.getMyGradeTerms().await()
+
+    suspend fun getMyGradeTerms() = client.getTermsList("SA_LEARNER_SERVICES.SSR_SSENRL_GRADE.GBL").await()
 
     suspend fun getMyGradesForTerm(body: Map<String, String>) = client.getMyGradesForTerm(body).await()
+
 
 }

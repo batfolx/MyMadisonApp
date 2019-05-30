@@ -29,8 +29,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.jmu.mymadisonapp.ui.MainViewModel
-import com.jmu.mymadisonapp.ui.gallery.GradesViewModel
+import com.jmu.mymadisonapp.ui.grades.GradesViewModel
+import com.jmu.mymadisonapp.ui.slideshow.ClassScheduleViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_browser.*
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var appBarConfiguration: AppBarConfiguration
 	private val mainViewModel: MainViewModel by viewModel()
 	private val gradesViewModel: GradesViewModel by viewModel()
+	private val schedulesViewModel: ClassScheduleViewModel by viewModel()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -68,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 		// menu should be considered as top level destinations.
 		appBarConfiguration = AppBarConfiguration(
 			setOf(
-				R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
+				R.id.nav_home, R.id.nav_grades, R.id.nav_course,
 				R.id.nav_tools, R.id.nav_share, R.id.nav_send, R.id.student_center), drawer_layout)
 
 		findNavController(R.id.nav_host_fragment).apply {
@@ -79,6 +82,8 @@ class MainActivity : AppCompatActivity() {
 			log("StudentInfo", "New value: $it")
 			GlideApp.with(this)
 				.load(it.avatar)
+				.skipMemoryCache(true)
+				.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 				.circleCrop()
 				.into(user_avatar)
 			display_name.text = it.displayName
@@ -87,6 +92,13 @@ class MainActivity : AppCompatActivity() {
 		gradesViewModel.gradesLiveData.observe(this, Observer {
 			log("TermData", "Content: ${it.joinToString("\n")}")
 		})
+		schedulesViewModel.classSchedulesLiveData.observe(this, Observer {
+			log("Schedule", "Content: ${it.joinToString("\n")}")
+		})
+		fab.setOnClickListener {
+			supportFragmentManager.fragments.find { it is BrowserFragment }
+				?.let { (it as BrowserFragment).browser_view.zoomOut() }
+		}
 
 
 		// Launch in a background coroutine keeping with lifecycle states to cancel the process if the user exits the app
@@ -103,7 +115,8 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun onLoggedIn() = mainViewModel.onLoggedIn().also { gradesViewModel.getAllGrades() }
+	private fun onLoggedIn() =
+		mainViewModel.onLoggedIn().also { gradesViewModel.getAllGrades(); schedulesViewModel.getAllClassSchedules() }
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		// Inflate the menu; this adds items to the action bar if it is present.

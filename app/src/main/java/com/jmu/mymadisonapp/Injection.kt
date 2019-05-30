@@ -19,18 +19,16 @@ package com.jmu.mymadisonapp
 
 import androidx.room.Room
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.jmu.mymadisonapp.data.GradeRepository
-import com.jmu.mymadisonapp.data.LoginDataSource
-import com.jmu.mymadisonapp.data.LoginRepository
-import com.jmu.mymadisonapp.data.StudentRepository
+import com.jmu.mymadisonapp.data.*
 import com.jmu.mymadisonapp.net.MYMADISON_BASE_URL
 import com.jmu.mymadisonapp.net.MyMadisonService
 import com.jmu.mymadisonapp.net.WebViewCookieJar
 import com.jmu.mymadisonapp.room.MyMadisonDatabase
 import com.jmu.mymadisonapp.ui.MainViewModel
-import com.jmu.mymadisonapp.ui.gallery.GradesViewModel
+import com.jmu.mymadisonapp.ui.grades.GradesViewModel
 import com.jmu.mymadisonapp.ui.home.HomeViewModel
 import com.jmu.mymadisonapp.ui.login.LoginViewModel
+import com.jmu.mymadisonapp.ui.slideshow.ClassScheduleViewModel
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -112,9 +110,13 @@ val appModule = module {
 
     single { LoginRepository(get()) }
 
-    single { GradeRepository(get(), get()) }
+    single { ClassScheduleRepository(get(), get()) }
+
+    single { TermRepository(get(), get()) }
 
     single { StudentRepository(get(), get()) }
+
+    viewModel { ClassScheduleViewModel(get(), get()) }
 
     viewModel { HomeViewModel() }
 

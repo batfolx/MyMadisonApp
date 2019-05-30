@@ -28,16 +28,16 @@
 		tools:layout="@layout/fragment_home" />
 
 	<fragment
-		android:id="@+id/nav_gallery"
-        android:name="com.jmu.mymadisonapp.ui.gallery.GradesFragment"
+        android:id="@+id/nav_grades"
+        android:name="com.jmu.mymadisonapp.ui.grades.GradesFragment"
         android:label="@string/menu_grades"
         tools:layout="@layout/fragment_grades" />
 
 	<fragment
-		android:id="@+id/nav_slideshow"
-		android:name="com.jmu.mymadisonapp.ui.slideshow.SlideshowFragment"
-		android:label="@string/menu_slideshow"
-		tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_course"
+        android:name="com.jmu.mymadisonapp.ui.slideshow.ClassScheduleFragment"
+        android:label="@string/menu_course"
+        tools:layout="@layout/fragment_class_schedule" />
 
 	<fragment
 		android:id="@+id/nav_tools"

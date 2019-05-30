@@ -196,3 +196,34 @@ data class Grade(
         converter = FloatConverter::class
     ) var gradePoints: Float = 0f
 )
+
+@Selector("form#SSR_SSENRL_GRADE > div.ps_pagecontainer > table.PSPAGECONTAINER > tbody div[id=win0divSTDNT_ENRL_SSV2$0] > table > tbody")
+data class ClassSchedule(
+    @Selector("div[id^=win0divDERIVED_REGFRM1_DESCR20] > table > tbody") var schedule: List<DetailedClass> = emptyList()
+)
+
+data class DetailedClass(
+    @Selector("td.PAGROUPDIVIDER") var title: String = "",
+    @Selector("table[id^=SSR_DUMMY_RECVW\$scroll] tr[id^=trSSR_DUMMY_RECVW] span[id=STATUS$0]") var status: String = "",
+    @Selector("table[id^=SSR_DUMMY_RECVW\$scroll] tr[id^=trSSR_DUMMY_RECVW] span[id=ENRLSTATUSREASON$0]") var reason: String = "",
+    @Selector(
+        "table[id^=SSR_DUMMY_RECVW\$scroll] tr[id^=trSSR_DUMMY_RECVW] span[id=DERIVED_REGFRM1_UNT_TAKEN$0]",
+        defValue = "0.0"
+    ) var units: Float = 0f,
+    @Selector("table[id^=SSR_DUMMY_RECVW\$scroll] tr[id^=trSSR_DUMMY_RECVW] span[id=GB_DESCR$0]") var grading: String = "",
+    @Selector("table[id^=SSR_DUMMY_RECVW\$scroll] tr[id^=trSSR_DUMMY_RECVW] span[id=DERIVED_REGFRM1_CRSE_GRADE_OFF$0]") var grade: String = "",
+    @Selector(
+        "table[id^=CLASS_MTG_VW\$scroll] tr[id=trCLASS_MTG_VW$0_row1] div[id=win0divDERIVED_CLS_DTL_CLASS_NBR$0] > span",
+        defValue = "0"
+    ) var classNumber: Int = 0,
+    @Selector(
+        "table[id^=CLASS_MTG_VW\$scroll] tr[id=trCLASS_MTG_VW$0_row1] div[id=win0divMTG_SECTION$0] > span",
+        defValue = "0"
+    ) var section: Int = 0,
+    @Selector("table[id^=CLASS_MTG_VW\$scroll] tr[id=trCLASS_MTG_VW$0_row1] div[id=win0divMTG_COMP$0] > span") var component: String = "",
+    @Selector("table[id^=CLASS_MTG_VW\$scroll] tr[id^=trCLASS_MTG_VW] div[id^=win0divMTG_SCHED] > span") var datesAndTimes: List<String> = emptyList(),
+    @Selector("table[id^=CLASS_MTG_VW\$scroll] tr[id^=trCLASS_MTG_VW] div[id^=win0divMTG_LOC] > span") var room: List<String> = emptyList(),
+    @Selector("table[id^=CLASS_MTG_VW\$scroll] tr[id^=trCLASS_MTG_VW] div[id^=win0divDERIVED_CLS_DTL_SSR_INSTR_LONG] > span") var instructor: List<String> = emptyList(),
+    @Selector("table[id^=CLASS_MTG_VW\$scroll] tr[id^=trCLASS_MTG_VW] div[id^=win0divMTG_DATES] > span") var startEndDate: List<String> = emptyList(),
+    @Selector("table[id^=CLASS_MTG_VW\$scroll] tr[id=trCLASS_MTG_VW$0_row1] div[id=win0divMTG_AID$0] > span") var aidEligible: String = ""
+)

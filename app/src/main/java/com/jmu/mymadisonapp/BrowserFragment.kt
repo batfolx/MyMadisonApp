@@ -67,6 +67,7 @@ class BrowserFragment : Fragment() {
                     && query == "tab=DEFAULT")
 
         }
+        browser_view.setInitialScale(0)
 
         // Set WebView settings to load images, enable JavaScript, cache, and disable geolocation tracking.
         with(browser_view.settings) {
@@ -74,6 +75,10 @@ class BrowserFragment : Fragment() {
             javaScriptEnabled = true
             setAppCacheEnabled(true)
             setGeolocationEnabled(false)
+            setSupportZoom(true)
+            textZoom = 100
+            displayZoomControls = true
+            builtInZoomControls = true
         }
         browser_view.loadUrl(MYMADISON_LOGIN_BASE_URL)
     }

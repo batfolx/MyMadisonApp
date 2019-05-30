@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-package com.jmu.mymadisonapp.ui.gallery
+package com.jmu.mymadisonapp.ui.grades
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.jmu.mymadisonapp.data.GradeRepository
+import com.jmu.mymadisonapp.data.TermRepository
 import com.jmu.mymadisonapp.net.Loading
 import com.jmu.mymadisonapp.net.Success
 import com.jmu.mymadisonapp.room.model.Term
 import kotlinx.coroutines.launch
 
-class GradesViewModel(application: Application, private val repository: GradeRepository) :
+class GradesViewModel(application: Application, private val repository: TermRepository) :
     AndroidViewModel(application) {
 
     private val _text = MutableLiveData<String>().apply {
@@ -54,33 +54,7 @@ class GradesViewModel(application: Application, private val repository: GradeRep
                 }
             }
         }
-        /*viewModelScope.launch {
-            with(getMyGradeTerms() ?: GradeTerms()) {
-                log(
-                    "AllMyGrades",
-                    (0 until this.terms.size).map { this.terms[it] to getMyGradesForTerm(this, it) }.joinToString("\n")
-                )
-            }
-        }*/
+
     }
-
-    /* private suspend fun getMyGradeTerms() =
-         repository.getMyGradeTerms().also {
-             log(
-                 "MyGradeTerms",
-                 "Terms: ${it.body() ?: "Empty body: $it"}"
-             )
-         }.body()
-
-     private suspend fun getMyGradesForTerm(gradeTerms: GradeTerms, term: Int) =
-         repository.getMyGradesForTerm(gradeTerms.termPostData.toMutableMap().also {
-             it["ICAction"] = "DERIVED_SSS_SCT_SSR_PB_GO"; it["ICBcDomData"] = "UnknownValue"
-         } + ("SSR_DUMMY_RECV1\$sels\$$term\$\$0" to "$term")).also {
-             log(
-                 "MyGradesForTerm",
-                 "Term=${gradeTerms.terms[term]}\n${it.body() ?: "Empty body: $it"}"
-             )
-         }.body()
- */
 
 }
