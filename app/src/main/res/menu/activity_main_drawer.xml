@@ -39,7 +39,8 @@
 
 		<item
 			android:id="@+id/student_center"
-			android:title="@string/student_center_fragment" />
+			android:title="@string/student_center_fragment"
+			android:icon="@drawable/jmu_student_center_logo"/>
 
 	</group>
 

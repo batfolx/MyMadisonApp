@@ -71,6 +71,12 @@
     <string name="go_to_schedule_planner_button">CLICKING HERE</string>
     <string name="instructions">Go to schedule planner by</string>
 
+    //for fragment_termselector.xml
+    <string name="fall_term_button">Fall 2019</string>
+    <string name="spring_term_button">Spring 2019</string>
+    <string name="summer_term_button">Summer 2019</string>
+    <string name="term_instructions">Please select your term</string>
+
 
 
     //for the fragment_academicplanner.xml

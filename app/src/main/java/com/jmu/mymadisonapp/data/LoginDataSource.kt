@@ -36,6 +36,7 @@ import java.net.URLEncoder
 class LoginDataSource(private val client: OkHttpClient, private val mmService: MyMadisonService) {
 
     fun logout() {
+
         // TODO: revoke authentication
     }
 
