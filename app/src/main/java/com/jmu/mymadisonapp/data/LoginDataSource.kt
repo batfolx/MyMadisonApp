@@ -42,7 +42,7 @@ class LoginDataSource(private val client: OkHttpClient, private val mmService: M
 
     suspend fun loginUser(eID: String, password: String) =
         with(withContext(Dispatchers.Default) {
-            val responseBody =
+            val responseBody: String? =
                 client.newCall(
                     Request.Builder()
                         .url(MYMADISON_LOGIN_BASE_URL)

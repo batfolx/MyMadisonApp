@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 
 import com.jmu.mymadisonapp.R
 import kotlinx.android.synthetic.main.fragment_termselector.*
 
 class TermSelectorFragment : Fragment()
 {
-
+    private val fragmentMan: FragmentActivity = FragmentActivity()
 
 
 
@@ -27,10 +28,7 @@ class TermSelectorFragment : Fragment()
         super.onActivityCreated(savedInstanceState)
         // This goes to the enroll fragment after selecting the fall term for the current year.
         fall_term_button.setOnClickListener(View.OnClickListener {
-
-
-            var myContext = FragmentActivity()
-                myContext.supportFragmentManager.beginTransaction()
+                fragmentMan.supportFragmentManager.beginTransaction()
                     .replace(R.id.term_layout, EnrollFragment())
                     .addToBackStack(null)
 

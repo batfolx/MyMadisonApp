@@ -16,7 +16,6 @@ import java.lang.reflect.Field
 class StudentCenterFragment : Fragment()
 {
     var supportFrag = FragmentActivity()
-    lateinit var childSupportFrag: Field
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
                    return inflater.inflate(R.layout.fragment_studentcenter, container, false)
@@ -38,41 +37,39 @@ class StudentCenterFragment : Fragment()
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
 
-                if (position == 0) //Search is selected
-                {
-                    student_center_textField.  text="You selected search!"
+                when (position) {
+                //Search is selected
 
-                }
-                else if (position == 1) //Enroll is selected
-                {
+                   0 -> student_center_textField.  text = "You selected search!"
+                   1 -> {
+                       fragmentManager?.commit {
+                           replace(R.id.student_center_layout, TermSelectorFragment())
+                               .addToBackStack(null)
+                       }
+                   }//Enroll is selected
+                   2 -> {
+                       fragmentManager?.commit {
+                           replace(
+                               R.id.student_center_layout,
+                               SchedulePlannerFragment()
+                           ).remove(SchedulePlannerFragment())//schedule planner is selected
+                           addToBackStack(null)
+                       }
+                   }
+                   3 -> {
+                     fragmentManager?.commit {
+                         replace(R.id.student_center_layout, AcademicRequirementsFragment()) //academic Planner is selected
+                         addToBackStack(null)
+                     }
+                   }
 
-                    fragmentManager?.beginTransaction()?.replace(R.id.student_center_layout, TermSelectorFragment())?.commit()
+                   4 -> {} //Academic requirements is selected
 
 
-                }
-                else if (position == 2) //schedule planner is selected
-                {
-                    fragmentManager?.commit {
-                        replace(R.id.student_center_layout, SchedulePlannerFragment()).remove(StudentCenterFragment())
-                        addToBackStack(null)
+                 }
 
-                    }
-                }
 
-                else if (position == 3) //academic Planner is selected
-                {
-                    fragmentManager?.commit {
-                        replace(R.id.student_center_layout, AcademicPlannerFragment())
-                        addToBackStack(null)
-                    }
-                }
-                else if (position == 4) //Academic requirements is selected
-                {
-                    fragmentManager?.commit {
-                        replace(R.id.student_center_layout, AcademicRequirementsFragment())
-                        addToBackStack(null)
-                    }
-                }
+
             }
         }
 

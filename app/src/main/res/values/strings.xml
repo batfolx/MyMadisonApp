@@ -69,7 +69,7 @@
 
     //for the fragment_scheduleplanner.xml
     <string name="go_to_schedule_planner_button">CLICKING HERE</string>
-    <string name="instructions">Go to schedule planner by</string>
+    <string name="sp_instructions">Go to schedule planner by</string>
 
     //for fragment_termselector.xml
     <string name="fall_term_button">Fall 2019</string>

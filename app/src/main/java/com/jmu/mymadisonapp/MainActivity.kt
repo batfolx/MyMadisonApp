@@ -58,6 +58,8 @@ class MainActivity : AppCompatActivity() {
 		// Set the toolbar to display navigation
 		setSupportActionBar(toolbar)
 
+
+
 		// Check if permissions have been granted
 		checkPermissions()
 
