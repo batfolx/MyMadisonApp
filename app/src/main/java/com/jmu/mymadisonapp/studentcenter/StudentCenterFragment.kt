@@ -8,6 +8,9 @@ import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
+import androidx.navigation.Navigation
+import com.google.android.material.internal.NavigationMenu
+import com.jmu.mymadisonapp.MainActivity
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.room.model.Student
 import kotlinx.android.synthetic.main.fragment_studentcenter.*
@@ -33,7 +36,6 @@ class StudentCenterFragment : Fragment() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
 
                 when (position) {
                     //Search is selected
@@ -65,6 +67,11 @@ class StudentCenterFragment : Fragment() {
                     }
 
                     4 -> {
+
+                        fragmentManager?.commit {
+                            replace(R.id.student_center_layout, AcademicRequirementsFragment())
+                            addToBackStack(null)
+                        }
                     } //Academic requirements is selected
 
 
