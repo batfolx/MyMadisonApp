@@ -13,14 +13,12 @@ import com.jmu.mymadisonapp.room.model.Student
 import kotlinx.android.synthetic.main.fragment_studentcenter.*
 import java.lang.reflect.Field
 
-class StudentCenterFragment : Fragment()
-{
+class StudentCenterFragment : Fragment() {
     var supportFrag = FragmentActivity()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-                   return inflater.inflate(R.layout.fragment_studentcenter, container, false)
-        }
-
+        return inflater.inflate(R.layout.fragment_studentcenter, container, false)
+    }
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -29,7 +27,7 @@ class StudentCenterFragment : Fragment()
         academics_spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
-                student_center_textField.text="You didnt slect anything"
+                student_center_textField.text = "You didnt slect anything"
 
 
             }
@@ -38,36 +36,39 @@ class StudentCenterFragment : Fragment()
 
 
                 when (position) {
-                //Search is selected
+                    //Search is selected
 
-                   0 -> student_center_textField.  text = "You selected search!"
-                   1 -> {
-                       fragmentManager?.commit {
-                           replace(R.id.student_center_layout, TermSelectorFragment())
-                               .addToBackStack(null)
-                       }
-                   }//Enroll is selected
-                   2 -> {
-                       fragmentManager?.commit {
-                           replace(
-                               R.id.student_center_layout,
-                               SchedulePlannerFragment()
-                           ).remove(SchedulePlannerFragment())//schedule planner is selected
-                           addToBackStack(null)
-                       }
-                   }
-                   3 -> {
-                     fragmentManager?.commit {
-                         replace(R.id.student_center_layout, AcademicRequirementsFragment()) //academic Planner is selected
-                         addToBackStack(null)
-                     }
-                   }
+                    0 -> student_center_textField.text = "You selected search!"
+                    1 -> {
+                        fragmentManager?.commit {
+                            replace(R.id.student_center_layout, TermSelectorFragment())
+                                .addToBackStack(null)
+                        }
+                    }//Enroll is selected
+                    2 -> {
+                        fragmentManager?.commit {
+                            replace(
+                                R.id.student_center_layout,
+                                SchedulePlannerFragment()
+                            )
+                            addToBackStack(null)
+                        }
+                    }
+                    3 -> {
+                        fragmentManager?.commit {
+                            replace(
+                                R.id.student_center_layout,
+                                AcademicPlannerFragment()
+                            ) //academic Planner is selected
+                            addToBackStack(null)
+                        }
+                    }
 
-                   4 -> {} //Academic requirements is selected
+                    4 -> {
+                    } //Academic requirements is selected
 
 
-                 }
-
+                }
 
 
             }

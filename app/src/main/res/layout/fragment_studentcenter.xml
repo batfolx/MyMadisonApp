@@ -17,33 +17,37 @@
   -->
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/student_center_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   android:id="@+id/student_center_layout"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   android:background="@color/colorPrimaryDark"
+                                                   android:clickable="true"
+                                                   android:focusable="true"
+
+>
 
     <TextView
-        android:id="@+id/student_center_textField"
-        android:layout_width="302dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
-        android:fontFamily="monospace"
-        android:text="@string/student_center_textField"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/student_center_textField"
+            android:layout_width="302dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
+            android:fontFamily="monospace"
+            android:text="@string/student_center_textField"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     <Spinner
-        android:id="@+id/academics_spinner"
-        android:layout_width="245dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/academics_spinner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/student_center_textField" />
-
+            android:id="@+id/academics_spinner"
+            android:layout_width="245dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="16dp"
+            android:entries="@array/academics_spinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/student_center_textField"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
