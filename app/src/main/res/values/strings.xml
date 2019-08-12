@@ -80,7 +80,7 @@
 
 
     //for the fragment_academicplanner.xml
-
+    <string name="academic_planner_text_view">Populate me!</string>
 
     //for the fragment_academicrequirements.xml
     <string name="academic_requirements_textField">This is the academic requirements fragment</string>

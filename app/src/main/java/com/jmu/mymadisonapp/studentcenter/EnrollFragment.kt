@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.jmu.mymadisonapp.R
 import kotlinx.android.synthetic.main.fragment_enroll.*
 
@@ -43,17 +44,41 @@ class EnrollFragment : Fragment()
         super.onActivityCreated(savedInstanceState)
 
         drop_button.setOnClickListener {
-            jmu_text_view.text = ""
+            jmu_text_view.text = "Drop button clicked"
         }
 
         add_button.setOnClickListener {
             jmu_text_view.text = "Add button clicked"
         }
 
+        edit_button.setOnClickListener {
+            jmu_text_view.text = "Edit button clicked"
+        }
+
+        swap_button.setOnClickListener {
+            jmu_text_view.text = "Swap button clicked"
+        }
+
         student_center_button.setOnClickListener {
 
+            jmu_text_view.text = "Student center button clicked"
+
+            fragmentManager?.commit {
+                replace(R.id.enroll_layout, StudentCenterFragment()).addToBackStack(null)
+            }
+
+            makeButtonsDisappear()
 
         }
 
+    }
+
+
+    private fun makeButtonsDisappear() {
+        drop_button.visibility = View.GONE
+        add_button.visibility = View.GONE
+        edit_button.visibility = View.GONE
+        swap_button.visibility = View.GONE
+        student_center_button.visibility = View.GONE
     }
 }
