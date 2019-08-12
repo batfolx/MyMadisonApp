@@ -19,6 +19,7 @@ package com.jmu.mymadisonapp.net
 
 import com.jmu.mymadisonapp.data.model.*
 import com.jmu.mymadisonapp.studentcenter.GraduationRequirements
+import com.jmu.mymadisonapp.studentcenter.ListOfEnrolledClasses
 import com.jmu.mymadisonapp.studentcenter.ListsOfGradRequirements
 import kotlinx.coroutines.Deferred
 import okhttp3.FormBody
@@ -91,6 +92,9 @@ interface MyMadisonService {
 
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
     fun getAcademicRequirements(): Deferred<Response<ListsOfGradRequirements>>
+
+    @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+    fun getEnrolledClasses(): Deferred<Response<ListOfEnrolledClasses>>
 
 
 //    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")

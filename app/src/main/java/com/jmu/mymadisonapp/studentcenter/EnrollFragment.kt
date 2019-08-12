@@ -23,8 +23,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.jmu.mymadisonapp.R
+import com.jmu.mymadisonapp.net.MyMadisonService
 import kotlinx.android.synthetic.main.fragment_enroll.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import pl.droidsonroids.jspoon.annotation.Selector
+import org.koin.android.ext.android.get
 
 
 class EnrollFragment : Fragment()
@@ -33,7 +39,7 @@ class EnrollFragment : Fragment()
  /*   var add_button: Button? = view?.findViewById(R.id.add_button)
     var edit_button: Button? = view?.findViewById(R.id.edit_button)
     var swap_button: Button? = view?.findViewById(R.id.swap_button) */
-
+    lateinit var service: MyMadisonService
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -42,6 +48,18 @@ class EnrollFragment : Fragment()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        service = get<MyMadisonService>()
+        lifecycleScope.launch{
+            var enrolledClasses = service.getEnrolledClasses().await().body()
+
+            MainScope().launch {
+                jmu_text_view.text = enrolledClasses?.listOfEnrolledClasses?.joinToString("\n") {
+                    "${it.description}, ${it.daysAndTimes}, ${it.room}, ${it.instructor}. "
+                }
+            }
+        }
+
+
 
         drop_button.setOnClickListener {
             jmu_text_view.text = "Drop button clicked"
@@ -83,3 +101,23 @@ class EnrollFragment : Fragment()
         student_center_button.visibility = View.GONE
     }
 }
+
+data class ListOfEnrolledClasses(
+    @Selector("tr[id^=trSTDNT_ENRL_SSVW]")
+    var listOfEnrolledClasses: List<EnrolledClasses> = emptyList()
+)
+
+
+data class EnrolledClasses(
+    @Selector("span[id^=E_CLASS_DESCR]")
+    var description: String = "",
+
+    @Selector("span[id^=DERIVED_REGFRM1_SSR_MTG_SCHED_LONG]")
+    var daysAndTimes: String = "",
+
+    @Selector("div[id^=win0divDERIVED_REGFRM1_SSR_MTG_LOC_LONG]")
+    var room: String = "",
+
+    @Selector("div[id^=win0divDERIVED_REGFRM1_SSR_INSTR_LONG]")
+    var instructor: String = ""
+)

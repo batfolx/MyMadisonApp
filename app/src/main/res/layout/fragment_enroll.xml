@@ -59,7 +59,7 @@
     <TextView
             android:id="@+id/jmu_text_view"
             android:layout_width="356dp"
-            android:layout_height="34dp"
+            android:layout_height="800dp"
             android:layout_marginTop="36dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.49"
