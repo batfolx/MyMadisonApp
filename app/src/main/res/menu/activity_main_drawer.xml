@@ -16,46 +16,57 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	tools:showIn="navigation_view">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
-	<group android:checkableBehavior="single">
-		<item
-			android:id="@+id/nav_home"
-			android:icon="@drawable/ic_menu_camera"
-			android:title="@string/menu_home" />
-		<item
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/menu_home" />
+        <item
             android:id="@+id/nav_grades"
-			android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_grades" />
-		<item
+        <item
             android:id="@+id/nav_course"
-			android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_course" />
-		<item
-			android:id="@+id/nav_tools"
-			android:icon="@drawable/ic_menu_manage"
-			android:title="@string/menu_tools" />
+        <item
+            android:id="@+id/nav_tools"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/menu_tools" />
 
-		<item
-			android:id="@+id/student_center"
-			android:title="@string/student_center_fragment"
-			/>
+        <item
+            android:id="@+id/student_center"
+            android:icon="@drawable/student_center_logo"
+            android:title="@string/student_center_fragment" />
 
 
-	</group>
+    </group>
 
-	<item android:title="@string/communicate">
-		<menu>
-			<item
-				android:id="@+id/nav_share"
-				android:icon="@drawable/ic_menu_share"
-				android:title="@string/menu_share" />
-			<item
-				android:id="@+id/nav_send"
-				android:icon="@drawable/ic_menu_send"
-				android:title="@string/menu_send" />
-		</menu>
-	</item>
+    <item android:title="@string/communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/menu_share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/menu_send" />
+        </menu>
+    </item>
+
+    <group>
+        <item
+            android:id="@+id/my_accounts"
+            android:title="My Accounts">
+
+
+        </item>
+
+
+    </group>
 
 </menu>

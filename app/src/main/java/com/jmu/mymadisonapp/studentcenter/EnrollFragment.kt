@@ -21,25 +21,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.view.menu.MenuView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.net.MyMadisonService
+import kotlinx.android.synthetic.main.fragment_class_schedule.*
 import kotlinx.android.synthetic.main.fragment_enroll.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import pl.droidsonroids.jspoon.annotation.Selector
 import org.koin.android.ext.android.get
 
-
+/**
+ * A Fragment for the enroll part of the app.
+ */
 class EnrollFragment : Fragment()
 {
 
- /*   var add_button: Button? = view?.findViewById(R.id.add_button)
-    var edit_button: Button? = view?.findViewById(R.id.edit_button)
-    var swap_button: Button? = view?.findViewById(R.id.swap_button) */
-    lateinit var service: MyMadisonService
+    private lateinit var service: MyMadisonService
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -50,7 +53,7 @@ class EnrollFragment : Fragment()
         super.onActivityCreated(savedInstanceState)
         service = get<MyMadisonService>()
         lifecycleScope.launch{
-            var enrolledClasses = service.getEnrolledClasses().await().body()
+            val enrolledClasses = service.getEnrolledClasses().await().body()
 
             MainScope().launch {
                 jmu_text_view.text = enrolledClasses?.listOfEnrolledClasses?.joinToString("\n") {
@@ -121,3 +124,11 @@ data class EnrolledClasses(
     @Selector("div[id^=win0divDERIVED_REGFRM1_SSR_INSTR_LONG]")
     var instructor: String = ""
 )
+
+class ClassesRecyclerAdapter(var itemView: View) : RecyclerView.ViewHolder(itemView)
+{
+
+    init {
+
+    }
+}
