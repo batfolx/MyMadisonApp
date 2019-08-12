@@ -18,13 +18,10 @@
 package com.jmu.mymadisonapp.net
 
 import com.jmu.mymadisonapp.data.model.*
-<<<<<<< HEAD
 import com.jmu.mymadisonapp.html.Parseable
-=======
 import com.jmu.mymadisonapp.studentcenter.GraduationRequirements
 import com.jmu.mymadisonapp.studentcenter.ListOfEnrolledClasses
 import com.jmu.mymadisonapp.studentcenter.ListsOfGradRequirements
->>>>>>> f1e8c9510cdca104fb3092c585d1ae3fd58f89fa
 import kotlinx.coroutines.Deferred
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -97,20 +94,17 @@ interface MyMadisonService {
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_LIST.GBL")
     fun getMyClassScheduleForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassSchedule>>
 
-<<<<<<< HEAD
     @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
     fun getAcademicRequirementsPostData(): Deferred<Response<ExpandAllPostData>>
 
     @FormUrlEncoded
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
     fun expandAllAcademicRequirements(@FieldMap formBody: Map<String, String>): Deferred<Response<Requirements>>
-=======
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
     fun getAcademicRequirements(): Deferred<Response<ListsOfGradRequirements>>
 
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
     fun getEnrolledClasses(): Deferred<Response<ListOfEnrolledClasses>>
->>>>>>> f1e8c9510cdca104fb3092c585d1ae3fd58f89fa
 
 
 //    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")
