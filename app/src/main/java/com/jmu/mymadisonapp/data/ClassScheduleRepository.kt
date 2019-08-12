@@ -50,7 +50,7 @@ class ClassScheduleRepository(private val client: MyMadisonService, private val 
                     term.term.substringAfterLast(" ").toInt(),
                     term.career,
                     term.institution,
-                    getMyClassScheduleForTerm(termPostData.toMutableMap().updateTermPostBody(index)).body()?.schedule?.let { classes ->
+                    getMyClassScheduleForTerm(termPostData.toMap().toMutableMap().updateTermPostBody(index)).body()?.schedule?.let { classes ->
                         log("ClassSchedule", "Term=($index, $term): $classes")
                         classes.map {
                             Course(

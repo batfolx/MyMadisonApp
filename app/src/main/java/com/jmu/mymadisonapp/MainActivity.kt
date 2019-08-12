@@ -79,6 +79,11 @@ class MainActivity : AppCompatActivity() {
 		findNavController(R.id.nav_host_fragment).apply {
 			setupActionBarWithNavController(this, appBarConfiguration)
 			nav_view.setupWithNavController(this)
+            this.addOnDestinationChangedListener { controller, destination, arguments ->
+                when (destination.id) {
+                    R.id.nav_tools -> mainViewModel.getAcademicRequirements()
+                }
+            }
 		}
 		mainViewModel.studentInfoLiveData.observe(this, Observer {
 			log("StudentInfo", "New value: $it")

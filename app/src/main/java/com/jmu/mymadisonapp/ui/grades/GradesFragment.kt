@@ -25,6 +25,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,6 +65,10 @@ class GradesFragment : Fragment() {
         })
         gradesViewModel.gradesLiveData.observe(this, Observer {
             (terms_recycler.adapter as TermsRecyclerAdapter).termData = it
+        })
+        gradesViewModel.loadingLiveData.observe(this, Observer {
+            if (it && !progressBar.isVisible) progressBar.visibility = VISIBLE
+            else if (!it && progressBar.isVisible) progressBar.visibility = GONE
         })
     }
 

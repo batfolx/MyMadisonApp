@@ -18,6 +18,7 @@
 package com.jmu.mymadisonapp.net
 
 import com.jmu.mymadisonapp.data.model.*
+import com.jmu.mymadisonapp.html.Parseable
 import kotlinx.coroutines.Deferred
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -60,12 +61,15 @@ interface MyMadisonService {
     /**
      * Get information for the Undergraduate Dashboard.
      */
+    @Parseable(objClass = UGInfo::class)
     @GET("/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_UG_DB")
     fun getUndergraduateDashboard(): Deferred<Response<StudentUndergradInfo>>
 
+    @Parseable(objClass = SAMLResponseAdapter::class)
     @GET("/psc/pprd/JMU/CUST/s/WEBLIB_JMU_APPS.JMU_CANVAS.FieldFormula.IScript_Canvas_SSO_Pagelet")
     fun getSAMLResponse(): Deferred<Response<SAMLResponse>>
 
+    @Parseable(objClass = CurrentUserAdapter::class)
     @FormUrlEncoded
     @POST("https://canvas.jmu.edu/saml_consume")
     fun getCanvasProfileInfo(@Field("SAMLResponse") samlResponse: String): Deferred<Response<CurrentUser>>
@@ -87,6 +91,13 @@ interface MyMadisonService {
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_LIST.GBL")
     fun getMyClassScheduleForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassSchedule>>
 
+    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
+    fun getAcademicRequirementsPostData(): Deferred<Response<ExpandAllPostData>>
+
+    @FormUrlEncoded
+    @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
+    fun expandAllAcademicRequirements(@FieldMap formBody: Map<String, String>): Deferred<Response<Requirements>>
+
 
 //    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")
 //    fun getUnofficialTranscript()
@@ -98,8 +109,6 @@ fun MutableMap<String, String>.updateTermPostBody(termIndex: Int): Map<String, S
     this["ICBcDomData"] = "UnknownValue"
     return this + ("SSR_DUMMY_RECV1\$sels\$$termIndex\$\$0" to "$termIndex")
 }
-
-fun <T> Response<T>.isValid() = isSuccessful && body() != null
 
 fun checkLoggedIn(): Boolean =
     get().koin.get<OkHttpClient>().newBuilder().followRedirects(false).followSslRedirects(false).build()

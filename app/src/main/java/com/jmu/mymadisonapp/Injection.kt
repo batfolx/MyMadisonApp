@@ -86,6 +86,7 @@ val netModule = module {
         Retrofit.Builder()
             .client(get())
             .baseUrl(MYMADISON_BASE_URL)
+//            .addConverterFactory(HtmlParserConverterFactory())
             .addConverterFactory(JspoonConverterFactory.create())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build().create(MyMadisonService::class.java)
@@ -109,6 +110,8 @@ val appModule = module {
     single { LoginDataSource(get(), get()) }
 
     single { LoginRepository(get()) }
+
+    single { AcademicRequirementsRepository(get()) }
 
     single { ClassScheduleRepository(get(), get()) }
 

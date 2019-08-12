@@ -20,7 +20,10 @@ package com.jmu.mymadisonapp.ui.slideshow
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,6 +61,10 @@ class ClassScheduleFragment : Fragment() {
         })*/
         classScheduleViewModel.classSchedulesLiveData.observe(this, Observer {
             (classes_recycler.adapter as CourseRecyclerAdapter).termData = it
+        })
+        classScheduleViewModel.loadingLiveData.observe(this, Observer {
+            if (it && !progressBar.isVisible) progressBar.visibility = VISIBLE
+            else if (!it && progressBar.isVisible) progressBar.visibility = GONE
         })
     }
 

@@ -190,5 +190,7 @@ class ResourceBuilder<ResultType, RequestType>(request: ResourceBuilder<ResultTy
 
 }
 
+fun <T> Response<T>.isValid() = isSuccessful && body() != null
+
 class ResponseException(response: Response<*>) :
     Exception(response.errorBody()?.string() ?: "Response code: ${response.code()}")

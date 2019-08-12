@@ -19,11 +19,13 @@ package com.jmu.mymadisonapp.data.model
 
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
+import com.jmu.mymadisonapp.html.*
 import com.jmu.mymadisonapp.moshi
 import org.jsoup.nodes.Element
 import pl.droidsonroids.jspoon.ElementConverter
 import pl.droidsonroids.jspoon.annotation.Selector
 import java.util.*
+import kotlin.reflect.KMutableProperty0
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository
@@ -88,6 +90,8 @@ class DeclaredSubjectConverter : ElementConverter<DeclaredSubject> {
         }
 }
 
+data class Subject(val name: String = "", val gpa: Float = 0f)
+
 //@Selector("div[data-role=\"content\"]")
 data class StudentUndergradInfo(
     @Selector("div#SSSGROUPBOXRIGHTNBO2_WRAPPER span.PSHYPERLINKDISABLED") var holds: Int = 0,
@@ -115,7 +119,64 @@ data class DeclaredSubject(
     val gpaLastUpdated: Date = Calendar.getInstance().time
 )
 
-data class Subject(val name: String = "", val gpa: Float = 0f)
+
+object UGInfo : Adapter<StudentUndergradInfo> {
+
+    private fun Builder<StudentUndergradInfo>.gpaProp(
+        value: String,
+        ref: StudentUndergradInfo.() -> KMutableProperty0<GPA>
+    ) =
+        property(value, ref) {
+            this.floatProperty("span.PSHYPERLINKDISABLED") { ::gpa }
+            this.stringProperty("span.DASHBOARDDESCR") { ::type }
+        }
+
+    override fun build(): Builder<StudentUndergradInfo> = selector {
+        intProperty("div#SSSGROUPBOXRIGHTNBO2_WRAPPER span.PSHYPERLINKDISABLED") { ::holds }
+        intProperty("div#SSSGROUPBOXRIGHTNBO3_WRAPPER span.PSHYPERLINKDISABLED") { ::toDos }
+        gpaProp("div#SSSGROUPBOXRIGHTNBO4_WRAPPER > span") { ::cumGPA }
+        gpaProp("div#SSSGROUPBOXRIGHTNBO5_WRAPPER > span") { ::lastSemGPA }
+        property("div#SSSGROUPBOXRIGHTNBO6_WRAPPER > span", { ::hoursEnrolled }) {
+            defaultConverter {
+                split(Regex(": |\\s+")).filter { it.isNotBlank() }
+                    .chunked(2) { (name, amount) -> name to amount.toInt() }
+                    .toMap()
+            }
+            attr {
+                with(it.text().trim()) { substring(0, indexOf("Hours Enrolled")).trimEnd() }
+            }
+        }
+        property("div#SSSGROUPBOXRIGHTNBO7_WRAPPER > span", { ::subject }) {
+            attr { it.text().trim() }
+            defaultConverter {
+                with(split(Regex("\\)\\s"))
+                    .filter { it.isNotBlank() }
+                    .groupBy({ it.substringBefore(":") }) { it.substringAfter(": ") }) {
+                    DeclaredSubject(
+                        this.getOrDefault("Major", emptyList()).map {
+                            Subject(
+                                it.substring(0, it.indexOf(" (")),
+                                it.substringAfter("GPA ").toFloat()
+                            )
+                        },
+                        this.getOrDefault("Minor", emptyList()).map {
+                            Subject(
+                                it.substring(0, it.indexOf(" (")),
+                                it.substringAfter("GPA ").toFloat()
+                            )
+                        },
+                        SimpleDateFormat("MM/dd/yyyy").parse(
+                            this.getOrDefault(
+                                "Major/Minor GPA Last Updated",
+                                emptyList()
+                            ).firstOrNull() ?: "00/00/0000"
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
 
 class SAMLResponseConverter : ElementConverter<String> {
     override fun convert(node: Element, selector: Selector): String = node.`val`()
@@ -128,6 +189,12 @@ data class SAMLResponse(
     )
     var value: String = ""
 )
+
+object SAMLResponseAdapter : Adapter<SAMLResponse> {
+    override fun build(): Builder<SAMLResponse> = selector {
+        stringProperty("form[method=\"post\"] > input[name=\"SAMLResponse\"]") { ::value }.attr { it.`val`() }
+    }
+}
 
 class CanvasProfileConverter : ElementConverter<CanvasProfileInfo> {
     override fun convert(node: Element, selector: Selector): CanvasProfileInfo =
@@ -150,8 +217,25 @@ data class CurrentUser(
     var current_user: CanvasProfileInfo = CanvasProfileInfo()
 )
 
+object CurrentUserAdapter : Adapter<CurrentUser> {
+    override fun build(): Builder<CurrentUser> = selector {
+        property("div#application > script", { ::current_user }) {
+            attr {
+                with(it.data()) {
+                    val start = "\"current_user\":".let { name -> indexOf(name) + name.length }
+                    substring(start, indexOf("}", start) + 1)
+                }
+            }
+            defaultConverter {
+                moshi.adapter(CanvasProfileInfo::class.java).fromJson(this)
+                    ?: CanvasProfileInfo("Unknown", "")
+            }
+        }
+    }
+}
+
 class TermPostDataConverter : ElementConverter<Map<String, String>> {
-    override fun convert(node: Element, selector: Selector): Map<String, String> =
+    override fun convert(node: Element, selector: Selector): Map<String, String>? =
         node.select("input")?.associate { it.attr("id") to it.`val`() } ?: emptyMap()
 }
 
@@ -160,7 +244,7 @@ data class GradeTerms(
     @Selector(
         "div#win0divPSHIDDENFIELDS",
         converter = TermPostDataConverter::class
-    ) var termPostData: Map<String, String> = emptyMap(),
+    ) var termPostData: List<Pair<String, String>> = emptyList(),
     @Selector("table.PSLEVEL2GRID tr[id^=trSSR_DUMMY_RECV1$0_row]") var terms: List<Term> = emptyList()
 )
 
@@ -179,6 +263,21 @@ data class ClassGrades(
     ) var semesterGPA: Float = 0f,
     @Selector("tr div#win0divDERIVED_SSS_GRD_GROUPBOX4 table#ACE_DERIVED_SSS_GRD_GROUPBOX4 span#ACAD_STACTN_TBL_DESCRFORMAL") var academicStanding: String = ""
 )
+
+/*object GradeTermsAdapter : Adapter<GradeTerms> {
+    override fun build(): Builder<GradeTerms> = selector("div#ptifrmcontent > div#ptifrmtarget iframe#ptifrmtgtframe html.chrome > body.PSPAGE") {
+        collection("div#win0divPSHIDDENFIELDS input", { ::termPostData }) {
+            itemMapper { (this.attr("id") to this.`val`()) }
+            itemMapper("", ) { }
+            collectionMapper { this }
+        }
+        collection("table.PSLEVEL2GRID tr[id^=trSSR_DUMMY_RECV1$0_row]", { ::terms }) {
+            collectionMapper {  }
+            itemMapper {  }
+
+        }
+    }
+}*/
 
 class FloatConverter : ElementConverter<Float> {
     override fun convert(node: Element, selector: Selector): Float =

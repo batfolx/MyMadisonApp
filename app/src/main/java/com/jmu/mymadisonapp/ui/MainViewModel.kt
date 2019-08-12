@@ -22,6 +22,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.jmu.mymadisonapp.MyMadisonApp
+import com.jmu.mymadisonapp.data.AcademicRequirementsRepository
 import com.jmu.mymadisonapp.data.StudentRepository
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.Error
@@ -29,6 +31,7 @@ import com.jmu.mymadisonapp.net.Loading
 import com.jmu.mymadisonapp.net.Success
 import com.jmu.mymadisonapp.room.model.Student
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 
 class MainViewModel(application: Application, private val repository: StudentRepository) :
     AndroidViewModel(application) {
@@ -69,7 +72,7 @@ class MainViewModel(application: Application, private val repository: StudentRep
         repository.getCanvasProfileInfo().also {
             log(
                 "CanvasProfileInfo",
-                "Current User: ${it?.body() ?: "Empty body: $it"}"
+                "Current User: ${it.body() ?: "Empty body: $it"}"
             )
         }.body()
     } catch (e: IllegalArgumentException) {
@@ -96,6 +99,14 @@ class MainViewModel(application: Application, private val repository: StudentRep
         } catch (e: IllegalArgumentException) {
             e.printStackTrace(); null
         }
+
+
+    fun getAcademicRequirements() {
+        viewModelScope.launch {
+            val arRepository: AcademicRequirementsRepository = getApplication<MyMadisonApp>().get()
+            arRepository.getAcademicRequirements()
+        }
+    }
 
 
 
