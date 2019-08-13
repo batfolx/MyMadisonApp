@@ -17,6 +17,7 @@
 
 package com.jmu.mymadisonapp.studentcenter
 
+import android.content.ClipData
 import android.os.Bundle
 import android.text.Layout
 import android.view.LayoutInflater
@@ -33,9 +34,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
+import kotlinx.android.synthetic.main.enroll_course_items.*
+import kotlinx.android.synthetic.main.enroll_course_items.view.*
 import kotlinx.android.synthetic.main.fragment_class_schedule.*
 import kotlinx.android.synthetic.main.fragment_enroll.*
-import kotlinx.android.synthetic.main.fragment_enroll.description_text_view
 import kotlinx.android.synthetic.main.fragment_enroll.view.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -49,7 +51,9 @@ import org.w3c.dom.Text
 class EnrollFragment : Fragment() {
 
     private lateinit var service: MyMadisonService
-
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewManager: RecyclerView.LayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_enroll, container, false)
@@ -62,11 +66,11 @@ class EnrollFragment : Fragment() {
         service = get<MyMadisonService>()
         lifecycleScope.launch {
             val enrolledClasses = service.getEnrolledClasses().await().body()
-
+            courses_recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            courses_recycler_view.adapter = EnrollClassAdapter(enrolledClasses!!)
 
             MainScope().launch {
-                courses_recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                courses_recycler_view.adapter = EnrollClassAdapter(enrolledClasses!!)
+
                 log("List of enrolled classes ${enrolledClasses.listOfEnrolledClasses[1]} ")
 
 
@@ -77,7 +81,7 @@ class EnrollFragment : Fragment() {
         }
 
 
-
+        /*
         drop_button.setOnClickListener {
             jmu_text_view.text = "Drop button clicked"
         }
@@ -104,7 +108,7 @@ class EnrollFragment : Fragment() {
 
             makeButtonsDisappear()
 
-        }
+        } */
 
     }
 
@@ -112,8 +116,9 @@ class EnrollFragment : Fragment() {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnrollClassHolder {
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.fragment_enroll, parent, false)
-            return EnrollClassHolder(v)
+           // val v = LayoutInflater.from(parent.context).inflate(R.layout.fragment_enroll, parent, false)
+            val textView = LayoutInflater.from(parent.context).inflate(R.layout.fragment_enroll, parent, false) as TextView
+            return EnrollClassHolder(textView)
         }
 
         override fun getItemCount(): Int {
@@ -121,39 +126,42 @@ class EnrollFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: EnrollClassHolder, position: Int) {
-            val classes: EnrolledClasses = enrolledClasses.listOfEnrolledClasses[position]
-            holder.classDescription.text = classes.description
-            holder.daysAndTimes.text = classes.daysAndTimes
+            //val classes: EnrolledClasses = enrolledClasses.listOfEnrolledClasses[position]
+            //holder.daysAndTimes.text = classes.daysAndTimes
+            holder.daysAndTimes.text = enrolledClasses.listOfEnrolledClasses[position].toString()
 
-            with(holder.itemView) {
-                enrolledClasses.listOfEnrolledClasses[position].let{course ->
-                    days_and_times_text_view.text = course.daysAndTimes
-                    description_text_view.text = course.description
-                    setOnClickListener {}
-                }
-            }
+
+            //with(holder.itemView) {
+            //    enrolledClasses.listOfEnrolledClasses[position].let{course ->
+
+
+
+             //   }
+
+          //  }
 
 
         }
 
-        inner class EnrollClassHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            init {
-                itemView.setOnClickListener{}
-            }
-            val classDescription = itemView.findViewById<TextView>(R.id.description_text_view) as TextView
-            val daysAndTimes = itemView.findViewById<TextView>(R.id.days_and_times_text_view) as TextView
+        inner class EnrollClassHolder(textView: View) : RecyclerView.ViewHolder(textView) {
+
+            var daysAndTimes= itemView.findViewById(R.id.days_and_times_enroll) as TextView
+
+            // val classDescription = itemView.findViewById(R.id.description_enroll) as TextView
+
+
 
         }
     }
 
-
+    /*
     private fun makeButtonsDisappear() {
         drop_button.visibility = View.GONE
         add_button.visibility = View.GONE
         edit_button.visibility = View.GONE
         swap_button.visibility = View.GONE
         student_center_button.visibility = View.GONE
-    }
+    } */
 }
 
 data class ListOfEnrolledClasses(
