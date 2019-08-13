@@ -22,6 +22,9 @@ import com.jmu.mymadisonapp.studentcenter.GraduationRequirements
 import com.jmu.mymadisonapp.studentcenter.ListOfAcademicCourseCatalogs
 import com.jmu.mymadisonapp.studentcenter.ListOfEnrolledClasses
 import com.jmu.mymadisonapp.studentcenter.ListsOfGradRequirements
+import com.jmu.mymadisonapp.ui.jaccardservices.CardServicesInformation
+import com.jmu.mymadisonapp.ui.myaccounts.MyAccountAccounts
+import com.jmu.mymadisonapp.ui.myaccounts.MyAccountsFragment
 import kotlinx.coroutines.Deferred
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -104,6 +107,14 @@ interface MyMadisonService {
      */
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES_2.SSS_BROWSE_CATLG_P.GBL")
     fun getCourseCatalogs(): Deferred<Response<ListOfAcademicCourseCatalogs>>
+
+    @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?tab=JMU_MYACCOUNT")
+    fun getMyAccountInformation(): Deferred<Response<MyAccountAccounts>>
+
+
+    @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?tab=JMU_MYSERVICES")
+    fun getCardServicesInformation(): Deferred<Response<CardServicesInformation>>
+
 
 
 //    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")

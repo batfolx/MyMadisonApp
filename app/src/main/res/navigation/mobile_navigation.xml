@@ -63,6 +63,19 @@
 		android:name="com.jmu.mymadisonapp.studentcenter.StudentCenterFragment"
 		tools:layout="@layout/fragment_studentcenter"/>
 
+	<fragment
+		android:id="@+id/my_account"
+		android:label="My Accounts"
+		android:name="com.jmu.mymadisonapp.ui.myaccounts.MyAccountsFragment"
+		tools:layout="@layout/fragment_my_account_information"/>
+
+	<fragment
+		android:id="@+id/card_services"
+		android:label="Card Services"
+		android:name="com.jmu.mymadisonapp.ui.jaccardservices.MyServicesFragment"
+		tools:layout="@layout/fragment_myservices"
+		/>
+
 
 
 

@@ -53,4 +53,6 @@ data class GraduationRequirements(
     @Selector("span[id^=DERIVED_JAA_DESCR20]")
     var genEdClusterOne: String = ""
 
+
+
 )

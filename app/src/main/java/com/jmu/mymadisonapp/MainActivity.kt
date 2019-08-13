@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
+
 		// Set the toolbar to display navigation
 		setSupportActionBar(toolbar)
 
@@ -76,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 		appBarConfiguration = AppBarConfiguration(
 			setOf(
 				R.id.nav_home, R.id.nav_grades, R.id.nav_course,
-				R.id.nav_tools, R.id.nav_share, R.id.nav_send, R.id.student_center), drawer_layout)
+				R.id.nav_tools, R.id.nav_share, R.id.nav_send, R.id.student_center, R.id.my_account, R.id.card_services), drawer_layout)
 
 
 
