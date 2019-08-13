@@ -20,6 +20,7 @@ package com.jmu.mymadisonapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
@@ -29,6 +30,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.jmu.mymadisonapp.ui.MainViewModel
 import com.jmu.mymadisonapp.ui.grades.GradesViewModel
@@ -59,7 +62,6 @@ class MainActivity : AppCompatActivity() {
 		setSupportActionBar(toolbar)
 
 
-
 		// Check if permissions have been granted
 		checkPermissions()
 
@@ -75,6 +77,8 @@ class MainActivity : AppCompatActivity() {
 			setOf(
 				R.id.nav_home, R.id.nav_grades, R.id.nav_course,
 				R.id.nav_tools, R.id.nav_share, R.id.nav_send, R.id.student_center), drawer_layout)
+
+
 
 		findNavController(R.id.nav_host_fragment).apply {
 			setupActionBarWithNavController(this, appBarConfiguration)

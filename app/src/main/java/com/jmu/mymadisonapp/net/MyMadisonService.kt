@@ -97,6 +97,11 @@ interface MyMadisonService {
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
     fun getEnrolledClasses(): Deferred<Response<ListOfEnrolledClasses>>
 
+
+    /**
+     * Function with a @GET annotation that connects the request and returned a Response object with the list
+     * of academic course catalogs
+     */
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES_2.SSS_BROWSE_CATLG_P.GBL")
     fun getCourseCatalogs(): Deferred<Response<ListOfAcademicCourseCatalogs>>
 
