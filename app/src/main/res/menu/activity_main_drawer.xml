@@ -59,16 +59,18 @@
     </item>
 
     <group>
+
         <item
+
             android:id="@+id/my_account"
-            android:title="My Accounts"
-            >
+            android:title="My Accounts">
 
 
         </item>
 
         <item
             android:id="@+id/card_services"
+            android:icon="@drawable/jac_card_services_logo"
             android:title="Card Services">
 
         </item>

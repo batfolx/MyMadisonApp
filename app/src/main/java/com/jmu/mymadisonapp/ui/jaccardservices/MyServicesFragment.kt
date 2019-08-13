@@ -33,11 +33,14 @@ class MyServicesFragment : Fragment()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         service = get()
+
         lifecycleScope.launch {
             val csInfo = service.getCardServicesInformation().await().body()
-            log("This is the fucking card services info $csInfo")
+
             MainScope().launch {
-                my_services_text_view.text = csInfo?.flexBalance
+                my_services_text_view.text = csInfo?.cardServicesInformation
+
+                log("This is the card services info $csInfo")
             }
         }
     }
@@ -46,7 +49,8 @@ class MyServicesFragment : Fragment()
 }
 
 
-data class CardServicesInformation(
-    @Selector("strong")
-    var flexBalance: String = ""
+
+data class CardServices(
+    @Selector("#JMU_CARDSVC_SSO_Data > table > tbody > tr > td:nth-child(2)")
+    var cardServicesInformation: String = ""
 )

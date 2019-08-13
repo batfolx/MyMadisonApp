@@ -7,14 +7,31 @@
 
 
     <TextView
-        android:layout_width="257dp"
-        android:layout_height="182dp"
-        android:text="The joint"
         android:id="@+id/my_services_text_view"
+        android:layout_width="268dp"
+        android:layout_height="390dp"
+        android:text="THE CARD SERVICES INFORMATION GOES HERE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.499" />
+
+    <ImageView
+        android:id="@+id/jac_card_logo_imageview"
+        android:layout_width="416dp"
+        android:layout_height="132dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/card_services_big_logo" />
+    <Button
+        android:id="@+id/back_to_sc_myservices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/student_center_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

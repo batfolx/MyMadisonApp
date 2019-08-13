@@ -5,7 +5,7 @@
     android:id="@+id/enroll_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/cardview_dark_background"
     android:clickable="true"
     android:focusable="true"
     android:orientation="horizontal">
@@ -15,18 +15,20 @@
         android:id="@+id/courses_recycler_view"
         android:layout_width="361dp"
         android:layout_height="237dp"
+        android:layout_marginBottom="368dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.301"
         app:layout_constraintStart_toStartOf="parent"
         tools:itemCount="6"
         tools:listitem="@layout/enroll_course_items" />
 
+
     <TextView
         android:id="@+id/courses_text_view"
-        android:layout_width="181dp"
-        android:layout_height="171dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="112dp"
+        android:layout_width="280dp"
+        android:layout_height="167dp"
+        android:layout_marginEnd="64dp"
         android:text="Courses go here"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,47 +37,46 @@
         android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="576dp"
-        android:text="@string/add_button" />
+        android:layout_marginBottom="196dp"
+        android:text="@string/add_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edit_button" />
 
     <Button
         android:id="@+id/swap_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="576dp"
-        android:text="@string/swap_button" />
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="196dp"
+        android:text="@string/swap_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="576dp"
-        android:text="@string/edit_button" />
-
+        android:layout_marginBottom="196dp"
+        android:text="@string/edit_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/drop_button" />
 
     <Button
         android:id="@+id/drop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="576dp"
-        android:text="@string/drop_button" />
-
+        android:layout_marginBottom="196dp"
+        android:text="@string/drop_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/swap_button" />
 
     <Button
         android:id="@+id/student_center_button"
-        android:layout_width="211dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="40dp"
-        android:text="@string/student_center_button" />
-
-    <TextView
-        android:id="@+id/jmu_text_view"
-        android:layout_width="295dp"
-        android:layout_height="124dp"
-        android:text="@string/jmu_text_view"
-        app:layout_constraintBottom_toTopOf="@+id/courses_recycler_view"
+        android:layout_width="204dp"
+        android:layout_height="71dp"
+        android:layout_marginBottom="76dp"
+        android:text="@string/student_center_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -22,7 +22,9 @@ import com.jmu.mymadisonapp.studentcenter.GraduationRequirements
 import com.jmu.mymadisonapp.studentcenter.ListOfAcademicCourseCatalogs
 import com.jmu.mymadisonapp.studentcenter.ListOfEnrolledClasses
 import com.jmu.mymadisonapp.studentcenter.ListsOfGradRequirements
-import com.jmu.mymadisonapp.ui.jaccardservices.CardServicesInformation
+import com.jmu.mymadisonapp.ui.jaccardservices.CardServices
+import com.jmu.mymadisonapp.ui.myaccounts.ListOfMealPlans
+import com.jmu.mymadisonapp.ui.myaccounts.MealPlans
 import com.jmu.mymadisonapp.ui.myaccounts.MyAccountAccounts
 import com.jmu.mymadisonapp.ui.myaccounts.MyAccountsFragment
 import kotlinx.coroutines.Deferred
@@ -100,6 +102,9 @@ interface MyMadisonService {
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
     fun getEnrolledClasses(): Deferred<Response<ListOfEnrolledClasses>>
 
+   // @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/PRJCS_MENU.PRJCS_SCHD_STRT.GBL")
+   // fun get
+
 
     /**
      * Function with a @GET annotation that connects the request and returned a Response object with the list
@@ -108,14 +113,23 @@ interface MyMadisonService {
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES_2.SSS_BROWSE_CATLG_P.GBL")
     fun getCourseCatalogs(): Deferred<Response<ListOfAcademicCourseCatalogs>>
 
+    /**
+     * Get the MyAccount information (eID password expiry and time change)
+     */
     @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?tab=JMU_MYACCOUNT")
     fun getMyAccountInformation(): Deferred<Response<MyAccountAccounts>>
 
-
+    /**
+     * Gets information about card services (amount of money in flex, dining, etc
+     */
     @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?tab=JMU_MYSERVICES")
-    fun getCardServicesInformation(): Deferred<Response<CardServicesInformation>>
+    fun getCardServicesInformation(): Deferred<Response<CardServices>>
 
-
+    /**
+     * Gets meal plan information (maybe implement later)
+     */
+    @GET("https://jmu.campusdish.com/MealPlans/Category?cat=All_Products_6598&lid=6598")
+    fun getMealPlans(): Deferred<Response<ListOfMealPlans>>
 
 //    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")
 //    fun getUnofficialTranscript()
