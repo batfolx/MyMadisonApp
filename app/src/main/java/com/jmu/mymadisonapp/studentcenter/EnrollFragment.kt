@@ -121,8 +121,6 @@ class EnrollFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: EnrollClassHolder, position: Int) {
-            //val classes: EnrolledClasses = enrolledClasses.listOfEnrolledClasses[position]
-            //holder.daysAndTimes.text = classes.daysAndTimes
 
             with(holder.itemView) {
 
@@ -132,14 +130,6 @@ class EnrollFragment : Fragment() {
                 room_number_enroll.text = enrolledClasses.listOfEnrolledClasses[position].room
 
             }
-
-
-//            holder.daysAndTimes.text = enrolledClasses.listOfEnrolledClasses[position].daysAndTimes
-//            holder.instructor.text = enrolledClasses.listOfEnrolledClasses[position].instructor
-//            holder.description.text = enrolledClasses.listOfEnrolledClasses[position].description
-//            holder.room.text = enrolledClasses.listOfEnrolledClasses[position].room
-
-
         }
 
         inner class EnrollClassHolder(textView: View) : RecyclerView.ViewHolder(textView) {
