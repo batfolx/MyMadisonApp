@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.log
@@ -44,6 +45,20 @@ class MyServicesFragment : Fragment()
 
 
             }
+        }
+
+
+        jac_card_logo_imageview.setOnClickListener {
+
+            fragmentManager?.commit {
+                replace(R.id.myservices_layout, CardServicesBrowserFragment())
+                    .addToBackStack(null)
+
+
+            }
+
+
+
         }
     }
 

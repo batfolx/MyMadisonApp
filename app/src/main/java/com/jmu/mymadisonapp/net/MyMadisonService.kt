@@ -18,10 +18,7 @@
 package com.jmu.mymadisonapp.net
 
 import com.jmu.mymadisonapp.data.model.*
-import com.jmu.mymadisonapp.studentcenter.GraduationRequirements
-import com.jmu.mymadisonapp.studentcenter.ListOfAcademicCourseCatalogs
-import com.jmu.mymadisonapp.studentcenter.ListOfEnrolledClasses
-import com.jmu.mymadisonapp.studentcenter.ListsOfGradRequirements
+import com.jmu.mymadisonapp.studentcenter.*
 import com.jmu.mymadisonapp.ui.jaccardservices.CardServices
 import com.jmu.mymadisonapp.ui.myaccounts.ListOfMealPlans
 import com.jmu.mymadisonapp.ui.myaccounts.MealPlans
@@ -108,6 +105,14 @@ interface MyMadisonService {
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/PRJCS_MENU.PRJCS_SCHD_STRT.GBL")
     fun getSchedulePlanner()
+
+    @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+    fun getShoppingCartClasses(): Deferred<Response<ListOfAddEnrollShoppingCart>>
+
+/*    @FormUrlEncoded
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+    fun getAddClass*/
 
 
     /**

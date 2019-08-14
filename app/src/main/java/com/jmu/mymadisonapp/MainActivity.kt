@@ -45,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.navigation.ui.AppBarConfiguration as AppBarConfiguration1
 
 /**
  * The default activity to load upon startup.

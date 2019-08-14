@@ -39,7 +39,6 @@
 
         <item
             android:id="@+id/student_center"
-            android:icon="@drawable/student_center_logo"
             android:title="@string/student_center_fragment" />
 
 

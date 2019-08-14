@@ -23,6 +23,8 @@ import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.view.menu.MenuView
 import androidx.fragment.app.Fragment
@@ -39,6 +41,7 @@ import kotlinx.android.synthetic.main.enroll_course_items.view.*
 import kotlinx.android.synthetic.main.fragment_class_schedule.*
 import kotlinx.android.synthetic.main.fragment_enroll.*
 import kotlinx.android.synthetic.main.fragment_enroll.view.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import pl.droidsonroids.jspoon.annotation.Selector
@@ -51,9 +54,7 @@ import org.w3c.dom.Text
 class EnrollFragment : Fragment() {
 
     private lateinit var service: MyMadisonService
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
+    public var buttonNames: Array<String> = arrayOf("Edit", "Drop")//, "Swap", "Add")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_enroll, container, false)
@@ -81,17 +82,10 @@ class EnrollFragment : Fragment() {
         }
 
 
-
-        drop_button.setOnClickListener {
-        }
-
         add_button.setOnClickListener {
-        }
-
-        edit_button.setOnClickListener {
-        }
-
-        swap_button.setOnClickListener {
+            fragmentManager?.commit {
+                replace(R.id.enroll_layout, AddEnrollFragment()).addToBackStack(null)
+            }
         }
 
         student_center_button.setOnClickListener {
@@ -110,6 +104,20 @@ class EnrollFragment : Fragment() {
     inner class EnrollClassAdapter(val enrolledClasses: ListOfEnrolledClasses) :
         RecyclerView.Adapter<EnrollClassAdapter.EnrollClassHolder>() {
 
+        fun addButtonsToCourses(linearLayoutParams: LinearLayout.LayoutParams,
+                                linearLayout: LinearLayout,
+                                buttonNames: Array<String>) {
+
+
+            for (name in buttonNames) {
+
+                val tmpButton = Button(context)
+                tmpButton.text = name
+                linearLayout.addView(tmpButton, linearLayoutParams)
+
+            }
+
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnrollClassHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.enroll_course_items, parent, false)
@@ -123,14 +131,29 @@ class EnrollFragment : Fragment() {
         override fun onBindViewHolder(holder: EnrollClassHolder, position: Int) {
 
             with(holder.itemView) {
+                val classNum: String = "${enrolledClasses.listOfEnrolledClasses[position].classNumber}, " +
+                        "credits: ${enrolledClasses.listOfEnrolledClasses[position].units} "
+
+
+                val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                val linearLayout = findViewById<LinearLayout>(R.id.enroll_course_layout)
+
+                addButtonsToCourses(params, linearLayout, buttonNames)
 
                 description_enroll.text = enrolledClasses.listOfEnrolledClasses[position].description
                 days_and_times_enroll.text = enrolledClasses.listOfEnrolledClasses[position].daysAndTimes
                 instructor_enroll.text = enrolledClasses.listOfEnrolledClasses[position].instructor
                 room_number_enroll.text = enrolledClasses.listOfEnrolledClasses[position].room
+                class_number_enroll.text = classNum
 
             }
+
         }
+
+
+
 
         inner class EnrollClassHolder(textView: View) : RecyclerView.ViewHolder(textView) {
             init {
@@ -143,13 +166,16 @@ class EnrollFragment : Fragment() {
 
 
     private fun makeButtonsDisappear() {
-        drop_button.visibility = View.GONE
-        add_button.visibility = View.GONE
-        edit_button.visibility = View.GONE
-        swap_button.visibility = View.GONE
+
         student_center_button.visibility = View.GONE
     }
+
+
+
 }
+
+
+
 
 data class ListOfEnrolledClasses(
     @Selector("tr[id^=trSTDNT_ENRL_SSVW]")
@@ -168,5 +194,11 @@ data class EnrolledClasses(
     var room: String = "",
 
     @Selector("div[id^=win0divDERIVED_REGFRM1_SSR_INSTR_LONG]")
-    var instructor: String = ""
+    var instructor: String = "",
+
+    @Selector("span[id^=E_CLASS_NAME]")
+    var classNumber: String = "",
+
+    @Selector("span[id^=STDNT_ENRL_SSVW_UNT_TAKEN]")
+    var units: String = ""
 )

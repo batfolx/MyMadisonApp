@@ -15,59 +15,34 @@
         android:id="@+id/courses_recycler_view"
         android:layout_width="361dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/drop_button"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/add_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="6"
-        tools:listitem="@layout/course_item"
-        android:layout_margin="8dp"/>
+        tools:listitem="@layout/enroll_course_items" />
 
-    <Button
-        android:id="@+id/add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="196dp"
-        android:text="@string/add_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/edit_button" />
-
-    <Button
-        android:id="@+id/swap_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="196dp"
-        android:text="@string/swap_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="196dp"
-        android:text="@string/edit_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/drop_button" />
-
-    <Button
-        android:id="@+id/drop_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="196dp"
-        android:text="@string/drop_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/swap_button" />
 
     <Button
         android:id="@+id/student_center_button"
         android:layout_width="204dp"
         android:layout_height="71dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="24dp"
         android:text="@string/student_center_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.077"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="164dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="128dp"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
