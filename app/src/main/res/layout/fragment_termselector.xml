@@ -16,7 +16,6 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="140dp"
         android:text="@string/fall_term_button"
-        android:backgroundTint="@color/design_default_color_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +24,6 @@
         android:layout_width="212dp"
         android:layout_height="129dp"
         android:text="@string/spring_term_button"
-        android:backgroundTint="@color/design_default_color_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +34,6 @@
         android:layout_width="212dp"
         android:layout_height="129dp"
         android:text="@string/summer_term_button"
-        android:backgroundTint="@color/design_default_color_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spring_term_button" />

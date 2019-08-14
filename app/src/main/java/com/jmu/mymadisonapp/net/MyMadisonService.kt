@@ -86,6 +86,8 @@ interface MyMadisonService {
     @GET("/psc/ecampus/JMU/SPRD/c/{terms}")
     fun getTermsList(@Path("terms") terms: String): Deferred<Response<GradeTerms>>
 
+
+    //@FieldMap refers to the Form Data of the request
     @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_GRADE.GBL")
@@ -96,33 +98,35 @@ interface MyMadisonService {
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_LIST.GBL")
     fun getMyClassScheduleForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassSchedule>>
 
-    @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
+    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
     fun getAcademicRequirements(): Deferred<Response<ListsOfGradRequirements>>
 
-    @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
     fun getEnrolledClasses(): Deferred<Response<ListOfEnrolledClasses>>
 
-   // @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/PRJCS_MENU.PRJCS_SCHD_STRT.GBL")
-   // fun get
+    @FormUrlEncoded
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/PRJCS_MENU.PRJCS_SCHD_STRT.GBL")
+    fun getSchedulePlanner()
 
 
     /**
      * Function with a @GET annotation that connects the request and returned a Response object with the list
      * of academic course catalogs
      */
-    @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES_2.SSS_BROWSE_CATLG_P.GBL")
+    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES_2.SSS_BROWSE_CATLG_P.GBL")
     fun getCourseCatalogs(): Deferred<Response<ListOfAcademicCourseCatalogs>>
 
     /**
      * Get the MyAccount information (eID password expiry and time change)
      */
-    @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?tab=JMU_MYACCOUNT")
+    @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_ID_CMP&tab=JMU_MYACCOUNT&PORTALPARAM_COMPWIDTH=Wide&bNoGlobal=Y&ptlayout=N")
     fun getMyAccountInformation(): Deferred<Response<MyAccountAccounts>>
 
     /**
      * Gets information about card services (amount of money in flex, dining, etc
      */
-    @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?tab=JMU_MYSERVICES")
+    @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_CARDSVC_SSO&tab=JMU_MYSERVICES&PORTALPARAM_COMPWIDTH=Narrow&bNoGlobal=Y&ptlayout=N")
     fun getCardServicesInformation(): Deferred<Response<CardServices>>
 
     /**

@@ -14,24 +14,14 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/courses_recycler_view"
         android:layout_width="361dp"
-        android:layout_height="237dp"
-        android:layout_marginBottom="368dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/drop_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.301"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="6"
-        tools:listitem="@layout/enroll_course_items" />
-
-
-    <TextView
-        android:id="@+id/courses_text_view"
-        android:layout_width="280dp"
-        android:layout_height="167dp"
-        android:layout_marginEnd="64dp"
-        android:text="Courses go here"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:listitem="@layout/course_item"
+        android:layout_margin="8dp"/>
 
     <Button
         android:id="@+id/add_button"

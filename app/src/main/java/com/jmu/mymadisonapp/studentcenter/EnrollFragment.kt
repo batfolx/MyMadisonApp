@@ -34,7 +34,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
-import kotlinx.android.synthetic.main.enroll_course_items.*
+import kotlinx.android.synthetic.main.course_item.view.*
 import kotlinx.android.synthetic.main.enroll_course_items.view.*
 import kotlinx.android.synthetic.main.fragment_class_schedule.*
 import kotlinx.android.synthetic.main.fragment_enroll.*
@@ -66,17 +66,17 @@ class EnrollFragment : Fragment() {
         service = get<MyMadisonService>()
         lifecycleScope.launch {
             val enrolledClasses = service.getEnrolledClasses().await().body()
-            //courses_recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            //courses_recycler_view.adapter = EnrollClassAdapter(enrolledClasses!!)
+            courses_recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            courses_recycler_view.adapter = EnrollClassAdapter(enrolledClasses!!)
 
             MainScope().launch {
 
                 log("List of enrolled classes ${enrolledClasses!!.listOfEnrolledClasses[1]} ")
 
 
-                courses_text_view.text = enrolledClasses?.listOfEnrolledClasses?.joinToString("\n") {
-                    "${it.description}, ${it.daysAndTimes}, ${it.room}, ${it.instructor}. "
-                }
+                // courses_text_view.text = enrolledClasses?.listOfEnrolledClasses?.joinToString("\n") {
+                //    "${it.description}, ${it.daysAndTimes}, ${it.room}, ${it.instructor}. "
+                // }
             }
         }
 
@@ -107,13 +107,13 @@ class EnrollFragment : Fragment() {
 
     }
 
-    inner class EnrollClassAdapter(val enrolledClasses: ListOfEnrolledClasses) : RecyclerView.Adapter<EnrollClassAdapter.EnrollClassHolder>() {
+    inner class EnrollClassAdapter(val enrolledClasses: ListOfEnrolledClasses) :
+        RecyclerView.Adapter<EnrollClassAdapter.EnrollClassHolder>() {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnrollClassHolder {
-           // val v = LayoutInflater.from(parent.context).inflate(R.layout.fragment_enroll, parent, false)
-            val textView = LayoutInflater.from(parent.context).inflate(R.layout.fragment_enroll, parent, false) as TextView
-            return EnrollClassHolder(textView)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.enroll_course_items, parent, false)
+            return EnrollClassHolder(view)
         }
 
         override fun getItemCount(): Int {
@@ -123,29 +123,31 @@ class EnrollFragment : Fragment() {
         override fun onBindViewHolder(holder: EnrollClassHolder, position: Int) {
             //val classes: EnrolledClasses = enrolledClasses.listOfEnrolledClasses[position]
             //holder.daysAndTimes.text = classes.daysAndTimes
-            holder.daysAndTimes.text = enrolledClasses.listOfEnrolledClasses[position].toString()
+
+            with(holder.itemView) {
+
+                description_enroll.text = enrolledClasses.listOfEnrolledClasses[position].description
+                days_and_times_enroll.text = enrolledClasses.listOfEnrolledClasses[position].daysAndTimes
+                instructor_enroll.text = enrolledClasses.listOfEnrolledClasses[position].instructor
+                room_number_enroll.text = enrolledClasses.listOfEnrolledClasses[position].room
+
+            }
 
 
-            //with(holder.itemView) {
-            //    enrolledClasses.listOfEnrolledClasses[position].let{course ->
-
-
-
-             //   }
-
-          //  }
+//            holder.daysAndTimes.text = enrolledClasses.listOfEnrolledClasses[position].daysAndTimes
+//            holder.instructor.text = enrolledClasses.listOfEnrolledClasses[position].instructor
+//            holder.description.text = enrolledClasses.listOfEnrolledClasses[position].description
+//            holder.room.text = enrolledClasses.listOfEnrolledClasses[position].room
 
 
         }
 
         inner class EnrollClassHolder(textView: View) : RecyclerView.ViewHolder(textView) {
+            init {
+                textView.setOnClickListener {
 
-            var daysAndTimes= itemView.findViewById(R.id.days_and_times_enroll) as TextView
-
-            // val classDescription = itemView.findViewById(R.id.description_enroll) as TextView
-
-
-
+                }
+            }
         }
     }
 

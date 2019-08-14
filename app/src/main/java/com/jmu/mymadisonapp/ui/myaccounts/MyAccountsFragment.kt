@@ -46,8 +46,8 @@ class MyAccountsFragment : Fragment() {
                 log("this is the information from the eid ${accountInfo!!.eidLastChanged}")
 
 
-                eid_password_last_changed.text = accountInfo.eidLastChanged
-               //eid_expiration_date.text = "\nYour eID password will expire on: ${accountInfo?.eidExpirationDate}"
+                eid_password_last_changed.text = "You changed your eID password on ${accountInfo.eidLastChanged}\n"
+                eid_expiration_date.text = "Your eID password will expire on: ${accountInfo?.eidExpirationDate}"
 
             }
         }

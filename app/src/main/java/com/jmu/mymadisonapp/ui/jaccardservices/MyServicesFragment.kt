@@ -36,21 +36,40 @@ class MyServicesFragment : Fragment()
 
         lifecycleScope.launch {
             val csInfo = service.getCardServicesInformation().await().body()
-
+            log("This is the card services info $csInfo")
+            val flexBalance = parseCardServicesInfo(csInfo!!.cardServicesInformation)[0]
+            val diningBalance = parseCardServicesInfo(csInfo!!.cardServicesInformation)[1]
             MainScope().launch {
-                my_services_text_view.text = csInfo?.cardServicesInformation
+                my_services_text_view.text = "Remaining Flex Balance: $flexBalance\nRemaining Dining Balance $diningBalance"
 
-                log("This is the card services info $csInfo")
+
             }
         }
     }
 
+    private fun parseCardServicesInfo(balance: String): List<String> {
 
+        val parsedInfo: List<String> = balance.split("Dining")
+        val flexBalance: List<String> = parsedInfo[0].split(":")
+        val diningBalance: List<String> = parsedInfo[1].split(":")
+
+        val parsedFlexBalance: String = flexBalance[1]
+        val parsedDiningBalance: String = diningBalance[1]
+        val parsedList: ArrayList<String> = ArrayList()
+
+        parsedList.add(parsedFlexBalance)
+        parsedList.add(parsedDiningBalance)
+        return parsedList
+
+
+
+
+    }
 }
 
 
 
 data class CardServices(
-    @Selector("#JMU_CARDSVC_SSO_Data > table > tbody > tr > td:nth-child(2)")
+    @Selector("table")
     var cardServicesInformation: String = ""
 )

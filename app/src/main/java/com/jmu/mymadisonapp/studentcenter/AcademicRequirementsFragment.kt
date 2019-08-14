@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.jmu.mymadisonapp.R
@@ -36,6 +37,13 @@ class AcademicRequirementsFragment : Fragment() {
             }
 
 
+        }
+
+
+        back_to_sc_academic_requirements.setOnClickListener {
+            fragmentManager?.commit {
+                replace(R.id.academic_requirements_layout, StudentCenterFragment())
+            }
         }
     }
 

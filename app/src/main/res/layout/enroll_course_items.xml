@@ -2,25 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/enroll_course_layout">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/line_drawable"
+        app:layout_constraintBottom_toTopOf="@id/description_enroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/room_number_enroll"
+        />
 
     <TextView
         android:id="@+id/description_enroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:text="CS 240" />
 
     <TextView
         android:id="@+id/days_and_times_enroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="15sp"
         android:text="MWF" />
 
+
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/instructor_enroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:textSize="20dp"
+        android:text="Instructor" />
+
+    <TextView
+        android:id="@+id/room_number_enroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:text="Room Number" />
+
+
+
+
 </LinearLayout>
