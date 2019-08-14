@@ -26,7 +26,6 @@ class CardServicesBrowserFragment : Fragment()
 
         webview_card_services.webViewClient = WebViewClient()
 
-
         with(webview_card_services.settings){
             loadsImagesAutomatically = true
             javaScriptEnabled = true

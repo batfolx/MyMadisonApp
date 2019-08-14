@@ -37,7 +37,9 @@ import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
 import kotlinx.android.synthetic.main.course_item.view.*
+import kotlinx.android.synthetic.main.enroll_course_items.*
 import kotlinx.android.synthetic.main.enroll_course_items.view.*
+import kotlinx.android.synthetic.main.enroll_course_items.view.description_enroll
 import kotlinx.android.synthetic.main.fragment_class_schedule.*
 import kotlinx.android.synthetic.main.fragment_enroll.*
 import kotlinx.android.synthetic.main.fragment_enroll.view.*
@@ -47,14 +49,13 @@ import kotlinx.coroutines.launch
 import pl.droidsonroids.jspoon.annotation.Selector
 import org.koin.android.ext.android.get
 import org.w3c.dom.Text
-
+public var buttonNames: Array<String> = arrayOf("Edit", "Drop")
 /**
  * A Fragment for the enroll part of the app.
  */
 class EnrollFragment : Fragment() {
 
     private lateinit var service: MyMadisonService
-    public var buttonNames: Array<String> = arrayOf("Edit", "Drop")//, "Swap", "Add")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_enroll, container, false)
@@ -104,19 +105,45 @@ class EnrollFragment : Fragment() {
     inner class EnrollClassAdapter(val enrolledClasses: ListOfEnrolledClasses) :
         RecyclerView.Adapter<EnrollClassAdapter.EnrollClassHolder>() {
 
+        /**
+         * Function that adds buttons to each of the items in the RecyclerView
+         *
+         */
         fun addButtonsToCourses(linearLayoutParams: LinearLayout.LayoutParams,
                                 linearLayout: LinearLayout,
-                                buttonNames: Array<String>) {
+                                buttonNames: Array<String>,
+                                holder: EnrollClassHolder
+                                ) {
 
+            //This makes it less verbose
+            with(holder.itemView) {
 
-            for (name in buttonNames) {
+                //iterates over the names in buttonNames, Edit, Swap, Drop and Add
+                for (name in buttonNames) {
 
-                val tmpButton = Button(context)
-                tmpButton.text = name
-                linearLayout.addView(tmpButton, linearLayoutParams)
+                    //creates a temporary button
+                    val tmpButton = Button(context)
+                    tmpButton.text = name
 
+                    //if the name is Drop, assign a specific action listener for that button.
+                    when (name) {
+                        "Drop" -> tmpButton.setOnClickListener {
+
+                            description_enroll.text = "Description changed when the name is Drop!"
+                        }
+
+                        "Edit" -> tmpButton.setOnClickListener {
+                            description_enroll.text =
+                                "Description changed when the name is Edit!"
+                        }
+
+                        else -> tmpButton.setOnClickListener {
+                            description_enroll.text = "Description changed when the name is Else!"
+                        }
+                    }
+                    linearLayout.addView(tmpButton, linearLayoutParams)
+                }
             }
-
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnrollClassHolder {
@@ -140,7 +167,7 @@ class EnrollFragment : Fragment() {
                 )
                 val linearLayout = findViewById<LinearLayout>(R.id.enroll_course_layout)
 
-                addButtonsToCourses(params, linearLayout, buttonNames)
+                addButtonsToCourses(params, linearLayout, buttonNames, holder)
 
                 description_enroll.text = enrolledClasses.listOfEnrolledClasses[position].description
                 days_and_times_enroll.text = enrolledClasses.listOfEnrolledClasses[position].daysAndTimes
@@ -151,8 +178,6 @@ class EnrollFragment : Fragment() {
             }
 
         }
-
-
 
 
         inner class EnrollClassHolder(textView: View) : RecyclerView.ViewHolder(textView) {

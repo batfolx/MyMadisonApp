@@ -26,7 +26,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.ui.MainViewModel
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
+import kotlinx.android.synthetic.main.fragment_home.view.text_home
 import kotlinx.android.synthetic.main.undergraduate_dashboard.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
