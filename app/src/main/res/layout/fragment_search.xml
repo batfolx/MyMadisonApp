@@ -46,9 +46,10 @@
         android:id="@+id/fragment_search_recycler_view"
         android:layout_width="403dp"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/search_classes_items"
+        android:layout_marginStart="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_fragment_edit_text" />
+        app:layout_constraintTop_toBottomOf="@+id/search_fragment_edit_text"
+        tools:listitem="@layout/search_classes_items" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,12 @@
 package com.jmu.mymadisonapp.studentcenter.search
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
+import android.os.Message
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +28,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.search_classes_items.*
 import kotlinx.android.synthetic.main.search_classes_items.view.*
 import kotlinx.android.synthetic.main.search_classes_items.view.class_section_search
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -30,11 +37,12 @@ import org.jsoup.Jsoup
 import org.koin.android.ext.android.get
 import pl.droidsonroids.jspoon.annotation.Selector
 import retrofit2.Retrofit
+import retrofit2.http.Path
 import java.text.Normalizer
 
 
 class SearchFragment : Fragment() {
-
+    var count: Int = 0
     lateinit var service: MyMadisonService
     lateinit var client: OkHttpClient
 
@@ -63,10 +71,18 @@ class SearchFragment : Fragment() {
                 val formBody = getFormBody(icsid = ICSID, searchQuery = searchQuery)
                 lifecycleScope.launch {
                     val searchedClasses = service.getSearchedClasses(formBody).await().body()
-                    log("THESE ARE THE SEARCH CLASSESSSSS ${searchedClasses?.listOfSearchResults}")
-                    fragment_search_recycler_view.layoutManager =
-                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                    fragment_search_recycler_view.adapter = SearchClassAdapter(searchedClasses!!)
+                    var str = ""
+                    for (result in searchedClasses!!.listOfSearchResults) {
+                        str += "$result\n"
+                    }
+                    // log("THESE ARE THE SEARCH CLASSESSSSS ${str}")
+                    MainScope().launch {
+                        fragment_search_recycler_view.layoutManager =
+                            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                        fragment_search_recycler_view.adapter =
+                            SearchClassAdapter(searchedClasses!!)
+                    }
+
 
                 }
 
@@ -108,23 +124,31 @@ class SearchFragment : Fragment() {
     inner class SearchClassAdapter(val classes: ListOfSearchResults) :
         RecyclerView.Adapter<SearchClassAdapter.SearchClassHolder>() {
 
-        private fun addSelectButton(layoutParams: LinearLayout.LayoutParams, linearLayout: LinearLayout, holder: SearchClassHolder) {
+        //TODO this method is broken
+        private fun addSelectButton(
+            layoutParams: LinearLayout.LayoutParams,
+            linearLayout: LinearLayout,
+            holder: SearchClassHolder
+        ) {
+            if (count < 1) {
+                with(holder.itemView) {
+                    var tmpButton: Button = Button(context)
 
-            with(holder.itemView) {
-                var tmpButton: Button = Button(context)
+                    tmpButton.text = "Select"
 
-                tmpButton.text = "Select"
+                    tmpButton.setOnClickListener {
+                        class_section_search.text = "You have selected the select button!"
+                    }
 
-                tmpButton.setOnClickListener {
-                    class_section_search.text = "You have selected the select button!"
+                    log("LOGGING ANOTHER BUTTONNNNNNNN")
+                    linearLayout.addView(tmpButton, layoutParams)
+                    count++
                 }
-
-
-                linearLayout.addView(tmpButton, layoutParams)
+            } else {
+                log("SKIPPED ADDING BUTTON!")
             }
 
         }
-
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchClassHolder {
@@ -139,29 +163,30 @@ class SearchFragment : Fragment() {
 
         override fun onBindViewHolder(holder: SearchClassHolder, position: Int) {
 
+            val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            val linearLayout =
+                holder.itemView.findViewById<LinearLayout>(R.id.search_classes_layout)
+
+            //addSelectButton(params, linearLayout, holder)
 
             with(holder.itemView) {
 
-                val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                val linearLayout = findViewById<LinearLayout>(R.id.search_classes_layout)
-
-                addSelectButton(params, linearLayout, holder)
 
                 //course_description.text = classes.listOfSearchResults[position].className
 
-                if (position % 2 == 0) {
-                    class_name_search.text = classes.listOfSearchResults[position].className
-                    class_number_search.text = classes.listOfSearchResults[position].classNumber
-                    class_section_search.text = classes.listOfSearchResults[position].section
+
+                class_name_search.text = classes.listOfSearchResults[position].className
+                class_number_search.text = classes.listOfSearchResults[position].classNumber
+                class_section_search.text = classes.listOfSearchResults[position].section
 
 
-                    instructor_search.text = classes.listOfSearchResults[position].instructor
-                    room_search.text = classes.listOfSearchResults[position].room
-                    meeting_dates_search.text = classes.listOfSearchResults[position].meetingDates
-                    days_and_times_search.text = classes.listOfSearchResults[position].daysAndTimes
-                }
+                instructor_search.text = classes.listOfSearchResults[position].instructor
+                room_search.text = classes.listOfSearchResults[position].room
+                meeting_dates_search.text = classes.listOfSearchResults[position].meetingDates
+                days_and_times_search.text = classes.listOfSearchResults[position].daysAndTimes
+
 
 /*                description_enroll.text = classes.table[position].className
                 for (i in 0..classes.table.size) {
@@ -180,17 +205,33 @@ class SearchFragment : Fragment() {
         }
 
 
-        inner class SearchClassHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+        inner class SearchClassHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            init {
+                itemView.setOnClickListener {
+                    val alertDialog = AlertDialog.Builder(context, 1)
+                        .setTitle("Are you sure?")
+                        .setMessage("Are you sure you want to add this class?")
+                        .setCancelable(true)
+                        .create()
+
+                  //  alertDialog.setButton(Button(context), "Yes", Message())
+
+                    alertDialog.show()
+                }
+            }
+        }
     }
 }
 
-//data class ListOfListOfSearchResults(
-//    @Selector("table[id^=ACE_SSR_CLSRSLT_WRK_GROUPBOX1]")
-//    val table: List<ListOfSearchResults> = emptyList()
-//)
+data class ListOfListOfSearchResults(
+    @Selector("table[id^=ACE_SSR_CLSRSLT_WRK_GROUPBOX1]")
+    val table: List<ListOfSearchResults> = emptyList()
+)
 
 data class ListOfSearchResults(
-    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
+
+    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2] > table")//"div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
+    @Path("0")
     var listOfSearchResults: List<SearchResults> = emptyList()
 
 )

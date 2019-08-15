@@ -118,7 +118,6 @@ class EnrollFragment : Fragment() {
 
             //This makes it less verbose
             with(holder.itemView) {
-
                 //iterates over the names in buttonNames, Edit, Swap, Drop and Add
                 for (name in buttonNames) {
 

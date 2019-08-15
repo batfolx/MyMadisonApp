@@ -66,7 +66,6 @@ class AddEnrollFragment : Fragment() {
         buttonNames: Array<String>,
         holder: AddClassAdapter.AddClassHolder
     ) {
-        var count: Int = 0
         with(holder.itemView) {
 
             for (name in buttonNames) {
