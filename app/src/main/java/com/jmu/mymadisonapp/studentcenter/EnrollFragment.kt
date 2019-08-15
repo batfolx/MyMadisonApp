@@ -73,7 +73,6 @@ class EnrollFragment : Fragment() {
 
             MainScope().launch {
 
-                log("List of enrolled classes ${enrolledClasses!!.listOfEnrolledClasses[1]} ")
 
 
                 // courses_text_view.text = enrolledClasses?.listOfEnrolledClasses?.joinToString("\n") {

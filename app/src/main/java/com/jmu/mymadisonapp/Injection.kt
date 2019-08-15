@@ -105,7 +105,6 @@ val databaseModule = module {
 
 // Provide data sources and repositories for ViewModel's
 val appModule = module {
-
     single { LoginDataSource(get(), get()) }
 
     single { LoginRepository(get()) }

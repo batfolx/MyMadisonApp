@@ -17,11 +17,11 @@ import com.jmu.mymadisonapp.net.MYMADISON_LOGIN_BASE_URL
 import com.jmu.mymadisonapp.net.MyMadisonService
 import kotlinx.android.synthetic.main.fragment_add_enroll.*
 import kotlinx.android.synthetic.main.shopping_cart_items.view.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.jsoup.Jsoup
 import org.koin.android.ext.android.get
 import pl.droidsonroids.jspoon.annotation.Selector
 import retrofit2.Call
@@ -74,21 +74,32 @@ class AddEnrollFragment : Fragment() {
                 when (name) {
                     "Drop" -> tmpButton.setOnClickListener {
                         //TODO send post data to JMU server telling the server that the user wants to drop the class
-                        description_enroll_sc.text = "Description changed when the name is Drop!"
 
+                        Thread {
+                            val responseBody: String? =
+                                client.newCall(
+                                    Request.Builder()
+                                        .url("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+                                        .get()
+                                        .build()
+                                ).execute().body()?.string()
 
-                        val ICAction = "P_DELETE\$${count}"
-                        count++
-                        lifecycleScope.launch {
-                            service.deleteSelectedClass(
-                                FormBody.Builder().add("ICAction", ICAction).build()
-                            ).await()
-                        }
+                            val ICAction: String =
+                                Jsoup.parse(responseBody).selectFirst("#ICAction").`val`()
+                            val ICStateNum: String =
+                                Jsoup.parse(responseBody).selectFirst("input[name=ICStateNum]").`val`()
+                            val ICSID: String =
+                                Jsoup.parse(responseBody).select("#ICSID").`val`()
 
-
+                            val formBody = getFormBody(ICSID_ID = ICSID, icStateNumKey = ICStateNum)
+                            service.deleteSelectedClass(formBody)
+                            description_enroll_sc.text = "Dropped the class!"
+                            log("THESE ARE THE ICSID $ICSID, ICACTION $ICAction, ICSTATENUM $ICStateNum.")
+                            }.start()
 
 
                     }
+
 
                     "Edit" -> tmpButton.setOnClickListener {
                         description_enroll_sc.text =
@@ -102,47 +113,87 @@ class AddEnrollFragment : Fragment() {
                 linearLayout.addView(tmpButton, linearLayoutParams)
             }
 
-    }
-}
-
-inner class AddClassAdapter(private val shoppingCart: ListOfAddEnrollShoppingCart) :
-    RecyclerView.Adapter<AddClassAdapter.AddClassHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddClassHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.shopping_cart_items, parent, false)
-        return AddClassHolder(view)
-    }
-
-    override fun getItemCount(): Int {
-        return shoppingCart.shoppingCart.size
-    }
-
-    override fun onBindViewHolder(holder: AddClassHolder, position: Int) {
-
-
-        with(holder.itemView) {
-
-            val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            val linearLayout = findViewById<LinearLayout>(R.id.shopping_cart_items_layout)
-
-
-            addButtonsToCourses(params, linearLayout, buttonNames, holder)
-
-            description_enroll_sc.text = shoppingCart.shoppingCart[position].className
-            days_and_times_enroll_sc.text = shoppingCart.shoppingCart[position].daysAndTimes
-            instructor_enroll_sc.text = shoppingCart.shoppingCart[position].instructor
-            room_number_enroll_sc.text = shoppingCart.shoppingCart[position].room
-
-
         }
     }
 
+    private fun getFormBody(
+        ICSID_ID: String,
+        icStateNumKey: String,
+        icActionKey: String = "P_DELETE\$0"
+    ): FormBody {
 
-    inner class AddClassHolder(textView: View) : RecyclerView.ViewHolder(textView) {
+        var formBody = FormBody.Builder()
+            .add("ICAJAX", "1")
+            .add("ICNAVTYPEDROPDOWN", "1")
+            .add("ICType", "Panel")
+            .add("ICElementNum", "0")
+            .add("ICStateNum", icStateNumKey)
+            .add("ICAction", icActionKey)
+            .add("ICModelCancel", "0")
+            .add("ICXPos", "0")
+            .add("ICYPos", "0")
+            .add("ResponsetoDiffFrame", "-1")
+            .add("TargetFrameName", "None")
+            .add("FacetPath", "None")
+            .add("ICFocus", " ")
+            .add("ICSaveWarningFilter", "0")
+            .add("ICChanged", "-1")
+            .add("ICSkipPending", "0")
+            .add("ICAutoSave", "0")
+            .add("ICResubmit", "0")
+            .add("ICSID", ICSID_ID)
+            .add("ICActionPrompt", "false")
+            .add("ICTypeAheadID", "")
+            .add("ICBcDomData", "")
+            .add("ICPanelName", "")
+            .add("ICAddCount:", "")
+            .add("ICAPPCLSDATA", "")
+            .add("DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$", "0100")
+            .add("DERIVED_REGFRM1_CLASS_NBR", "")
+            .add("DERIVED_REGFRM1_SSR_CLS_SRCH_TYPE\$252\$", "10").build()
 
+        return formBody
     }
-}
+
+    inner class AddClassAdapter(private val shoppingCart: ListOfAddEnrollShoppingCart) :
+        RecyclerView.Adapter<AddClassAdapter.AddClassHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddClassHolder {
+            val view =
+                LayoutInflater.from(context).inflate(R.layout.shopping_cart_items, parent, false)
+            return AddClassHolder(view)
+        }
+
+        override fun getItemCount(): Int {
+            return shoppingCart.shoppingCart.size
+        }
+
+        override fun onBindViewHolder(holder: AddClassHolder, position: Int) {
+
+
+            with(holder.itemView) {
+
+                val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                val linearLayout = findViewById<LinearLayout>(R.id.shopping_cart_items_layout)
+
+
+                addButtonsToCourses(params, linearLayout, buttonNames, holder)
+
+                description_enroll_sc.text = shoppingCart.shoppingCart[position].className
+                days_and_times_enroll_sc.text = shoppingCart.shoppingCart[position].daysAndTimes
+                instructor_enroll_sc.text = shoppingCart.shoppingCart[position].instructor
+                room_number_enroll_sc.text = shoppingCart.shoppingCart[position].room
+
+
+            }
+        }
+
+
+        inner class AddClassHolder(textView: View) : RecyclerView.ViewHolder(textView) {
+
+        }
+    }
 }
 
 data class ListOfAddEnrollShoppingCart(
@@ -170,6 +221,14 @@ data class AddEnrollShoppingCart(
 
     @Selector("div[id^=win0divDERIVED_REGFRM1_SSR_STATUS_LONG]")
     var status: String = ""
+
+
+)
+
+
+data class DeleteFormData(
+    @Selector("span[id^=SSR_REGFORM_VW_UNT_TAKEN]")
+    var ICSID: String = ""
 
 
 )

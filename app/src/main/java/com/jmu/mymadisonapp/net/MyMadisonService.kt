@@ -109,10 +109,9 @@ interface MyMadisonService {
     @GET("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
     fun getShoppingCartClasses(): Deferred<Response<ListOfAddEnrollShoppingCart>>
 
-    @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
-    suspend fun deleteSelectedClass(@Body body: FormBody): Deferred<Response<ResponseBody>>
+    fun deleteSelectedClass(@Body body: FormBody): Deferred<Response<ResponseBody>>
 
 
     /**
