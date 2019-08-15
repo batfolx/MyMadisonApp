@@ -5,6 +5,8 @@ import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,9 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
+import com.jmu.mymadisonapp.studentcenter.EnrollFragment
+import kotlinx.android.synthetic.main.course_item.view.*
 import kotlinx.android.synthetic.main.enroll_course_items.view.*
 import kotlinx.android.synthetic.main.fragment_enroll.*
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.search_classes_items.*
+import kotlinx.android.synthetic.main.search_classes_items.view.*
+import kotlinx.android.synthetic.main.search_classes_items.view.class_section_search
 import kotlinx.coroutines.launch
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -50,7 +57,8 @@ class SearchFragment : Fragment() {
             val searchQuery: String = search_fragment_edit_text.text.toString()
             Thread {
 
-                val responseBody: String? = getResponseBody("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
+                val responseBody: String? =
+                    getResponseBody("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
                 val ICSID: String = getCSSSelector(responseBody!!, "#ICSID")
                 val formBody = getFormBody(icsid = ICSID, searchQuery = searchQuery)
                 lifecycleScope.launch {
@@ -62,9 +70,6 @@ class SearchFragment : Fragment() {
 
                 }
 
-
-
-
             }.start()
 
 
@@ -73,9 +78,11 @@ class SearchFragment : Fragment() {
 
     }
 
+
     private fun getCSSSelector(responseBody: String, query: String): String {
         return Jsoup.parse(responseBody).select(query).`val`()
     }
+
     private fun getResponseBody(url: String): String? {
         return client.newCall(
             Request.Builder()
@@ -89,20 +96,40 @@ class SearchFragment : Fragment() {
     private fun getFormBody(icsid: String, searchQuery: String): FormBody {
 
         val formBody = FormBody.Builder()
-            .add("ICAction","CLASS_SRCH_WRK2_SSR_PB_CLASS_SRCH")
+            .add("ICAction", "CLASS_SRCH_WRK2_SSR_PB_CLASS_SRCH")
             .add("ICSID", icsid)
-            .add("SSR_CLSRCH_WRK_SUBJECT",searchQuery)
-            .add("CLASS_SRCH_WRK2_INSTITUTION\$31\$","JMDSN").build()
+            .add("SSR_CLSRCH_WRK_SUBJECT", searchQuery)
+            .add("CLASS_SRCH_WRK2_INSTITUTION\$31\$", "JMDSN").build()
 
         return formBody
     }
 
 
+    inner class SearchClassAdapter(val classes: ListOfSearchResults) :
+        RecyclerView.Adapter<SearchClassAdapter.SearchClassHolder>() {
 
-    inner class SearchClassAdapter(val classes: ListOfSearchResults) : RecyclerView.Adapter<SearchClassAdapter.SearchClassHolder>() {
+        private fun addSelectButton(layoutParams: LinearLayout.LayoutParams, linearLayout: LinearLayout, holder: SearchClassHolder) {
+
+            with(holder.itemView) {
+                var tmpButton: Button = Button(context)
+
+                tmpButton.text = "Select"
+
+                tmpButton.setOnClickListener {
+                    class_section_search.text = "You have selected the select button!"
+                }
+
+
+                linearLayout.addView(tmpButton, layoutParams)
+            }
+
+        }
+
+
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchClassHolder {
-            val view = LayoutInflater.from(context).inflate(R.layout.enroll_course_items, parent, false)
+            val view =
+                LayoutInflater.from(context).inflate(R.layout.search_classes_items, parent, false)
             return SearchClassHolder(view)
         }
 
@@ -112,12 +139,29 @@ class SearchFragment : Fragment() {
 
         override fun onBindViewHolder(holder: SearchClassHolder, position: Int) {
 
+
             with(holder.itemView) {
 
-                description_enroll.text = classes.listOfSearchResults[position].className
-                class_number_enroll.text = classes.listOfSearchResults[position].classNumber
-                instructor_enroll.text = classes.listOfSearchResults[position].instructor
-                room_number_enroll.text = classes.listOfSearchResults[position].room
+                val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                val linearLayout = findViewById<LinearLayout>(R.id.search_classes_layout)
+
+                addSelectButton(params, linearLayout, holder)
+
+                //course_description.text = classes.listOfSearchResults[position].className
+
+                if (position % 2 == 0) {
+                    class_name_search.text = classes.listOfSearchResults[position].className
+                    class_number_search.text = classes.listOfSearchResults[position].classNumber
+                    class_section_search.text = classes.listOfSearchResults[position].section
+
+
+                    instructor_search.text = classes.listOfSearchResults[position].instructor
+                    room_search.text = classes.listOfSearchResults[position].room
+                    meeting_dates_search.text = classes.listOfSearchResults[position].meetingDates
+                    days_and_times_search.text = classes.listOfSearchResults[position].daysAndTimes
+                }
 
 /*                description_enroll.text = classes.table[position].className
                 for (i in 0..classes.table.size) {
@@ -147,31 +191,42 @@ class SearchFragment : Fragment() {
 
 data class ListOfSearchResults(
     @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
-    var listOfSearchResults: List<SearchResults> = emptyList(),
+    var listOfSearchResults: List<SearchResults> = emptyList()
 
-    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2GP]")
-    var className: String = ""
 )
 
 data class SearchResults(
+
+    // 73179
     @Selector("a[id^=MTG_CLASS_NBR]")
     var classNumber: String = "",
 
+
+    // 0004-LEC
+    //Regular
     @Selector("a[id^=MTG_CLASSNAME]")
     var section: String = "",
 
+    //MoWeFr 9:05AM - 9:55AM
     @Selector("span[id^=MTG_DAYTIME]")
     var daysAndTimes: String = "",
 
+
+    // ISAT/CS Building 0143
     @Selector("span[id^=MTG_ROOM]")
     var room: String = "",
 
+
+    //Philip Riley
     @Selector("span[id^=MTG_INSTR]")
     var instructor: String = "",
 
+    //08/26/2019 - 12/13/2019
     @Selector("span[id^=MTG_TOPIC]")
     var meetingDates: String = "",
 
+
+    //CS 149 - INTRODUCTION TO PROGRAMMING
     @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2GP]")
     var className: String = ""
 

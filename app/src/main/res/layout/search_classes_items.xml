@@ -2,11 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/enroll_course_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:textAlignment="textEnd">
+    android:id="@+id/search_classes_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <View
         android:layout_width="match_parent"
@@ -20,30 +19,40 @@
         app:layout_constraintTop_toTopOf="@id/room_number_enroll" />
 
     <TextView
-        android:id="@+id/description_enroll"
+        android:id="@+id/class_name_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:text="Description"
+        tools:text="Description"
         android:textSize="20sp"
         android:visibility="visible" />
 
     <TextView
-        android:id="@+id/class_number_enroll"
+        android:id="@+id/class_section_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        tools:text="Class section"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/class_number_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Class number" />
 
+
+
     <TextView
-        android:id="@+id/days_and_times_enroll"
+        android:id="@+id/days_and_times_search"
         style="@android:style/Widget.Material.Light.TextView.SpinnerItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contextClickable="false"
         android:fontFamily="sans-serif-light"
-        android:text="MWF"
+        tools:text="MWF"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColorHighlight="#832525"
@@ -51,29 +60,30 @@
 
 
     <TextView
-        android:id="@+id/instructor_enroll"
+        android:id="@+id/instructor_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
         android:scrollHorizontally="true"
-        android:text="Instructor"
+        tools:text="Instructor"
         android:textSize="20dp" />
 
     <TextView
-        android:id="@+id/room_number_enroll"
+        android:id="@+id/room_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:text="Room Number"
+        tools:text="Room Number"
         android:textSize="15dp" />
 
-
     <TextView
-        android:id="@+id/meeting_times_enroll"
+        android:id="@+id/meeting_dates_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light" />
-
+        android:fontFamily="sans-serif-light"
+        tools:text="meeting dates"
+        android:textSize="20sp"
+        android:visibility="visible" />
 
 
 
