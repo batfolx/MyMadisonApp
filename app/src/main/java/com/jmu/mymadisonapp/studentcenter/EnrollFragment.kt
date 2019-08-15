@@ -34,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmu.mymadisonapp.R
+import com.jmu.mymadisonapp.buttonNames
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
 import kotlinx.android.synthetic.main.course_item.view.*
@@ -49,7 +50,6 @@ import kotlinx.coroutines.launch
 import pl.droidsonroids.jspoon.annotation.Selector
 import org.koin.android.ext.android.get
 import org.w3c.dom.Text
-public var buttonNames: Array<String> = arrayOf("Edit", "Drop")
 /**
  * A Fragment for the enroll part of the app.
  */
@@ -86,6 +86,8 @@ class EnrollFragment : Fragment() {
             fragmentManager?.commit {
                 replace(R.id.enroll_layout, AddEnrollFragment()).addToBackStack(null)
             }
+
+            add_button.visibility = View.GONE
         }
 
         student_center_button.setOnClickListener {
@@ -173,6 +175,7 @@ class EnrollFragment : Fragment() {
                 instructor_enroll.text = enrolledClasses.listOfEnrolledClasses[position].instructor
                 room_number_enroll.text = enrolledClasses.listOfEnrolledClasses[position].room
                 class_number_enroll.text = classNum
+
 
             }
 

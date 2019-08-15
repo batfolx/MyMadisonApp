@@ -68,4 +68,11 @@
         android:textSize="15dp" />
 
 
+    <TextView
+        android:id="@+id/meeting_times_enroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light" />
+
+
 </LinearLayout>

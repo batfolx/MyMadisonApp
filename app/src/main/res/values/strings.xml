@@ -55,6 +55,7 @@
     //for the fragment_studentcenter.xml
     <string name="student_center_textField">Welcome to the Student Center</string>
     <string-array name="academics_spinner">
+        <item>-- Select an option --</item>
         <item>Search</item>
         <item>Enroll(Add, Drop, Edit, Swap)</item>
         <item>Schedule Planner</item>

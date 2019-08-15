@@ -68,7 +68,7 @@ val netModule = module {
             .addNetworkInterceptor(get())
             .addNetworkInterceptor(
                 HttpLoggingInterceptor { if (!it.startsWith("Cookie")) logD("OkHttp", it, false) }
-                    .setLevel(HttpLoggingInterceptor.Level.BODY)
+                    .setLevel(HttpLoggingInterceptor.Level.BASIC)
             )
             .connectTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)

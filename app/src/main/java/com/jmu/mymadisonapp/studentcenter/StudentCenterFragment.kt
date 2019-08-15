@@ -13,6 +13,7 @@ import com.google.android.material.internal.NavigationMenu
 import com.jmu.mymadisonapp.MainActivity
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.room.model.Student
+import com.jmu.mymadisonapp.studentcenter.search.SearchFragment
 import kotlinx.android.synthetic.main.fragment_studentcenter.*
 import java.lang.reflect.Field
 
@@ -40,14 +41,18 @@ class StudentCenterFragment : Fragment() {
                 when (position) {
                     //Search is selected
 
-                    0 -> student_center_textField.text = "You selected search!"
                     1 -> {
+                        fragmentManager?.commit {
+                            replace(R.id.student_center_layout, SearchFragment()).addToBackStack(null)
+                        }
+                    }
+                    2 -> {
                         fragmentManager?.commit {
                             replace(R.id.student_center_layout, TermSelectorFragment())
                                 .addToBackStack(null)
                         }
                     }//Enroll is selected
-                    2 -> {
+                    3 -> {
                         fragmentManager?.commit {
                             replace(
                                 R.id.student_center_layout,
@@ -56,7 +61,7 @@ class StudentCenterFragment : Fragment() {
                             addToBackStack(null)
                         }
                     }
-                    3 -> {
+                    4 -> {
                         fragmentManager?.commit {
                             replace(
                                 R.id.student_center_layout,
@@ -66,7 +71,7 @@ class StudentCenterFragment : Fragment() {
                         }
                     }
 
-                    4 -> {
+                    5 -> {
 
                         fragmentManager?.commit {
                             replace(R.id.student_center_layout, AcademicRequirementsFragment())

@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmu.mymadisonapp.R
+import com.jmu.mymadisonapp.buttonNames
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MYMADISON_LOGIN_BASE_URL
 import com.jmu.mymadisonapp.net.MyMadisonService
@@ -51,6 +52,7 @@ class AddEnrollFragment : Fragment() {
             shopping_cart_recycler_view.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             shopping_cart_recycler_view.adapter = AddClassAdapter(enrolledClasses!!)
+            log("DOING THE SHOPPING ${enrolledClasses.shoppingCart}")
             for (item in enrolledClasses.shoppingCart) {
                 log("List of enrolled classes $item")
             }
@@ -73,8 +75,6 @@ class AddEnrollFragment : Fragment() {
                 tmpButton.text = name
                 when (name) {
                     "Drop" -> tmpButton.setOnClickListener {
-                        //TODO send post data to JMU server telling the server that the user wants to drop the class
-
                         Thread {
                             val responseBody: String? =
                                 client.newCall(
@@ -91,10 +91,9 @@ class AddEnrollFragment : Fragment() {
                             val ICSID: String =
                                 Jsoup.parse(responseBody).select("#ICSID").`val`()
 
-                            val formBody = getFormBody(ICSID_ID = ICSID, icStateNumKey = ICStateNum)
+                            val formBody = getFormBody(ICSIDKey = ICSID, icStateNumKey = ICStateNum)
                             service.deleteSelectedClass(formBody)
                             description_enroll_sc.text = "Dropped the class!"
-                            log("THESE ARE THE ICSID $ICSID, ICACTION $ICAction, ICSTATENUM $ICStateNum.")
                             }.start()
 
 
@@ -117,7 +116,7 @@ class AddEnrollFragment : Fragment() {
     }
 
     private fun getFormBody(
-        ICSID_ID: String,
+        ICSIDKey: String,
         icStateNumKey: String,
         icActionKey: String = "P_DELETE\$0"
     ): FormBody {
@@ -141,7 +140,7 @@ class AddEnrollFragment : Fragment() {
             .add("ICSkipPending", "0")
             .add("ICAutoSave", "0")
             .add("ICResubmit", "0")
-            .add("ICSID", ICSID_ID)
+            .add("ICSID", ICSIDKey)
             .add("ICActionPrompt", "false")
             .add("ICTypeAheadID", "")
             .add("ICBcDomData", "")
@@ -190,9 +189,9 @@ class AddEnrollFragment : Fragment() {
         }
 
 
-        inner class AddClassHolder(textView: View) : RecyclerView.ViewHolder(textView) {
+        inner class AddClassHolder(textView: View) : RecyclerView.ViewHolder(textView)
 
-        }
+
     }
 }
 
@@ -207,7 +206,7 @@ data class AddEnrollShoppingCart(
     @Selector("span[id^=DERIVED_REGFRM1_SSR_MTG_LOC_LONG]")
     var room: String = "",
 
-    @Selector("span[id^=P_CLASS_NAME\\\$span]")
+    @Selector("span[id^=R_CLASS_NAME]")
     var className: String = "",
 
     @Selector("span[id^=DERIVED_REGFRM1_SSR_MTG_SCHED_LONG]")
@@ -226,9 +225,7 @@ data class AddEnrollShoppingCart(
 )
 
 
-data class DeleteFormData(
-    @Selector("span[id^=SSR_REGFORM_VW_UNT_TAKEN]")
-    var ICSID: String = ""
-
-
+data class JMUParking(
+    @Selector("h1[id^=pagetitle]")
+    var chesapeake: String = ""
 )

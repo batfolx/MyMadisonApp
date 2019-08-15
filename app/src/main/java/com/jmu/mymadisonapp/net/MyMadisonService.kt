@@ -19,6 +19,7 @@ package com.jmu.mymadisonapp.net
 
 import com.jmu.mymadisonapp.data.model.*
 import com.jmu.mymadisonapp.studentcenter.*
+import com.jmu.mymadisonapp.studentcenter.search.ListOfSearchResults
 import com.jmu.mymadisonapp.ui.jaccardservices.CardServices
 import com.jmu.mymadisonapp.ui.myaccounts.ListOfMealPlans
 import com.jmu.mymadisonapp.ui.myaccounts.MealPlans
@@ -114,6 +115,10 @@ interface MyMadisonService {
     fun deleteSelectedClass(@Body body: FormBody): Deferred<Response<ResponseBody>>
 
 
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
+    fun getSearchedClasses(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
+
     /**
      * Function with a @GET annotation that connects the request and returned a Response object with the list
      * of academic course catalogs
@@ -138,6 +143,9 @@ interface MyMadisonService {
      */
     @GET("https://jmu.campusdish.com/MealPlans/Category?cat=All_Products_6598&lid=6598")
     fun getMealPlans(): Deferred<Response<ListOfMealPlans>>
+
+    @GET("https://www.jmu.edu/parking/")
+    fun getParking(): Deferred<Response<JMUParking>>
 
 //    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")
 //    fun getUnofficialTranscript()

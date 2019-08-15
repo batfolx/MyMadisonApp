@@ -8,11 +8,13 @@
     android:background="@color/cardview_dark_background"
     android:id="@+id/add_enroll_layout">
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shopping_cart_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
+        android:layout_height="453dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.36"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/shopping_cart_items" />
