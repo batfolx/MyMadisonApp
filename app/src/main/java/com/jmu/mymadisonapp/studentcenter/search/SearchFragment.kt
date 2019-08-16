@@ -44,8 +44,8 @@ import java.text.Normalizer
 class SearchFragment : Fragment() {
     var count: Int = 0
     lateinit var service: MyMadisonService
-    lateinit var client: OkHttpClient
-
+    var client: OkHttpClient = get()
+    lateinit var respBody: String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,13 +57,13 @@ class SearchFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         service = get()
-        client = get()
+        //client = get()
         // we set an on-click listener to search
         search_fragment_button.setOnClickListener {
 
             // we take the search query inputted into the service
             val searchQuery: String = search_fragment_edit_text.text.toString()
-            Thread {
+            val thread = Thread {
 
                 val responseBody: String? =
                     getResponseBody("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
@@ -71,22 +71,22 @@ class SearchFragment : Fragment() {
                 val formBody = getFormBody(icsid = ICSID, searchQuery = searchQuery)
                 lifecycleScope.launch {
                     val searchedClasses = service.getSearchedClasses(formBody).await().body()
-                    var str = ""
-                    for (result in searchedClasses!!.listOfSearchResults) {
-                        str += "$result\n"
-                    }
+
+                    // }
                     // log("THESE ARE THE SEARCH CLASSESSSSS ${str}")
-                    MainScope().launch {
-                        fragment_search_recycler_view.layoutManager =
-                            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                        fragment_search_recycler_view.adapter =
-                            SearchClassAdapter(searchedClasses!!)
-                    }
+
+                    fragment_search_recycler_view.layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    fragment_search_recycler_view.adapter =
+                        SearchClassAdapter(searchedClasses!!)
 
 
                 }
 
-            }.start()
+            }
+            thread.start()
+            thread.join()
+
 
 
         }
@@ -100,12 +100,14 @@ class SearchFragment : Fragment() {
     }
 
     private fun getResponseBody(url: String): String? {
+
         return client.newCall(
             Request.Builder()
                 .url(url)
                 .get()
                 .build()
-        ).execute().body()?.string()
+        ).execute().body()!!.string()
+
 
     }
 
@@ -124,30 +126,91 @@ class SearchFragment : Fragment() {
     inner class SearchClassAdapter(val classes: ListOfSearchResults) :
         RecyclerView.Adapter<SearchClassAdapter.SearchClassHolder>() {
 
-        //TODO this method is broken
-        private fun addSelectButton(
-            layoutParams: LinearLayout.LayoutParams,
-            linearLayout: LinearLayout,
-            holder: SearchClassHolder
-        ) {
-            if (count < 1) {
-                with(holder.itemView) {
-                    var tmpButton: Button = Button(context)
+        /**
+         * This form body is made when the user selects a class from the search results
+         */
+        private fun createSelectFormBody(url: String, position: Int, icAction: String): FormBody {
 
-                    tmpButton.text = "Select"
+            // url = "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
 
-                    tmpButton.setOnClickListener {
-                        class_section_search.text = "You have selected the select button!"
-                    }
 
-                    log("LOGGING ANOTHER BUTTONNNNNNNN")
-                    linearLayout.addView(tmpButton, layoutParams)
-                    count++
-                }
-            } else {
-                log("SKIPPED ADDING BUTTON!")
-            }
+            val respBody = getResponseBody(url)
+            val icsid = getCSSSelector(respBody!!, "#ICSID")
+            val icStateNum = getCSSSelector(respBody!!, "#ICStateNum")
+            val formBody = FormBody.Builder()
 
+                .add("ICAJAX","1")
+                .add("ICNAVTYPEDROPDOWN","1")
+                .add("ICElementNum","0")
+                .add("ICStateNum", icStateNum)
+                .add("ICAction", "$icAction\$$position")
+                .add("ICModelCancel","0")
+                .add("ICXPos","0")
+                .add("ICYPos","0")
+                .add("ResponsetoDiffFrame","-1")
+                .add("TargetFrameName","None")
+                .add("FacetPath","None")
+                .add("ICFocus","")
+                .add("ICSaveWarningFilter","0")
+                .add("ICChanged","-1")
+                .add("ICSkipPending","0")
+                .add("ICAutoSave","0")
+                .add("ICResubmit","0")
+                .add("ICSID", icsid)
+                .add("ICActionPrompt","false")
+                .add("ICTypeAheadID","")
+                .add("ICBcDomData","")
+                .add("ICPanelName","")
+                .add("ICFind", "")
+                .add("ICAddCount","")
+                .add("ICAPPCLSDATA", "")
+                .build()
+            log("This is formbody in selection ${formBody.encodedValue(17)}")
+            return formBody
+        }
+
+        /**
+         * This form body is made when the user confirms
+         */
+        private fun createConfirmFormBody(url: String, position: Int, icAction: String): FormBody {
+
+            // url = "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
+
+            val respBody = getResponseBody(url)
+            val icsid = getCSSSelector(respBody!!, "#ICSID")
+            val icStateNum = getCSSSelector(respBody, "#ICStateNum")
+            val formBody = FormBody.Builder()
+                .add("ICAJAX","1")
+                .add("ICNAVTYPEDROPDOWN","1")
+                .add("ICElementNum","0")
+                .add("ICStateNum", icStateNum)
+                .add("ICAction", "$icAction")
+                .add("ICModelCancel","0")
+                .add("ICXPos","0")
+                .add("ICYPos","0")
+                .add("ResponsetoDiffFrame","-1")
+                .add("TargetFrameName","None")
+                .add("FacetPath","None")
+                .add("ICFocus","")
+                .add("ICSaveWarningFilter","0")
+                .add("ICChanged","-1")
+                .add("ICSkipPending","0")
+                .add("ICAutoSave","0")
+                .add("ICResubmit","0")
+                .add("ICSID", icsid)
+                .add("ICActionPrompt","false")
+                .add("ICTypeAheadID","")
+                .add("ICBcDomData","")
+                .add("ICPanelName","")
+                .add("ICFind", "")
+                .add("ICAddCount","")
+                .add("ICAPPCLSDATA", "")
+                .add("DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$","0100")
+                .add("DERIVED_CLS_DTL_WAIT_LIST_OKAY\$125\$\$chk","N")
+                .add("DERIVED_CLS_DTL_REPEAT_CODE\$291\$","REIG")
+                .build()
+            log("THIS is form body in confirm $formBody")
+            return formBody
         }
 
 
@@ -163,19 +226,35 @@ class SearchFragment : Fragment() {
 
         override fun onBindViewHolder(holder: SearchClassHolder, position: Int) {
 
-            val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            val linearLayout =
-                holder.itemView.findViewById<LinearLayout>(R.id.search_classes_layout)
-
-            //addSelectButton(params, linearLayout, holder)
-
             with(holder.itemView) {
 
 
                 //course_description.text = classes.listOfSearchResults[position].className
 
+                select_search_button.setOnClickListener {
+                    class_name_search.text = "Position of this element $position"
+                    val url =
+                        "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
+                    val thread = Thread {
+                        var formBody = createSelectFormBody(
+                            url = url,
+                            position = position,
+                            icAction = "SSR_PB_SELECT"
+                        )
+
+                        service.addClass(formBody)
+                        formBody = createConfirmFormBody(
+                            url = url,
+                            position = position,
+                            icAction = "DERIVED_CLS_DTL_NEXT_PB\$280\$"
+                        )
+                        service.addClass(formBody)
+                    }
+                    thread.start()
+                    thread.join()
+
+
+                }
 
                 class_name_search.text = classes.listOfSearchResults[position].className
                 class_number_search.text = classes.listOfSearchResults[position].classNumber
@@ -188,18 +267,6 @@ class SearchFragment : Fragment() {
                 days_and_times_search.text = classes.listOfSearchResults[position].daysAndTimes
 
 
-/*                description_enroll.text = classes.table[position].className
-                for (i in 0..classes.table.size) {
-                    class_number_enroll.text =
-                        classes.table[i].listOfSearchResults[position].classNumber
-                    days_and_times_enroll.text =
-                        classes.table[i].listOfSearchResults[position].daysAndTimes
-                    instructor_enroll.text =
-                        classes.table[i].listOfSearchResults[position].instructor
-                    room_number_enroll.text = classes.table[i].listOfSearchResults[position].room
-                    credits_enroll.text =
-                        classes.table[i].listOfSearchResults[position].meetingDates
-                }*/
             }
 
         }
@@ -214,7 +281,7 @@ class SearchFragment : Fragment() {
                         .setCancelable(true)
                         .create()
 
-                  //  alertDialog.setButton(Button(context), "Yes", Message())
+                    //  alertDialog.setButton(Button(context), "Yes", Message())
 
                     alertDialog.show()
                 }

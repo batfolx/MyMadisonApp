@@ -2,21 +2,33 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/add_enroll_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cardview_dark_background"
-    android:id="@+id/add_enroll_layout">
+    android:orientation="vertical">
 
+
+    <TextView
+        android:id="@+id/shopping_cart_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="My Shopping Cart"
+        android:textAppearance="@anim/nav_default_pop_enter_anim"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shopping_cart_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="453dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.36"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shopping_cart_text_view"
         tools:listitem="@layout/shopping_cart_items" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -85,6 +85,12 @@
         android:textSize="20sp"
         android:visibility="visible" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/select_search_button"
+        android:text="Select" />
+
 
 
 </LinearLayout>

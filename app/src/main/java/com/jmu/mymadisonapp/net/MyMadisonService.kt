@@ -119,6 +119,14 @@ interface MyMadisonService {
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
     fun getSearchedClasses(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
 
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
+    fun addClass(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
+
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+    fun confirmClassSelection(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
+
     /**
      * Function with a @GET annotation that connects the request and returned a Response object with the list
      * of academic course catalogs
@@ -144,8 +152,7 @@ interface MyMadisonService {
     @GET("https://jmu.campusdish.com/MealPlans/Category?cat=All_Products_6598&lid=6598")
     fun getMealPlans(): Deferred<Response<ListOfMealPlans>>
 
-    @GET("https://www.jmu.edu/parking/")
-    fun getParking(): Deferred<Response<JMUParking>>
+
 
 //    @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_TSRQST_UNOFF.GBL?Page=SSS_TSRQST_UNOFF&Action=A&ExactKeys=Y&TargetFrameName=None")
 //    fun getUnofficialTranscript()

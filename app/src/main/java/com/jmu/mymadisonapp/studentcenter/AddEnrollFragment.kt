@@ -52,9 +52,10 @@ class AddEnrollFragment : Fragment() {
             shopping_cart_recycler_view.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             shopping_cart_recycler_view.adapter = AddClassAdapter(enrolledClasses!!)
-            log("DOING THE SHOPPING ${enrolledClasses.shoppingCart}")
+            shopping_cart_text_view.text = "My Shopping Cart, with ${enrolledClasses.shoppingCart.size} classes."
+            log("DOING  size of this joint ${enrolledClasses.shoppingCart.size}")
             for (item in enrolledClasses.shoppingCart) {
-                log("List of enrolled classes $item")
+                log("List of enrolled classes ${item.className}")
             }
         }
 
@@ -64,7 +65,8 @@ class AddEnrollFragment : Fragment() {
         linearLayoutParams: LinearLayout.LayoutParams,
         linearLayout: LinearLayout,
         buttonNames: Array<String>,
-        holder: AddClassAdapter.AddClassHolder
+        holder: AddClassAdapter.AddClassHolder,
+        position: Int
     ) {
         with(holder.itemView) {
 
@@ -90,7 +92,8 @@ class AddEnrollFragment : Fragment() {
                             val ICSID: String =
                                 Jsoup.parse(responseBody).select("#ICSID").`val`()
 
-                            val formBody = getFormBody(ICSIDKey = ICSID, icStateNumKey = ICStateNum)
+
+                            val formBody = getFormBody(ICSIDKey = ICSID, icStateNumKey = ICStateNum, position = position)
                             service.deleteSelectedClass(formBody)
                             description_enroll_sc.text = "Dropped the class!"
                             }.start()
@@ -117,6 +120,7 @@ class AddEnrollFragment : Fragment() {
     private fun getFormBody(
         ICSIDKey: String,
         icStateNumKey: String,
+        position: Int,
         icActionKey: String = "P_DELETE\$0"
     ): FormBody {
 
@@ -126,7 +130,7 @@ class AddEnrollFragment : Fragment() {
             .add("ICType", "Panel")
             .add("ICElementNum", "0")
             .add("ICStateNum", icStateNumKey)
-            .add("ICAction", icActionKey)
+            .add("ICAction", "P_DELETE\$${position}")
             .add("ICModelCancel", "0")
             .add("ICXPos", "0")
             .add("ICYPos", "0")
@@ -176,12 +180,13 @@ class AddEnrollFragment : Fragment() {
                 val linearLayout = findViewById<LinearLayout>(R.id.shopping_cart_items_layout)
 
 
-                addButtonsToCourses(params, linearLayout, buttonNames, holder)
+                addButtonsToCourses(params, linearLayout, buttonNames, holder, position)
 
                 description_enroll_sc.text = shoppingCart.shoppingCart[position].className
                 days_and_times_enroll_sc.text = shoppingCart.shoppingCart[position].daysAndTimes
                 instructor_enroll_sc.text = shoppingCart.shoppingCart[position].instructor
                 room_number_enroll_sc.text = shoppingCart.shoppingCart[position].room
+
 
 
             }
@@ -195,7 +200,7 @@ class AddEnrollFragment : Fragment() {
 }
 
 data class ListOfAddEnrollShoppingCart(
-    @Selector("table[id^=SSR_REGFORM_VW]")
+    @Selector("tr[id^=trSSR_REGFORM_VW]")
     var shoppingCart: List<AddEnrollShoppingCart> = emptyList()
 
 )
@@ -205,7 +210,7 @@ data class AddEnrollShoppingCart(
     @Selector("span[id^=DERIVED_REGFRM1_SSR_MTG_LOC_LONG]")
     var room: String = "",
 
-    @Selector("span[id^=R_CLASS_NAME]")
+    @Selector("span[id^=P_CLASS_NAME]")
     var className: String = "",
 
     @Selector("span[id^=DERIVED_REGFRM1_SSR_MTG_SCHED_LONG]")
@@ -223,8 +228,3 @@ data class AddEnrollShoppingCart(
 
 )
 
-
-data class JMUParking(
-    @Selector("h1[id^=pagetitle]")
-    var chesapeake: String = ""
-)
