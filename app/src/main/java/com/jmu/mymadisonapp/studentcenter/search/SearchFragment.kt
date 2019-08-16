@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jmu.mymadisonapp.ICSID
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
@@ -65,15 +66,12 @@ class SearchFragment : Fragment() {
             val searchQuery: String = search_fragment_edit_text.text.toString()
             val thread = Thread {
 
-                val responseBody: String? =
-                    getResponseBody("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
-                val ICSID: String = getCSSSelector(responseBody!!, "#ICSID")
-                val formBody = getFormBody(icsid = ICSID, searchQuery = searchQuery)
+                val icsid = object : ICSID(client){}
+                val formBody = getFormBody(icsid = icsid.icsid, searchQuery = searchQuery)
                 lifecycleScope.launch {
                     val searchedClasses = service.getSearchedClasses(formBody).await().body()
+                    log("VALUE OF ICSID ${icsid.icsid}")
 
-                    // }
-                    // log("THESE ARE THE SEARCH CLASSESSSSS ${str}")
 
                     fragment_search_recycler_view.layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -135,7 +133,7 @@ class SearchFragment : Fragment() {
 
 
             val respBody = getResponseBody(url)
-            val icsid = getCSSSelector(respBody!!, "#ICSID")
+            val icsid = object : ICSID(client){}
             val icStateNum = getCSSSelector(respBody!!, "#ICStateNum")
             val formBody = FormBody.Builder()
 
@@ -156,7 +154,7 @@ class SearchFragment : Fragment() {
                 .add("ICSkipPending","0")
                 .add("ICAutoSave","0")
                 .add("ICResubmit","0")
-                .add("ICSID", icsid)
+                .add("ICSID", icsid.icsid)
                 .add("ICActionPrompt","false")
                 .add("ICTypeAheadID","")
                 .add("ICBcDomData","")
@@ -165,7 +163,7 @@ class SearchFragment : Fragment() {
                 .add("ICAddCount","")
                 .add("ICAPPCLSDATA", "")
                 .build()
-            log("This is formbody in selection ${formBody.encodedValue(17)}")
+            log("This is formbody in selection $icsid")
             return formBody
         }
 
@@ -177,8 +175,8 @@ class SearchFragment : Fragment() {
             // url = "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
 
             val respBody = getResponseBody(url)
-            val icsid = getCSSSelector(respBody!!, "#ICSID")
-            val icStateNum = getCSSSelector(respBody, "#ICStateNum")
+            val icsid = object : ICSID(client){}
+            val icStateNum = getCSSSelector(respBody!!, "#ICStateNum")
             val formBody = FormBody.Builder()
                 .add("ICAJAX","1")
                 .add("ICNAVTYPEDROPDOWN","1")
@@ -197,7 +195,7 @@ class SearchFragment : Fragment() {
                 .add("ICSkipPending","0")
                 .add("ICAutoSave","0")
                 .add("ICResubmit","0")
-                .add("ICSID", icsid)
+                .add("ICSID", icsid.icsid)
                 .add("ICActionPrompt","false")
                 .add("ICTypeAheadID","")
                 .add("ICBcDomData","")
@@ -209,7 +207,7 @@ class SearchFragment : Fragment() {
                 .add("DERIVED_CLS_DTL_WAIT_LIST_OKAY\$125\$\$chk","N")
                 .add("DERIVED_CLS_DTL_REPEAT_CODE\$291\$","REIG")
                 .build()
-            log("THIS is form body in confirm $formBody")
+            log("THIS is ICSID ${icsid.icsid}")
             return formBody
         }
 
@@ -241,7 +239,6 @@ class SearchFragment : Fragment() {
                             position = position,
                             icAction = "SSR_PB_SELECT"
                         )
-
                         service.addClass(formBody)
                         formBody = createConfirmFormBody(
                             url = url,
@@ -297,7 +294,7 @@ data class ListOfListOfSearchResults(
 
 data class ListOfSearchResults(
 
-    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2] > table")//"div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
+    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")//"div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
     @Path("0")
     var listOfSearchResults: List<SearchResults> = emptyList()
 

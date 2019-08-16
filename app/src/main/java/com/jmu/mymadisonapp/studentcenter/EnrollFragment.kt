@@ -50,6 +50,7 @@ import kotlinx.coroutines.launch
 import pl.droidsonroids.jspoon.annotation.Selector
 import org.koin.android.ext.android.get
 import org.w3c.dom.Text
+
 /**
  * A Fragment for the enroll part of the app.
  */
@@ -57,7 +58,11 @@ class EnrollFragment : Fragment() {
 
     private lateinit var service: MyMadisonService
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_enroll, container, false)
 
 
@@ -68,16 +73,13 @@ class EnrollFragment : Fragment() {
         service = get<MyMadisonService>()
         lifecycleScope.launch {
             val enrolledClasses = service.getEnrolledClasses().await().body()
-            courses_recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            courses_recycler_view.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             courses_recycler_view.adapter = EnrollClassAdapter(enrolledClasses!!)
 
             MainScope().launch {
 
 
-
-                // courses_text_view.text = enrolledClasses?.listOfEnrolledClasses?.joinToString("\n") {
-                //    "${it.description}, ${it.daysAndTimes}, ${it.room}, ${it.instructor}. "
-                // }
             }
         }
 
@@ -110,11 +112,12 @@ class EnrollFragment : Fragment() {
          * Function that adds buttons to each of the items in the RecyclerView
          *
          */
-        fun addButtonsToCourses(linearLayoutParams: LinearLayout.LayoutParams,
-                                linearLayout: LinearLayout,
-                                buttonNames: Array<String>,
-                                holder: EnrollClassHolder
-                                ) {
+        fun addButtonsToCourses(
+            linearLayoutParams: LinearLayout.LayoutParams,
+            linearLayout: LinearLayout,
+            buttonNames: Array<String>,
+            holder: EnrollClassHolder
+        ) {
 
             //This makes it less verbose
             with(holder.itemView) {
@@ -147,7 +150,8 @@ class EnrollFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnrollClassHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.enroll_course_items, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.enroll_course_items, parent, false)
             return EnrollClassHolder(view)
         }
 
@@ -157,25 +161,34 @@ class EnrollFragment : Fragment() {
 
         override fun onBindViewHolder(holder: EnrollClassHolder, position: Int) {
 
-            with(holder.itemView) {
-                val classNum: String = "${enrolledClasses.listOfEnrolledClasses[position].classNumber}, " +
-                        "credits: ${enrolledClasses.listOfEnrolledClasses[position].units} "
+            log("THIS IS THE STATUS ${enrolledClasses.listOfEnrolledClasses[position].status }")
+            if (enrolledClasses.listOfEnrolledClasses[position].status == "NotDropped") {
+                with(holder.itemView) {
+                    val classNum: String =
+                        "${enrolledClasses.listOfEnrolledClasses[position].classNumber}, " +
+                                "credits: ${enrolledClasses.listOfEnrolledClasses[position].units} "
 
 
-                val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                val linearLayout = findViewById<LinearLayout>(R.id.enroll_course_layout)
+                    val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    val linearLayout = findViewById<LinearLayout>(R.id.enroll_course_layout)
 
-                addButtonsToCourses(params, linearLayout, buttonNames, holder)
+                    addButtonsToCourses(params, linearLayout, buttonNames, holder)
 
-                description_enroll.text = enrolledClasses.listOfEnrolledClasses[position].description
-                days_and_times_enroll.text = enrolledClasses.listOfEnrolledClasses[position].daysAndTimes
-                instructor_enroll.text = enrolledClasses.listOfEnrolledClasses[position].instructor
-                room_number_enroll.text = enrolledClasses.listOfEnrolledClasses[position].room
-                class_number_enroll.text = classNum
+                    description_enroll.text =
+                        enrolledClasses.listOfEnrolledClasses[position].description
+                    days_and_times_enroll.text =
+                        enrolledClasses.listOfEnrolledClasses[position].daysAndTimes
+                    instructor_enroll.text =
+                        enrolledClasses.listOfEnrolledClasses[position].instructor
+                    room_number_enroll.text = enrolledClasses.listOfEnrolledClasses[position].room
+                    class_number_enroll.text = classNum
+                    status_enroll.text = "Status: Enrolled"
 
 
+                }
             }
 
         }
@@ -197,10 +210,7 @@ class EnrollFragment : Fragment() {
     }
 
 
-
 }
-
-
 
 
 data class ListOfEnrolledClasses(
@@ -226,5 +236,8 @@ data class EnrolledClasses(
     var classNumber: String = "",
 
     @Selector("span[id^=STDNT_ENRL_SSVW_UNT_TAKEN]")
-    var units: String = ""
+    var units: String = "",
+
+    @Selector("img[src=\"/cs/ecampus/cache27/PS_CS_STATUS_DROPPED_ICN_1.gif\"]")
+    var status: String = "NotDropped"
 )

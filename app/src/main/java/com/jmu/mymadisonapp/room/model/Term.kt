@@ -20,6 +20,8 @@ package com.jmu.mymadisonapp.room.model
 import androidx.room.Entity
 import java.util.*
 
+
+
 @Entity(tableName = "terms", primaryKeys = ["semester", "year"])
 data class Term(
     val semester: String,

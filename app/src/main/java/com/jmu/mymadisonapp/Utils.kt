@@ -27,6 +27,9 @@ import com.jmu.mymadisonapp.room.model.DatePairJsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.jsoup.Jsoup
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -91,6 +94,25 @@ fun Any.logD(tag: String = getSimpleName(), msg: String = "Empty", splitLong: Bo
 
 fun Any.logE(tag: String = getSimpleName(), msg: String = "Empty", splitLong: Boolean = true) = logMsg(tag, msg, splitLong, Log::e)
 
+
+open class ICSID(client: OkHttpClient) {
+
+    var respBody: String= client.newCall(
+        Request.Builder()
+            .url("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
+            .get()
+            .build()
+    ).execute().body()!!.string()
+
+    var icsid = Jsoup.parse(
+        respBody)
+        .select("#ICSID")
+        .`val`()
+
+
+
+
+}
 
 /**
  * Helper to format a Float with a max [digits] number of digits after the decimal.

@@ -33,6 +33,7 @@ import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import org.koin.experimental.builder.create
 import pl.droidsonroids.retrofit2.JspoonConverterFactory
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
@@ -90,6 +91,7 @@ val netModule = module {
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build().create(MyMadisonService::class.java)
     }
+
 
 }
 
