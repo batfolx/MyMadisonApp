@@ -127,6 +127,10 @@ interface MyMadisonService {
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
     fun confirmClassSelection(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
 
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_ADD.GBL")
+    fun addClassesToSchedule(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
+
     /**
      * Function with a @GET annotation that connects the request and returned a Response object with the list
      * of academic course catalogs

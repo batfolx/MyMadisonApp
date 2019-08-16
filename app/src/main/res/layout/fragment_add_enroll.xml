@@ -31,4 +31,13 @@
         tools:listitem="@layout/shopping_cart_items" />
 
 
+    <Button
+        android:layout_width="189dp"
+        android:id="@+id/add_all_classes_button"
+        android:text="Add all classes"
+        android:layout_height="66dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shopping_cart_recycler_view" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
