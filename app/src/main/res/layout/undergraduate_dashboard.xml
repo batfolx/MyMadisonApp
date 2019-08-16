@@ -30,6 +30,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         tools:text="0 Holds" />
 
     <TextView
@@ -39,6 +40,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         tools:text="0 To Dos" />
 
     <TextView
@@ -48,15 +50,27 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
-        tools:text="0.000\nCumulative GPA" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FFFFFF"
+        tools:text="0.000\nCumulative GPA"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/last_sem_gpa_text"
+        style="@style/Widget.AppCompat.TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:breakStrategy="simple"
+        android:contextClickable="false"
         android:gravity="center"
+        android:password="false"
+        android:phoneNumber="false"
+        android:saveEnabled="false"
+        android:soundEffectsEnabled="false"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
         tools:text="0.000\nSpring 2019 GPA" />
 
     <TextView
@@ -66,6 +80,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
+        android:textStyle="normal|bold"
         tools:text="Summer: 3\nFall: 15\nHours Enrolled" />
 
     <TextView
@@ -75,5 +90,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
+        android:textStyle="normal"
+        android:visibility="visible"
         tools:text="Major: Computer Science - BS (GPA 0.000)\nMinor: Robotics (GPA 0.000)\nMajor/Minor GPA Last Updated: 00/00/0000" />
 </LinearLayout>
