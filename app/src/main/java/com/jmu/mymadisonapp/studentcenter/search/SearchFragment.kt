@@ -138,7 +138,6 @@ class SearchFragment : Fragment() {
             val icsid = getCSSSelector(respBody!!, "#ICSID")
             val icStateNum = getCSSSelector(respBody!!, "#ICStateNum")
             val formBody = FormBody.Builder()
-
                 .add("ICAJAX","1")
                 .add("ICNAVTYPEDROPDOWN","1")
                 .add("ICElementNum","0")
@@ -172,9 +171,9 @@ class SearchFragment : Fragment() {
         }
 
         /**
-         * This form body is made when the user confirms
+         * This form body is made when the user confirms that he/she wants to add the class to his/her shopping cart
          */
-        private fun createConfirmFormBody(url: String, position: Int, icAction: String): FormBody {
+        private fun createConfirmFormBody(url: String, icAction: String): FormBody {
 
             // url = "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
 
@@ -212,7 +211,7 @@ class SearchFragment : Fragment() {
                 .add("DERIVED_CLS_DTL_REPEAT_CODE\$291\$","REIG")
                 .build()
             log("This is the ICAction", icAction + " " + icsid)
-            log("createSelectFormBody method")
+            log("createConfirmFormBody method")
             return formBody
         }
 
@@ -248,10 +247,9 @@ class SearchFragment : Fragment() {
                         service.addClass(formBody)
                         formBody = createConfirmFormBody(
                             url = url,
-                            position = position,
                             icAction = "DERIVED_CLS_DTL_NEXT_PB\$280\$"
                         )
-                        service.addClass(formBody)
+                       // service.confirmClassSelection(formBody)
                     }
                     thread.start()
                     thread.join()

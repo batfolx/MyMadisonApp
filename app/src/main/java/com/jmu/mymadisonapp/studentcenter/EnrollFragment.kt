@@ -34,6 +34,7 @@ import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
 import kotlinx.android.synthetic.main.enroll_course_items.view.*
 import kotlinx.android.synthetic.main.enroll_course_items.view.description_enroll
+import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_enroll.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -158,6 +159,9 @@ class EnrollFragment : Fragment() {
 
             }
             if (enrolledClasses.listOfEnrolledClasses[position].status == "NotDropped") {
+
+
+
                 with(holder.itemView) {
                     val classNum: String =
                         "${enrolledClasses.listOfEnrolledClasses[position].classNumber}, " +
@@ -200,6 +204,7 @@ class EnrollFragment : Fragment() {
     private fun makeButtonsDisappear() {
 
         student_center_button.visibility = View.GONE
+        add_button.visibility = View.GONE
     }
 
 

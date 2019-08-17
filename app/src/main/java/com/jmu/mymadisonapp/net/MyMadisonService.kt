@@ -115,7 +115,7 @@ interface MyMadisonService {
 
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
-    fun deleteSelectedClass(@Body body: FormBody): Deferred<Response<ResponseBody>>
+    fun deleteSelectedClass(@Body body: FormBody): Deferred<Response<ResponseBody>> //this is for deleting a specific item in your shopping cart
 
 
     @Headers("Sec-Fetch-Mode: cors")
@@ -123,16 +123,21 @@ interface MyMadisonService {
     fun getSearchedClasses(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
 
     @Headers("Sec-Fetch-Mode: cors")
-    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
-    fun addClass(@Body body: FormBody): Deferred<Response<ResponseBody>>
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+    fun addClass(@Body body: FormBody): Deferred<Response<ResponseBody>> //method used to add a class from the list of search results
+
 
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
-    fun confirmClassSelection(@Body body: FormBody): Deferred<Response<ResponseBody>> //for confirming class addition to SHOPPING CART
+    fun enrollInAllClasses(@Body body: FormBody): Deferred<Response<ResponseBody>> //method used to add a class from the list of search results
+
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_ADD.GBL")
+    fun confirmEnrollInAllClasses(@Body body: FormBody): Deferred<Response<ResponseBody>> //for confirming class addition to SHOPPING CART
 
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL")
-    fun enrollInClass(@Body body: FormBody): Deferred<Response<ResponseBody>>
+    fun enrollInClass(@Body body: FormBody): Deferred<Response<ResponseBody>> //this is for enrolling only the classes you chose from the shopping cart
 
     /**
      * Function with a @GET annotation that connects the request and returned a Response object with the list

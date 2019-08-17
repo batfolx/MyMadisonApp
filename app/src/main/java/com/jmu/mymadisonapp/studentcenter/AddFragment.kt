@@ -1,7 +1,6 @@
 package com.jmu.mymadisonapp.studentcenter
 
 import android.os.Bundle
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.buttonNames
 import com.jmu.mymadisonapp.log
-import com.jmu.mymadisonapp.net.MYMADISON_LOGIN_BASE_URL
 import com.jmu.mymadisonapp.net.MyMadisonService
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.shopping_cart_items.view.*
@@ -22,18 +20,17 @@ import kotlinx.coroutines.*
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import org.koin.android.ext.android.get
 import pl.droidsonroids.jspoon.annotation.Selector
-import retrofit2.Call
-import retrofit2.Retrofit
 
 
 class AddFragment : Fragment() {
 
 
     lateinit var service: MyMadisonService
-    lateinit var client: OkHttpClient
+    var client: OkHttpClient = get()
     var numClasses: Int = 0
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +40,14 @@ class AddFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
-
+    private fun getResponseBody(): String? {
+        return client.newCall(
+            Request.Builder()
+                .url("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+                .get()
+                .build()
+        ).execute().body()?.string()
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         client = get()
@@ -67,32 +71,30 @@ class AddFragment : Fragment() {
 
         log("THIS IS THE NUMBER OF CLASSES IN THE SHOPPING CART $numClasses")
         add_all_button.setOnClickListener {
-            val thread: Thread = Thread{
-                val responseBody: String? =
-                    client.newCall(
-                        Request.Builder()
-                            .url("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
-                            .get()
-                            .build()
-                    ).execute().body()?.string()
+            val thread: Thread = Thread {
+                var responseBody: String? = getResponseBody()
 
-                val ICAction: String =
-                    Jsoup.parse(responseBody).selectFirst("#ICAction").`val`()
-                val ICStateNum: String =
+                var ICStateNum: String =
                     Jsoup.parse(responseBody).selectFirst("input[name=ICStateNum]")
                         .`val`()
                 val ICSID: String =
                     Jsoup.parse(responseBody).select("#ICSID").`val`()
 
-                var formBody = getFormBody(
-                    ICSIDKey = ICSID, icActionKey = "DERIVED_REGFRM1_LINK_ADD_ENRL\$291\$", numClasses = numClasses,icStateNumKey = ICStateNum)
+                var formBody = getFirstFormBody(
+                    ICSIDKey = ICSID,
+                    icActionKey = "DERIVED_REGFRM1_LINK_ADD_ENRL\$82\$",
+                    numClasses = 0,
+                    icStateNumKey = ICStateNum
+                )
 
-                service.enrollInClass(formBody)
+                service.enrollInAllClasses(formBody)
 
-                formBody = getFormBody(ICSID, "DERIVED_REGFRM1_SSR_PB_SUBMIT")
+                responseBody = getResponseBody()
+                ICStateNum = Jsoup.parse(responseBody).selectFirst("input[name=ICStateNum]").`val`()
+
+                formBody = getSecondFormData(ICSID, icStateNumKey = ICStateNum, icActionKey = "DERIVED_REGFRM1_SSR_PB_SUBMIT" )
                 // must do a secondary confirm again
-                service.enrollInClass(formBody)
-                log("THIS IS THE NUMBER OF CLASSES IN THE SHOPPING CART $numClasses")
+                service.confirmEnrollInAllClasses(formBody)
 
 
             }
@@ -101,7 +103,6 @@ class AddFragment : Fragment() {
         }
 
     }
-
 
 
     fun addButtonsToCourses(
@@ -119,8 +120,8 @@ class AddFragment : Fragment() {
                 tmpButton.text = name
                 when (name) {
                     "Drop" -> tmpButton.setOnClickListener {
-                        Thread {
-                            val responseBody: String? =
+                        val thread = Thread {
+                            var responseBody: String? =
                                 client.newCall(
                                     Request.Builder()
                                         .url("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
@@ -128,23 +129,27 @@ class AddFragment : Fragment() {
                                         .build()
                                 ).execute().body()?.string()
 
-                            val ICAction: String =
-                                Jsoup.parse(responseBody).selectFirst("#ICAction").`val`()
-                            val ICStateNum: String =
+
+                            var ICStateNum: String =
                                 Jsoup.parse(responseBody).selectFirst("input[name=ICStateNum]")
                                     .`val`()
                             val ICSID: String =
                                 Jsoup.parse(responseBody).select("#ICSID").`val`()
 
 
-                            val formBody = getFormBody(
+                            val formBody = getFirstFormBody(
                                 ICSIDKey = ICSID,
                                 icStateNumKey = ICStateNum,
                                 icActionKey = "P_DELETE\$" + position
                             )
+
+
+
                             service.deleteSelectedClass(formBody)
                             description_enroll_sc.text = "Dropped the class!"
-                        }.start()
+                        }
+                        thread.start()
+                        thread.join()
 
 
                     }
@@ -165,7 +170,7 @@ class AddFragment : Fragment() {
         }
     }
 
-    private fun getFormBody(
+    private fun getFirstFormBody(
         ICSIDKey: String,
         icStateNumKey: String,
         icActionKey: String = "P_DELETE\$",
@@ -204,12 +209,50 @@ class AddFragment : Fragment() {
             .add("DERIVED_REGFRM1_SSR_CLS_SRCH_TYPE\$252\$", "10")
 
 
-        for (i in 0..numClasses) {
+        for (i in 0..0) {
             formBody.add("P_SELECT\$chk\$" + i, "Y")
+            formBody.add("P_SELECT\$" + i,"Y")
+            log("P_SELECT\$chk\$" + i)
 
         }
 
         return formBody.build()
+    }
+
+    private fun getSecondFormData(
+        ICSIDKey: String,
+        icStateNumKey: String,
+        icActionKey: String): FormBody {
+        var formBody = FormBody.Builder()
+            .add("ICAJAX", "1")
+            .add("ICNAVTYPEDROPDOWN", "1")
+            .add("ICType", "Panel")
+            .add("ICElementNum", "0")
+            .add("ICStateNum", icStateNumKey)
+            .add("ICAction", icActionKey)
+            .add("ICModelCancel", "0")
+            .add("ICXPos", "0")
+            .add("ICYPos", "0")
+            .add("ResponsetoDiffFrame", "-1")
+            .add("TargetFrameName", "None")
+            .add("FacetPath", "None")
+            .add("ICFocus", " ")
+            .add("ICSaveWarningFilter", "0")
+            .add("ICChanged", "-1")
+            .add("ICSkipPending", "0")
+            .add("ICAutoSave", "0")
+            .add("ICResubmit", "0")
+            .add("ICSID", ICSIDKey)
+            .add("ICActionPrompt", "false")
+            .add("ICTypeAheadID", "")
+            .add("ICBcDomData", "")
+            .add("ICPanelName", "")
+            .add("ICAddCount:", "")
+            .add("ICAPPCLSDATA", "")
+            .add("DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$", "0100")
+
+        return formBody.build()
+
     }
 
     inner class AddClassAdapter(private val shoppingCart: ListOfAddEnrollShoppingCart) :
@@ -232,29 +275,28 @@ class AddFragment : Fragment() {
         }
 
 
-
         override fun onBindViewHolder(holder: AddClassHolder, position: Int) {
 
             numClasses = shoppingCart.shoppingCart.size
             log("THIS IS THE NUMBER OF CLASSES IN THE SHOPPING CART $numClasses")
 
-                with(holder.itemView) {
+            with(holder.itemView) {
 
-                    val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    val linearLayout = findViewById<LinearLayout>(R.id.shopping_cart_items_layout)
+                val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                val linearLayout = findViewById<LinearLayout>(R.id.shopping_cart_items_layout)
 
 
-                    addButtonsToCourses(params, linearLayout, buttonNames, holder, position)
+                addButtonsToCourses(params, linearLayout, buttonNames, holder, position)
 
-                    description_enroll_sc.text = shoppingCart.shoppingCart[position].className
-                    days_and_times_enroll_sc.text = shoppingCart.shoppingCart[position].daysAndTimes
-                    instructor_enroll_sc.text = shoppingCart.shoppingCart[position].instructor
-                    room_number_enroll_sc.text = shoppingCart.shoppingCart[position].room
+                description_enroll_sc.text = shoppingCart.shoppingCart[position].className
+                days_and_times_enroll_sc.text = shoppingCart.shoppingCart[position].daysAndTimes
+                instructor_enroll_sc.text = shoppingCart.shoppingCart[position].instructor
+                room_number_enroll_sc.text = shoppingCart.shoppingCart[position].room
 
-                }
+            }
 
 
         }
