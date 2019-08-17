@@ -143,7 +143,7 @@ class SearchFragment : Fragment() {
                 .add("ICNAVTYPEDROPDOWN","1")
                 .add("ICElementNum","0")
                 .add("ICStateNum", icStateNum)
-                .add("ICAction", "$icAction\$$position")
+                .add("ICAction", "$icAction\$"+position)
                 .add("ICModelCancel","0")
                 .add("ICXPos","0")
                 .add("ICYPos","0")
@@ -164,8 +164,10 @@ class SearchFragment : Fragment() {
                 .add("ICFind", "")
                 .add("ICAddCount","")
                 .add("ICAPPCLSDATA", "")
+                .add("DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$","0100")
                 .build()
-            log("This is formbody in selection ${formBody.encodedValue(17)}")
+            log("This is the ICAction", "$icAction\$"+position + " " + icsid)
+            log("createSelectFormBody method")
             return formBody
         }
 
@@ -209,7 +211,8 @@ class SearchFragment : Fragment() {
                 .add("DERIVED_CLS_DTL_WAIT_LIST_OKAY\$125\$\$chk","N")
                 .add("DERIVED_CLS_DTL_REPEAT_CODE\$291\$","REIG")
                 .build()
-            log("THIS is form body in confirm $formBody")
+            log("This is the ICAction", icAction + " " + icsid)
+            log("createSelectFormBody method")
             return formBody
         }
 

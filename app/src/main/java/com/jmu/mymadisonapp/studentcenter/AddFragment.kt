@@ -16,7 +16,7 @@ import com.jmu.mymadisonapp.buttonNames
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MYMADISON_LOGIN_BASE_URL
 import com.jmu.mymadisonapp.net.MyMadisonService
-import kotlinx.android.synthetic.main.fragment_add_enroll.*
+import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.shopping_cart_items.view.*
 import kotlinx.coroutines.*
 import okhttp3.FormBody
@@ -29,17 +29,18 @@ import retrofit2.Call
 import retrofit2.Retrofit
 
 
-class AddEnrollFragment : Fragment() {
+class AddFragment : Fragment() {
 
 
     lateinit var service: MyMadisonService
     lateinit var client: OkHttpClient
+    var numClasses: Int = 0
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_add_enroll, container, false)
+        return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
 
@@ -47,19 +48,61 @@ class AddEnrollFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         client = get()
         service = get()
+
+
+
+
         lifecycleScope.launch {
             val enrolledClasses = service.getShoppingCartClasses().await().body()
             shopping_cart_recycler_view.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             shopping_cart_recycler_view.adapter = AddClassAdapter(enrolledClasses!!)
-            shopping_cart_text_view.text = "My Shopping Cart, with ${enrolledClasses.shoppingCart.size} classes."
+            shopping_cart_text_view.text =
+                "My Shopping Cart, with ${enrolledClasses.shoppingCart.size} classes."
             log("DOING  size of this joint ${enrolledClasses.shoppingCart.size}")
             for (item in enrolledClasses.shoppingCart) {
                 log("List of enrolled classes ${item.className}")
             }
         }
 
+        log("THIS IS THE NUMBER OF CLASSES IN THE SHOPPING CART $numClasses")
+        add_all_button.setOnClickListener {
+            val thread: Thread = Thread{
+                val responseBody: String? =
+                    client.newCall(
+                        Request.Builder()
+                            .url("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
+                            .get()
+                            .build()
+                    ).execute().body()?.string()
+
+                val ICAction: String =
+                    Jsoup.parse(responseBody).selectFirst("#ICAction").`val`()
+                val ICStateNum: String =
+                    Jsoup.parse(responseBody).selectFirst("input[name=ICStateNum]")
+                        .`val`()
+                val ICSID: String =
+                    Jsoup.parse(responseBody).select("#ICSID").`val`()
+
+                var formBody = getFormBody(
+                    ICSIDKey = ICSID, icActionKey = "DERIVED_REGFRM1_LINK_ADD_ENRL\$291\$", numClasses = numClasses,icStateNumKey = ICStateNum)
+
+                service.enrollInClass(formBody)
+
+                formBody = getFormBody(ICSID, "DERIVED_REGFRM1_SSR_PB_SUBMIT")
+                // must do a secondary confirm again
+                service.enrollInClass(formBody)
+                log("THIS IS THE NUMBER OF CLASSES IN THE SHOPPING CART $numClasses")
+
+
+            }
+            thread.start()
+            thread.join()
+        }
+
     }
+
+
 
     fun addButtonsToCourses(
         linearLayoutParams: LinearLayout.LayoutParams,
@@ -88,15 +131,20 @@ class AddEnrollFragment : Fragment() {
                             val ICAction: String =
                                 Jsoup.parse(responseBody).selectFirst("#ICAction").`val`()
                             val ICStateNum: String =
-                                Jsoup.parse(responseBody).selectFirst("input[name=ICStateNum]").`val`()
+                                Jsoup.parse(responseBody).selectFirst("input[name=ICStateNum]")
+                                    .`val`()
                             val ICSID: String =
                                 Jsoup.parse(responseBody).select("#ICSID").`val`()
 
 
-                            val formBody = getFormBody(ICSIDKey = ICSID, icStateNumKey = ICStateNum, position = position)
+                            val formBody = getFormBody(
+                                ICSIDKey = ICSID,
+                                icStateNumKey = ICStateNum,
+                                icActionKey = "P_DELETE\$" + position
+                            )
                             service.deleteSelectedClass(formBody)
                             description_enroll_sc.text = "Dropped the class!"
-                            }.start()
+                        }.start()
 
 
                     }
@@ -120,8 +168,9 @@ class AddEnrollFragment : Fragment() {
     private fun getFormBody(
         ICSIDKey: String,
         icStateNumKey: String,
-        position: Int,
-        icActionKey: String = "P_DELETE\$0"
+        icActionKey: String = "P_DELETE\$",
+        numClasses: Int = 0
+
     ): FormBody {
 
         var formBody = FormBody.Builder()
@@ -130,7 +179,7 @@ class AddEnrollFragment : Fragment() {
             .add("ICType", "Panel")
             .add("ICElementNum", "0")
             .add("ICStateNum", icStateNumKey)
-            .add("ICAction", "P_DELETE\$${position}")
+            .add("ICAction", icActionKey)
             .add("ICModelCancel", "0")
             .add("ICXPos", "0")
             .add("ICYPos", "0")
@@ -152,44 +201,62 @@ class AddEnrollFragment : Fragment() {
             .add("ICAPPCLSDATA", "")
             .add("DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$", "0100")
             .add("DERIVED_REGFRM1_CLASS_NBR", "")
-            .add("DERIVED_REGFRM1_SSR_CLS_SRCH_TYPE\$252\$", "10").build()
+            .add("DERIVED_REGFRM1_SSR_CLS_SRCH_TYPE\$252\$", "10")
 
-        return formBody
+
+        for (i in 0..numClasses) {
+            formBody.add("P_SELECT\$chk\$" + i, "Y")
+
+        }
+
+        return formBody.build()
     }
 
     inner class AddClassAdapter(private val shoppingCart: ListOfAddEnrollShoppingCart) :
         RecyclerView.Adapter<AddClassAdapter.AddClassHolder>() {
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddClassHolder {
+            numClasses = shoppingCart.shoppingCart.size
+
             val view =
                 LayoutInflater.from(context).inflate(R.layout.shopping_cart_items, parent, false)
             return AddClassHolder(view)
         }
 
         override fun getItemCount(): Int {
+
+            numClasses = shoppingCart.shoppingCart.size
+            log("THIS IS THE NUMBER OF CLASSES IN THE SHOPPING CART $numClasses")
+
             return shoppingCart.shoppingCart.size
         }
 
+
+
         override fun onBindViewHolder(holder: AddClassHolder, position: Int) {
 
+            numClasses = shoppingCart.shoppingCart.size
+            log("THIS IS THE NUMBER OF CLASSES IN THE SHOPPING CART $numClasses")
 
-            with(holder.itemView) {
+                with(holder.itemView) {
 
-                val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                val linearLayout = findViewById<LinearLayout>(R.id.shopping_cart_items_layout)
-
-
-                addButtonsToCourses(params, linearLayout, buttonNames, holder, position)
-
-                description_enroll_sc.text = shoppingCart.shoppingCart[position].className
-                days_and_times_enroll_sc.text = shoppingCart.shoppingCart[position].daysAndTimes
-                instructor_enroll_sc.text = shoppingCart.shoppingCart[position].instructor
-                room_number_enroll_sc.text = shoppingCart.shoppingCart[position].room
+                    val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    val linearLayout = findViewById<LinearLayout>(R.id.shopping_cart_items_layout)
 
 
+                    addButtonsToCourses(params, linearLayout, buttonNames, holder, position)
 
-            }
+                    description_enroll_sc.text = shoppingCart.shoppingCart[position].className
+                    days_and_times_enroll_sc.text = shoppingCart.shoppingCart[position].daysAndTimes
+                    instructor_enroll_sc.text = shoppingCart.shoppingCart[position].instructor
+                    room_number_enroll_sc.text = shoppingCart.shoppingCart[position].room
+
+                }
+
+
         }
 
 
@@ -222,8 +289,8 @@ data class AddEnrollShoppingCart(
     @Selector("span[id^=SSR_REGFORM_VW_UNT_TAKEN]")
     var units: String = "",
 
-    @Selector("div[id^=win0divDERIVED_REGFRM1_SSR_STATUS_LONG]")
-    var status: String = ""
+    @Selector("img[src=\"/cs/ecampus/cache27/PS_CS_STATUS_DROPPED_ICN_1.gif\"]")
+    var status: String = "NotDropped"
 
 
 )

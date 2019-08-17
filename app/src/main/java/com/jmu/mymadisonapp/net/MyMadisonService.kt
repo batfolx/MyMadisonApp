@@ -36,6 +36,7 @@ import retrofit2.http.*
 
 const val MYMADISON_BASE_URL = "https://mymadison.ps.jmu.edu"
 const val MYMADISON_LOGIN_BASE_URL = "https://mymadison.ps.jmu.edu/psp/pprd/?cmd=start"
+const val LOGOUT_COMMAND_URL = "https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/?cmd=logout"
 
 /**
  * The MyMadison Retrofit service.
@@ -84,6 +85,8 @@ interface MyMadisonService {
     @GET("/psc/ecampus/JMU/SPRD/c/{terms}")
     fun getTermsList(@Path("terms") terms: String): Deferred<Response<GradeTerms>>
 
+    @GET(LOGOUT_COMMAND_URL)
+    fun logout(): Deferred<Response<ResponseBody>>
 
     //@FieldMap refers to the Form Data of the request
     @FormUrlEncoded
@@ -121,11 +124,15 @@ interface MyMadisonService {
 
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
-    fun addClass(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
+    fun addClass(@Body body: FormBody): Deferred<Response<ResponseBody>>
 
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
-    fun confirmClassSelection(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
+    fun confirmClassSelection(@Body body: FormBody): Deferred<Response<ResponseBody>> //for confirming class addition to SHOPPING CART
+
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL")
+    fun enrollInClass(@Body body: FormBody): Deferred<Response<ResponseBody>>
 
     /**
      * Function with a @GET annotation that connects the request and returned a Response object with the list
