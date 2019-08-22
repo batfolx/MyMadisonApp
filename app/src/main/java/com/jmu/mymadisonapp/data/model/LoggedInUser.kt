@@ -150,17 +150,22 @@ data class CurrentUser(
     var current_user: CanvasProfileInfo = CanvasProfileInfo()
 )
 
-class TermPostDataConverter : ElementConverter<Map<String, String>> {
+class PostDataConverter : ElementConverter<Map<String, String>> {
     override fun convert(node: Element, selector: Selector): Map<String, String> =
         node.select("input")?.associate { it.attr("id") to it.`val`() } ?: emptyMap()
 }
 
-@Selector("div#ptifrmcontent > div#ptifrmtarget iframe#ptifrmtgtframe html.chrome > body.PSPAGE")
-data class GradeTerms(
+data class PostData(
     @Selector(
         "div#win0divPSHIDDENFIELDS",
-        converter = TermPostDataConverter::class
-    ) var termPostData: Map<String, String> = emptyMap(),
+        converter = PostDataConverter::class)
+    var postData: Map<String, String> = emptyMap()
+)
+
+
+@Selector("div#ptifrmcontent > div#ptifrmtarget iframe#ptifrmtgtframe html.chrome > body.PSPAGE")
+data class GradeTerms(
+    var termPostData: PostData = PostData(),
     @Selector("table.PSLEVEL2GRID tr[id^=trSSR_DUMMY_RECV1$0_row]") var terms: List<Term> = emptyList()
 )
 
