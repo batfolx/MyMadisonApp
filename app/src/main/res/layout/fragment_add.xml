@@ -32,10 +32,10 @@
 
 
     <Button
-        android:layout_width="189dp"
-        android:id="@+id/add_all_classes_button"
-        android:text="Add all classes"
-        android:layout_height="66dp"
+        android:layout_width="185dp"
+        android:layout_height="69dp"
+        android:id="@+id/add_all_button"
+        android:text="Add all classes in my shopping cart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shopping_cart_recycler_view" />
 

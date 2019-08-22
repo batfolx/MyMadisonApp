@@ -17,19 +17,14 @@
 
 package com.jmu.mymadisonapp.studentcenter
 
-import android.content.ClipData
 import android.os.Bundle
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.appcompat.view.menu.MenuView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.leanback.widget.Presenter
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,19 +32,14 @@ import com.jmu.mymadisonapp.R
 import com.jmu.mymadisonapp.buttonNames
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.MyMadisonService
-import kotlinx.android.synthetic.main.course_item.view.*
-import kotlinx.android.synthetic.main.enroll_course_items.*
 import kotlinx.android.synthetic.main.enroll_course_items.view.*
 import kotlinx.android.synthetic.main.enroll_course_items.view.description_enroll
-import kotlinx.android.synthetic.main.fragment_class_schedule.*
+import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_enroll.*
-import kotlinx.android.synthetic.main.fragment_enroll.view.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import pl.droidsonroids.jspoon.annotation.Selector
 import org.koin.android.ext.android.get
-import org.w3c.dom.Text
 
 /**
  * A Fragment for the enroll part of the app.
@@ -80,13 +70,16 @@ class EnrollFragment : Fragment() {
             MainScope().launch {
 
 
+                // courses_text_view.text = enrolledClasses?.listOfEnrolledClasses?.joinToString("\n") {
+                //    "${it.description}, ${it.daysAndTimes}, ${it.room}, ${it.instructor}. "
+                // }
             }
         }
 
 
         add_button.setOnClickListener {
             fragmentManager?.commit {
-                replace(R.id.enroll_layout, AddEnrollFragment()).addToBackStack(null)
+                replace(R.id.enroll_layout, AddFragment()).addToBackStack(null)
             }
 
             add_button.visibility = View.GONE
@@ -161,8 +154,14 @@ class EnrollFragment : Fragment() {
 
         override fun onBindViewHolder(holder: EnrollClassHolder, position: Int) {
 
-            log("THIS IS THE STATUS ${enrolledClasses.listOfEnrolledClasses[position].status }")
+            for (status in enrolledClasses.listOfEnrolledClasses) {
+                log("STATUS", status.status + " " + position)
+
+            }
             if (enrolledClasses.listOfEnrolledClasses[position].status == "NotDropped") {
+
+
+
                 with(holder.itemView) {
                     val classNum: String =
                         "${enrolledClasses.listOfEnrolledClasses[position].classNumber}, " +
@@ -185,8 +184,6 @@ class EnrollFragment : Fragment() {
                         enrolledClasses.listOfEnrolledClasses[position].instructor
                     room_number_enroll.text = enrolledClasses.listOfEnrolledClasses[position].room
                     class_number_enroll.text = classNum
-                    status_enroll.text = "Status: Enrolled"
-
 
                 }
             }
@@ -207,6 +204,7 @@ class EnrollFragment : Fragment() {
     private fun makeButtonsDisappear() {
 
         student_center_button.visibility = View.GONE
+        add_button.visibility = View.GONE
     }
 
 

@@ -12,9 +12,12 @@ import androidx.navigation.Navigation
 import com.google.android.material.internal.NavigationMenu
 import com.jmu.mymadisonapp.MainActivity
 import com.jmu.mymadisonapp.R
+import com.jmu.mymadisonapp.log
+import com.jmu.mymadisonapp.net.MyMadisonService
 import com.jmu.mymadisonapp.room.model.Student
 import com.jmu.mymadisonapp.studentcenter.search.SearchFragment
 import kotlinx.android.synthetic.main.fragment_studentcenter.*
+import org.koin.android.ext.android.get
 import java.lang.reflect.Field
 
 class StudentCenterFragment : Fragment() {
@@ -44,7 +47,7 @@ class StudentCenterFragment : Fragment() {
                     1 -> {
                         fragmentManager?.commit {
                             replace(R.id.student_center_layout, SearchFragment()).addToBackStack(null)
-                        }
+                        } // Search is selected
                     }
                     2 -> {
                         fragmentManager?.commit {
@@ -52,7 +55,14 @@ class StudentCenterFragment : Fragment() {
                                 .addToBackStack(null)
                         }
                     }//Enroll is selected
+
                     3 -> {
+                        fragmentManager?.commit {
+                            replace(R.id.student_center_layout, AddFragment()).addToBackStack(null)
+                        }
+
+                    } //View shopping cart is selected
+                    4 -> {
                         fragmentManager?.commit {
                             replace(
                                 R.id.student_center_layout,
@@ -61,7 +71,7 @@ class StudentCenterFragment : Fragment() {
                             addToBackStack(null)
                         }
                     }
-                    4 -> {
+                    5 -> {
                         fragmentManager?.commit {
                             replace(
                                 R.id.student_center_layout,
@@ -71,7 +81,7 @@ class StudentCenterFragment : Fragment() {
                         }
                     }
 
-                    5 -> {
+                    6 -> {
 
                         fragmentManager?.commit {
                             replace(R.id.student_center_layout, AcademicRequirementsFragment())
