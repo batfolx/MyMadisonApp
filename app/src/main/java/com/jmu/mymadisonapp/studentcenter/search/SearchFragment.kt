@@ -65,6 +65,7 @@ class SearchFragment : Fragment() {
 
             // we take the search query inputted into the service
             val searchQuery: String = search_fragment_edit_text.text.toString()
+            val courseNumber: String = course_number_edit_text.text.toString()
 
             val thread = Thread {
 
@@ -72,7 +73,7 @@ class SearchFragment : Fragment() {
                     getResponseBody("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
                 val ICSID: String = getCSSSelector(responseBody!!, "#ICSID")
 
-                val fieldMap = getFieldMap(icsid = ICSID, searchQuery = searchQuery)
+                val fieldMap = getFieldMap(icsid = ICSID, searchQuery = searchQuery, courseNumber = courseNumber)
                 lifecycleScope.launch {
                     val searchedClasses = service.getSearchedClasses(fieldMap).await().body()
                     fragment_search_recycler_view.layoutManager =
@@ -105,11 +106,12 @@ class SearchFragment : Fragment() {
     }
 
 
-    private fun getFieldMap(icsid: String, searchQuery: String): MutableMap<String, String> {
+    private fun getFieldMap(icsid: String, searchQuery: String = "", courseNumber: String = ""): MutableMap<String, String> {
         val fieldMap = mutableMapOf<String, String>(
             "SSR_CLSRCH_WRK_SUBJECT" to searchQuery,
             "ICACTION" to SEARCH_IC_ACTION,
-            "ICSID" to icsid
+            "ICSID" to icsid,
+            "SSR_CLSRCH_WRK_CATALOG_NBR\$1" to courseNumber
         )
         return fieldMap
     }
@@ -195,8 +197,7 @@ class SearchFragment : Fragment() {
 
 
                 }
-
-                class_name_search.text = classes.listOfSearchResults[position].className
+                class_name_search.text = classes.classNumber
                 class_number_search.text = classes.listOfSearchResults[position].classNumber
                 class_section_search.text = classes.listOfSearchResults[position].section
                 instructor_search.text = classes.listOfSearchResults[position].instructor
@@ -235,13 +236,21 @@ data class ListOfListOfSearchResults(
 
 data class ListOfSearchResults(
 
-    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2] > table")//"div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
+    @Selector("tr[id^=trSSR_CLSRCH_MTG1]")//"div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2] > table")//"div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
     @Path("0")
-    var listOfSearchResults: List<SearchResults> = emptyList()
+    var listOfSearchResults: List<SearchResults> = emptyList(),
+
+    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2GP]")
+    var classNumber: String = ""
+
+
 
 )
 
 data class SearchResults(
+
+    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2GP] > a > img[alt]")
+    var courseNumber: String = "",
 
     // 73179
     @Selector("a[id^=MTG_CLASS_NBR]")

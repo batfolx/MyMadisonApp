@@ -19,6 +19,14 @@
         app:layout_constraintTop_toTopOf="@id/room_number_enroll" />
 
     <TextView
+        android:id="@+id/course_number_search"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-light"
+        tools:text="Course Number"
+        android:textSize="20sp"/>
+
+    <TextView
         android:id="@+id/class_name_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
