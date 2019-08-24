@@ -55,7 +55,7 @@ class TermRepository(private val client: MyMadisonService, private val termDao: 
         with(getMyGradeTerms().takeIf { it.isValid() }?.body() ?: GradeTerms()) {
             log("InitialGradeTerms", "Content: $this")
             terms.mapIndexed { index, term ->
-                getMyGradesForTerm(termPostData.toMutableMap().updateTermPostBody(index)).body()?.let {
+                getMyGradesForTerm(termPostData.postData.toMutableMap().updateTermPostBody(index)).body()?.let {
                     Term(
                         term.term.substringBefore(" "),
                         term.term.substringAfterLast(" ").toInt(),

@@ -40,12 +40,12 @@ import org.jsoup.Jsoup
 import org.koin.android.ext.android.get
 import pl.droidsonroids.jspoon.annotation.Selector
 import retrofit2.Retrofit
+import retrofit2.http.FieldMap
 import retrofit2.http.Path
 import java.text.Normalizer
 
 
 class SearchFragment : Fragment() {
-    var count: Int = 0
     lateinit var service: MyMadisonService
     var client: OkHttpClient = get()
     lateinit var respBody: String
@@ -65,21 +65,20 @@ class SearchFragment : Fragment() {
 
             // we take the search query inputted into the service
             val searchQuery: String = search_fragment_edit_text.text.toString()
+
             val thread = Thread {
 
                 val responseBody: String? =
                     getResponseBody("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
                 val ICSID: String = getCSSSelector(responseBody!!, "#ICSID")
-                val formBody = getFormBody(icsid = ICSID, searchQuery = searchQuery)
+
+                val fieldMap = getFieldMap(icsid = ICSID, searchQuery = searchQuery)
                 lifecycleScope.launch {
-                    val searchedClasses = service.getSearchedClasses(formBody).await().body()
-
-
+                    val searchedClasses = service.getSearchedClasses(fieldMap).await().body()
                     fragment_search_recycler_view.layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                     fragment_search_recycler_view.adapter =
                         SearchClassAdapter(searchedClasses!!)
-
 
                 }
 
@@ -105,109 +104,57 @@ class SearchFragment : Fragment() {
         ).execute().body()!!.string()
     }
 
-    private fun getFormBody(icsid: String, searchQuery: String): FormBody {
 
-        val formBody = FormBody.Builder()
-            .add("ICAction", SEARCH_IC_ACTION)
-            .add("ICSID", icsid)
-            .add("SSR_CLSRCH_WRK_SUBJECT", searchQuery)
-            //.add("CLASS_SRCH_WRK2_INSTITUTION\$31\$", "JMDSN")
-            .build()
-
-        return formBody
+    private fun getFieldMap(icsid: String, searchQuery: String): MutableMap<String, String> {
+        val fieldMap = mutableMapOf<String, String>(
+            "SSR_CLSRCH_WRK_SUBJECT" to searchQuery,
+            "ICACTION" to SEARCH_IC_ACTION,
+            "ICSID" to icsid
+        )
+        return fieldMap
     }
 
 
     inner class SearchClassAdapter(val classes: ListOfSearchResults) :
         RecyclerView.Adapter<SearchClassAdapter.SearchClassHolder>() {
 
-        /**
-         * This form body is made when the user selects a class from the search results
-         */
-        private fun createSelectFormBody(url: String, position: Int, icAction: String): FormBody {
 
-            // url = "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
-
+        private fun createSelectFieldMap(
+            url: String,
+            position: Int,
+            icAction: String
+        ): MutableMap<String, String> {
 
             val respBody = getResponseBody(url)
             val icsid = getCSSSelector(respBody!!, "#ICSID")
-            val icStateNum = getCSSSelector(respBody, "#ICStateNum")
-            val formBody = FormBody.Builder()
-                .add("ICAJAX","1")
-                .add("ICNAVTYPEDROPDOWN","1")
-                .add("ICElementNum","0")
-                .add("ICStateNum", icStateNum)
-                .add("ICAction", icAction+position)
-                .add("ICModelCancel","0")
-                .add("ICXPos","0")
-                .add("ICYPos","0")
-                .add("ResponsetoDiffFrame","-1")
-                .add("TargetFrameName","None")
-                .add("FacetPath","None")
-                .add("ICFocus","")
-                .add("ICSaveWarningFilter","0")
-                .add("ICChanged","-1")
-                .add("ICSkipPending","0")
-                .add("ICAutoSave","0")
-                .add("ICResubmit","0")
-                .add("ICSID", icsid)
-                .add("ICActionPrompt","false")
-                .add("ICTypeAheadID","")
-                .add("ICBcDomData","")
-                .add("ICPanelName","")
-                .add("ICFind", "")
-                .add("ICAddCount","")
-                .add("ICAPPCLSDATA", "")
-                .add("DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$","0100")
-                .build()
-            log("This is the ICAction", "$icAction\$"+position + " " + icsid)
-            log("createSelectFormBody method")
-            return formBody
+            val fieldMap = mutableMapOf<String, String>(
+                "ICAction" to icAction + position,
+                "ICSID" to icsid,
+                "DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$" to "0100"
+            )
+
+            log("ICACtion+position in select field map", icAction + position)
+
+            return fieldMap
+
         }
 
-        /**
-         * This form body is made when the user confirms that he/she wants to add the class to his/her shopping cart
-         */
-        private fun createConfirmFormBody(url: String, icAction: String): FormBody {
-
-            // url = "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
+        private fun createConfirmFieldMap(
+            url: String,
+            icAction: String
+        ): MutableMap<String, String> {
 
             val respBody = getResponseBody(url)
             val icsid = getCSSSelector(respBody!!, "#ICSID")
-            val icStateNum = getCSSSelector(respBody, "#ICStateNum")
-            val formBody = FormBody.Builder()
-                .add("ICAJAX","1")
-                .add("ICNAVTYPEDROPDOWN","1")
-                .add("ICElementNum","0")
-                .add("ICStateNum", icStateNum)
-                .add("ICAction", "$icAction")
-                .add("ICModelCancel","0")
-                .add("ICXPos","0")
-                .add("ICYPos","0")
-                .add("ResponsetoDiffFrame","-1")
-                .add("TargetFrameName","None")
-                .add("FacetPath","None")
-                .add("ICFocus","")
-                .add("ICSaveWarningFilter","0")
-                .add("ICChanged","-1")
-                .add("ICSkipPending","0")
-                .add("ICAutoSave","0")
-                .add("ICResubmit","0")
-                .add("ICSID", icsid)
-                .add("ICActionPrompt","false")
-                .add("ICTypeAheadID","")
-                .add("ICBcDomData","")
-                .add("ICPanelName","")
-                .add("ICFind", "")
-                .add("ICAddCount","")
-                .add("ICAPPCLSDATA", "")
-                .add("DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$","0100")
-                .add("DERIVED_CLS_DTL_WAIT_LIST_OKAY\$125\$\$chk","N")
-                .add("DERIVED_CLS_DTL_REPEAT_CODE\$291\$","REIG")
-                .build()
-            log("This is the ICAction", icAction + " " + icsid)
-            log("createConfirmFormBody method")
-            return formBody
+            val fieldMap = mutableMapOf<String, String>(
+                "ICAction" to icAction, "DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$" to "0100",
+                "ICSID" to icsid,
+                "DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$" to "0100",
+                "DERIVED_CLS_DTL_WAIT_LIST_OKAY\$125\$\$chk" to "N"
+            )
+            log("ICAction in confirm field map", icAction)
+
+            return fieldMap
         }
 
 
@@ -233,18 +180,15 @@ class SearchFragment : Fragment() {
                     val url =
                         "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
                     val thread = Thread {
-                        var formBody = createSelectFormBody(
-                            url = url,
-                            position = position,
-                            icAction = SEARCH_SELECT_IC_ACTION
-                        )
 
-                        service.addClass(formBody)
-                        formBody = createConfirmFormBody(
-                            url = url,
-                            icAction = SEARCH_SELECT_NEXT_IC_ACTION
-                        )
-                       // service.confirmClassSelection(formBody)
+                        val fieldMap = createSelectFieldMap(url, position, SEARCH_SELECT_IC_ACTION)
+                        service.addClass(fieldMap)
+
+
+                        val secondFieldMap =
+                            createConfirmFieldMap(url, SEARCH_SELECT_NEXT_IC_ACTION)
+
+                        service.addClass(secondFieldMap)
                     }
                     thread.start()
                     thread.join()
@@ -255,8 +199,6 @@ class SearchFragment : Fragment() {
                 class_name_search.text = classes.listOfSearchResults[position].className
                 class_number_search.text = classes.listOfSearchResults[position].classNumber
                 class_section_search.text = classes.listOfSearchResults[position].section
-
-
                 instructor_search.text = classes.listOfSearchResults[position].instructor
                 room_search.text = classes.listOfSearchResults[position].room
                 meeting_dates_search.text = classes.listOfSearchResults[position].meetingDates

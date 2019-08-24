@@ -22,6 +22,8 @@
     android:layout_margin="16dp"
     android:orientation="vertical">
 
+
+
     <TextView
         android:id="@+id/holds_text"
         android:layout_width="match_parent"
@@ -40,13 +42,11 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:textSize="20sp"
-
         tools:text="0 To Dos" />
 
     <TextView
         android:id="@+id/cum_gpa_text"
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -58,7 +58,6 @@
         android:id="@+id/last_sem_gpa_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
@@ -75,6 +74,8 @@
         android:textSize="20sp"
 
         tools:text="Summer: 3\nFall: 15\nHours Enrolled" />
+
+
 
     <TextView
         android:id="@+id/major_minor_text"

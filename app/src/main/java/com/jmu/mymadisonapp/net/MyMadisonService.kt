@@ -118,13 +118,16 @@ interface MyMadisonService {
     fun deleteSelectedClass(@Body body: FormBody): Deferred<Response<ResponseBody>> //this is for deleting a specific item in your shopping cart
 
 
+    @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
-    fun getSearchedClasses(@Body body: FormBody): Deferred<Response<ListOfSearchResults>>
+    fun getSearchedClasses(@FieldMap fieldMap: MutableMap<String, String>): Deferred<Response<ListOfSearchResults>>
 
+
+    @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
-    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
-    fun addClass(@Body body: FormBody): Deferred<Response<ResponseBody>> //method used to add a class from the list of search results
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
+    fun addClass(@FieldMap fieldMap: MutableMap<String, String>): Deferred<Response<ResponseBody>> //method used to add a class from the list of search results
 
 
     @Headers("Sec-Fetch-Mode: cors")
