@@ -19,6 +19,7 @@ package com.jmu.mymadisonapp.net
 
 import com.jmu.mymadisonapp.data.model.*
 import com.jmu.mymadisonapp.studentcenter.*
+import com.jmu.mymadisonapp.studentcenter.search.ListOfListOfSearchResults
 import com.jmu.mymadisonapp.studentcenter.search.ListOfSearchResults
 import com.jmu.mymadisonapp.ui.jaccardservices.CardServices
 import com.jmu.mymadisonapp.ui.myaccounts.ListOfMealPlans
@@ -116,7 +117,6 @@ interface MyMadisonService {
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
     fun deleteSelectedClass(@Body body: FormBody): Deferred<Response<ResponseBody>> //this is for deleting a specific item in your shopping cart
-
 
     @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")

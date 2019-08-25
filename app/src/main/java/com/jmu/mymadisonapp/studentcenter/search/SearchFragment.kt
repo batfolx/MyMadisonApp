@@ -48,7 +48,6 @@ import java.text.Normalizer
 class SearchFragment : Fragment() {
     lateinit var service: MyMadisonService
     var client: OkHttpClient = get()
-    lateinit var respBody: String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,6 +65,8 @@ class SearchFragment : Fragment() {
             // we take the search query inputted into the service
             val searchQuery: String = search_fragment_edit_text.text.toString()
             val courseNumber: String = course_number_edit_text.text.toString()
+
+            search_fragment_text_view.text = "Showing classes for ${searchQuery.toUpperCase()}."
 
             val thread = Thread {
 
@@ -135,7 +136,7 @@ class SearchFragment : Fragment() {
                 "DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$" to "0100"
             )
 
-            log("ICACtion+position in select field map", icAction + position)
+            log("Create select field map", "CLICKED, ${icAction+position}")
 
             return fieldMap
 
@@ -154,8 +155,8 @@ class SearchFragment : Fragment() {
                 "DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$" to "0100",
                 "DERIVED_CLS_DTL_WAIT_LIST_OKAY\$125\$\$chk" to "N"
             )
-            log("ICAction in confirm field map", icAction)
 
+            log("Create confirm field map", "CLICKED, $icAction")
             return fieldMap
         }
 
@@ -178,7 +179,7 @@ class SearchFragment : Fragment() {
                 //course_description.text = classes.listOfSearchResults[position].className
 
                 select_search_button.setOnClickListener {
-                    class_name_search.text = "Position of this element $position"
+                    class_name_search.text = "Added this class! $position"
                     val url =
                         "https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL"
                     val thread = Thread {
@@ -198,6 +199,7 @@ class SearchFragment : Fragment() {
 
                 }
                 class_name_search.text = classes.classNumber
+                class_name_search.text = classes.listOfSearchResults[position].className
                 class_number_search.text = classes.listOfSearchResults[position].classNumber
                 class_section_search.text = classes.listOfSearchResults[position].section
                 instructor_search.text = classes.listOfSearchResults[position].instructor
@@ -230,14 +232,13 @@ class SearchFragment : Fragment() {
 }
 
 data class ListOfListOfSearchResults(
-    @Selector("table[id^=ACE_SSR_CLSRSLT_WRK_GROUPBOX1]")
-    val table: List<ListOfSearchResults> = emptyList()
+    @Selector("#win0divDERIVED_CLSRCH_GROUP6")
+    var table: List<ListOfSearchResults> = emptyList()
 )
 
 data class ListOfSearchResults(
 
-    @Selector("tr[id^=trSSR_CLSRCH_MTG1]")//"div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2] > table")//"div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
-    @Path("0")
+    @Selector("tr[id^=trSSR_CLSRCH_MTG1]")
     var listOfSearchResults: List<SearchResults> = emptyList(),
 
     @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2GP]")
@@ -282,7 +283,7 @@ data class SearchResults(
 
 
     //CS 149 - INTRODUCTION TO PROGRAMMING
-    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2GP]")
+    @Selector("div[id^=win0divSSR_CLSRSLT_WRK_GROUPBOX2]")
     var className: String = ""
 
 
