@@ -70,6 +70,7 @@ class GradesFragment : Fragment() {
             if (it && !progressBar.isVisible) progressBar.visibility = VISIBLE
             else if (!it && progressBar.isVisible) progressBar.visibility = GONE
         })
+        gradesViewModel.getAllGrades()
     }
 
 

@@ -23,6 +23,7 @@ import androidx.lifecycle.map
 import androidx.room.*
 import com.jmu.mymadisonapp.room.model.Student
 
+@Suppress("UNCHECKED_CAST")
 @Dao
 abstract class StudentDao {
 

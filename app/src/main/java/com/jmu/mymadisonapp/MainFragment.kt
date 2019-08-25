@@ -39,7 +39,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.app_bar_main, container, false).apply {
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
         }

@@ -30,7 +30,7 @@ class AcademicRequirementsRepository(private val client: MyMadisonService) {
 
             log(
                 "ExpandedAcademicRequirements",
-                "Content: ${(client.expandAllAcademicRequirements(postData.body()!!.expandPostData.toMutableMap().apply {
+                "Content: ${(client.expandAllAcademicRequirements(postData.body()!!.postData.apply {
                     this["ICAction"] = "DERIVED_SAA_DPR_SSS_EXPAND_ALL"
                     this["ICBcDomData"] = "UnknownValue"
                 }.also { log("ExpandPostData", "Data: $it") }).await().body() ?: "Empty body")}"

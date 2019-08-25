@@ -50,7 +50,7 @@ class LoginDataSource(private val client: OkHttpClient, private val mmService: M
                         .build()
                 )
                     .execute()
-                    .body()
+                    .body
                     ?.string()
             log("MyMadisonLoginAttempt", "Response: ${responseBody ?: ""}")
             val requestId = Jsoup.parse(responseBody).selectFirst("form#signon > input").`val`()

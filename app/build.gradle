@@ -24,11 +24,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 'android-Q'
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.jmu.mymadisonapp"
         minSdkVersion 24
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -50,7 +51,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildToolsVersion = '29.0.0 rc3'
+    kotlinOptions {
+        jvmTarget = '1.8'
+        languageVersion = "1.3"
+        freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
+    }
+
     androidExtensions {
         experimental = true
     }
@@ -62,28 +68,28 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
 
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
 
   //  implementation 'com.android.support:support-v4:23.0.1'
 
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.31"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.50"
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
-    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0-alpha05'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0-alpha06'
     implementation 'androidx.leanback:leanback:1.1.0-alpha02'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha01'
-    implementation 'androidx.core:core-ktx:1.2.0-alpha01'
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation 'androidx.core:core-ktx:1.2.0-alpha03'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-    implementation 'androidx.collection:collection-ktx:1.1.0-rc01'
-    implementation 'androidx.fragment:fragment-ktx:1.1.0-alpha09'
+    implementation 'androidx.collection:collection-ktx:1.1.0'
+    implementation 'androidx.fragment:fragment-ktx:1.2.0-alpha02'
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation 'androidx.preference:preference-ktx:1.1.0-alpha05'
+    implementation 'androidx.preference:preference-ktx:1.1.0-rc01'
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
@@ -95,11 +101,11 @@ dependencies {
     }
 
     implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'
-    implementation "com.squareup.okhttp3:okhttp:3.14.2"
-    implementation "com.squareup.okhttp3:logging-interceptor:3.14.2"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation 'com.squareup.okhttp3:okhttp:4.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.1.0'
+    implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
-    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'org.jsoup:jsoup:1.12.1'
 
     implementation 'org.koin:koin-androidx-viewmodel:2.0.0-GA4'
 
@@ -111,14 +117,29 @@ dependencies {
         exclude group: 'org.jsoup', module: 'jsoup'
     }
 
+//    implementation "com.github.timtimmahh:ksoup:0.2.0"
+
     // maybe? https://github.com/lisawray/groupie
 //	implementation 'com.xwray:groupie:2.3.0'
 //	implementation 'com.xwray:groupie-kotlin-android-extensions:2.3.0'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
     implementation 'com.squareup.moshi:moshi-adapters:1.8.0'
+//    implementation project(path: ':ksoup')
+    implementation 'com.github.timtimmahh:ksoup:13afd5d'
 
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        languageVersion = '1.3'
+        freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
+    }
 }

@@ -32,6 +32,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import retrofit2.Response
 
+@Suppress("UNCHECKED_CAST")
 class ClassScheduleRepository(private val client: MyMadisonService, private val termDao: TermDao) {
 
     fun getClassSchedules() =
@@ -50,7 +51,7 @@ class ClassScheduleRepository(private val client: MyMadisonService, private val 
                     term.term.substringAfterLast(" ").toInt(),
                     term.career,
                     term.institution,
-                    getMyClassScheduleForTerm(termPostData.toMap().toMutableMap().updateTermPostBody(index)).body()?.schedule?.let { classes ->
+                    getMyClassScheduleForTerm(postData.toMutableMap().updateTermPostBody(index)).body()?.schedule?.let { classes ->
                         log("ClassSchedule", "Term=($index, $term): $classes")
                         classes.map {
                             Course(

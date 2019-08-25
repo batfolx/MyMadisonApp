@@ -29,7 +29,7 @@ import com.jmu.mymadisonapp.room.model.SemesterUnits
 import com.jmu.mymadisonapp.room.model.Student
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.jsoup.Jsoup
 import retrofit2.Response
 import java.util.*
@@ -58,8 +58,8 @@ class StudentRepository(private val client: MyMadisonService, private val studen
                     profile.body()!!.current_user.avatar_image_url,
                     ug.body()!!.holds,
                     ug.body()!!.toDos,
-                    ug.body()!!.cumGPA.gpa,
-                    ug.body()!!.lastSemGPA.gpa,
+                    ug.body()!!.cumGPA,
+                    ug.body()!!.lastSemGPA,
                     ug.body()!!.hoursEnrolled.map { SemesterUnits(it.key, it.value) },
                     ug.body()!!.subject.majors.map { DegreeGPA(it.name, it.gpa) },
                     ug.body()!!.subject.minors.map { DegreeGPA(it.name, it.gpa) },
@@ -68,7 +68,7 @@ class StudentRepository(private val client: MyMadisonService, private val studen
             )
         else Response.error(
             (profile.code() + ug.code()),
-            profile.errorBody() ?: ug.errorBody() ?: ResponseBody.create(null, "No data")
+            profile.errorBody() ?: ug.errorBody() ?: "No data".toResponseBody(null)
         )
     }
 

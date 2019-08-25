@@ -8,3 +8,6 @@
 .externalNativeBuild
 gradlew
 gradlew.bat
+# Project exclude paths
+/dslsoup/build/
+/ksoup/build/

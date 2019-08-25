@@ -80,7 +80,12 @@ fun Any.getSimpleName(value: KClass<out Any>? = this::class): String =
     value?.java?.simpleName ?: "UnknownName"
 
 inline fun logMsg(tag: String, msg: String, splitLong: Boolean, logger: (String, String) -> Int): Unit =
-    if (splitLong) splitMessage(msg).forEach { logger(tag, it) }
+    if (splitLong) splitMessage(msg).forEachIndexed { index, splitMsg ->
+        logger(
+            tag + (index + 1),
+            splitMsg
+        )
+    }
     else { logger(tag, msg); Unit }
 
 fun Any.log(tag: String = getSimpleName(), msg: String = "Empty", splitLong: Boolean = true) = logMsg(tag, msg, splitLong, Log::v)

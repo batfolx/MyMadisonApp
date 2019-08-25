@@ -33,14 +33,14 @@ class WebViewCookieJar : CookieJar {
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
         for (cookie in cookies)
             cookieManager.setCookie(
-                "${if (cookie.secure()) "https" else "http"}://${if (cookie.hostOnly()) url.uri().host else cookie.domain()}${cookie.path()}",
+                "${if (cookie.secure) "https" else "http"}://${if (cookie.hostOnly) url.toUri().host else cookie.domain}${cookie.path}",
                 cookie.toString()
             )
 //        log("SavingResponseCookies", cookies.joinToString(";") { it.toString() })
     }
 
     override fun loadForRequest(url: HttpUrl): MutableList<Cookie> =
-        with(url.uri()) {
+        with(url.toUri()) {
             //            log("LoadingCookies", "Cookies($this)=${cookieManager.getCookie(toString())}")
             cookieManager.getCookie(toString())?.split(";")
 //                ?.also { log("All Cookies", it.joinToString(";")) }

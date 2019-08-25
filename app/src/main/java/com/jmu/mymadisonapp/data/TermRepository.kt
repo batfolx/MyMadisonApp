@@ -31,6 +31,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import retrofit2.Response
 
+@Suppress("UNCHECKED_CAST")
 class TermRepository(private val client: MyMadisonService, private val termDao: TermDao) {
 
 
@@ -55,7 +56,7 @@ class TermRepository(private val client: MyMadisonService, private val termDao: 
         with(getMyGradeTerms().takeIf { it.isValid() }?.body() ?: GradeTerms()) {
             log("InitialGradeTerms", "Content: $this")
             terms.mapIndexed { index, term ->
-                getMyGradesForTerm(termPostData.toMap().toMutableMap().updateTermPostBody(index)).body()?.let {
+                getMyGradesForTerm(postData.toMutableMap().updateTermPostBody(index)).body()?.let {
                     Term(
                         term.term.substringBefore(" "),
                         term.term.substringAfterLast(" ").toInt(),

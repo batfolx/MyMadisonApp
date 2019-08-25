@@ -29,11 +29,11 @@ import com.jmu.mymadisonapp.ui.grades.GradesViewModel
 import com.jmu.mymadisonapp.ui.home.HomeViewModel
 import com.jmu.mymadisonapp.ui.login.LoginViewModel
 import com.jmu.mymadisonapp.ui.slideshow.ClassScheduleViewModel
+import com.timmahh.ksoup.KSoupConverterFactory
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import pl.droidsonroids.retrofit2.JspoonConverterFactory
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
@@ -47,17 +47,21 @@ val netModule = module {
         object : Interceptor {
             val cookieJar: CookieJar = get()
             override fun intercept(chain: Interceptor.Chain): Response =
-                chain.proceed(
-                    chain.request().newBuilder().apply {
-                        cookieJar.loadForRequest(chain.request().url())
-                            .forEach { cookie -> addHeader("Cookie", cookie.toString()) }
-                    }.build()
-                ).let { response ->
+                with(chain.request()) {
+                    chain.proceed(
+                        newBuilder().apply {
+                            cookieJar.loadForRequest(this@with.url)
+                                .forEach { cookie -> addHeader("Cookie", cookie.toString()) }
+                        }.build()
+                    )
+                }.also { response ->
                     cookieJar.saveFromResponse(
-                        response.request().url(), Cookie.parseAll(response.request().url(), response.headers())
+                        response.request.url, Cookie.parseAll(
+                            response.request.url,
+                            response.headers
+                        )
                         /*.also { log("ResponseCookies", it.joinToString("\nSet-Cookie: ")) }*/
                     )
-                    response
                 }
         }
     }
@@ -65,10 +69,15 @@ val netModule = module {
     // Provide a singleton OkHttpClient to be shared with Retrofit and custom network requests.
     single<OkHttpClient> {
         OkHttpClient.Builder()
-            .addNetworkInterceptor(get())
+            .addNetworkInterceptor(get<Interceptor>())
             .addNetworkInterceptor(
-                HttpLoggingInterceptor { if (!it.startsWith("Cookie")) logD("OkHttp", it, false) }
-                    .setLevel(HttpLoggingInterceptor.Level.HEADERS)
+                HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+                    override fun log(message: String) {
+                        if (!message.startsWith("Cookie")) logD("OkHttp", message, false)
+                    }
+                }).apply {
+                    level = HttpLoggingInterceptor.Level.HEADERS
+                }
             )
             .connectTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
@@ -78,16 +87,18 @@ val netModule = module {
             .cookieJar(get())
             .followRedirects(true)
             .followSslRedirects(true)
+            .retryOnConnectionFailure(true)
             .build()
     }
 
     // Provide a singleton Retrofit service with the singleton OkHttpClient and the JspoonConverterFactory for parsing HTML responses
     single<MyMadisonService> {
         Retrofit.Builder()
-            .client(get())
+            .client(get<OkHttpClient>())
             .baseUrl(MYMADISON_BASE_URL)
 //            .addConverterFactory(HtmlParserConverterFactory())
-            .addConverterFactory(JspoonConverterFactory.create())
+//            .addConverterFactory(JspoonConverterFactory.create())
+            .addConverterFactory(KSoupConverterFactory())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build().create(MyMadisonService::class.java)
     }

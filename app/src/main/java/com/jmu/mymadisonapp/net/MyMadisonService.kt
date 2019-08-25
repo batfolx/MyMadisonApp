@@ -18,7 +18,7 @@
 package com.jmu.mymadisonapp.net
 
 import com.jmu.mymadisonapp.data.model.*
-import com.jmu.mymadisonapp.html.Parseable
+import com.timmahh.ksoup.ResponseParser
 import kotlinx.coroutines.Deferred
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -61,15 +61,15 @@ interface MyMadisonService {
     /**
      * Get information for the Undergraduate Dashboard.
      */
-    @Parseable(objClass = UGInfo::class)
+    @ResponseParser(parser = UGInfo::class)
     @GET("/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_UG_DB")
     fun getUndergraduateDashboard(): Deferred<Response<StudentUndergradInfo>>
 
-    @Parseable(objClass = SAMLResponseAdapter::class)
+    @ResponseParser(parser = SAMLResponseAdapter::class)
     @GET("/psc/pprd/JMU/CUST/s/WEBLIB_JMU_APPS.JMU_CANVAS.FieldFormula.IScript_Canvas_SSO_Pagelet")
     fun getSAMLResponse(): Deferred<Response<SAMLResponse>>
 
-    @Parseable(objClass = CurrentUserAdapter::class)
+    @ResponseParser(parser = CurrentUserAdapter::class)
     @FormUrlEncoded
     @POST("https://canvas.jmu.edu/saml_consume")
     fun getCanvasProfileInfo(@Field("SAMLResponse") samlResponse: String): Deferred<Response<CurrentUser>>
@@ -78,22 +78,27 @@ interface MyMadisonService {
     @GET("/psp/pprd/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=JMU_STUDENTCENTER_MAINMENU&FolderPath=PORTAL_ROOT_OBJECT.JMU_STUDENT_MAINMENU.JMU_STUDENTCENTER_MAINMENU&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder")
     fun getStudentCenter(): Deferred<Response<ResponseBody>>
 
+    @ResponseParser(parser = GradeTermsBuilder::class)
     @GET("/psc/ecampus/JMU/SPRD/c/{terms}")
     fun getTermsList(@Path("terms") terms: String): Deferred<Response<GradeTerms>>
 
+    @ResponseParser(parser = ClassGradesBuilder::class)
     @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_GRADE.GBL")
     fun getMyGradesForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassGrades>>
 
+    @ResponseParser(parser = ClassScheduleBuilder::class)
     @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_LIST.GBL")
     fun getMyClassScheduleForTerm(@FieldMap termIndex: Map<String, String>): Deferred<Response<ClassSchedule>>
 
+    @ResponseParser(parser = PostDataBuilder::class)
     @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
-    fun getAcademicRequirementsPostData(): Deferred<Response<ExpandAllPostData>>
+    fun getAcademicRequirementsPostData(): Deferred<Response<PostData>>
 
+    @ResponseParser(parser = RequirementsBuilder::class)
     @FormUrlEncoded
     @POST("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SAA_SS_DPR_ADB.GBL")
     fun expandAllAcademicRequirements(@FieldMap formBody: Map<String, String>): Deferred<Response<Requirements>>

@@ -41,6 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import javax.net.ssl.SSLException
 
 /**
  * The default activity to load upon startup.
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 		findNavController(R.id.nav_host_fragment).apply {
 			setupActionBarWithNavController(this, appBarConfiguration)
 			nav_view.setupWithNavController(this)
-            this.addOnDestinationChangedListener { controller, destination, arguments ->
+            this.addOnDestinationChangedListener { _, destination, _ ->
                 when (destination.id) {
                     R.id.nav_tools -> mainViewModel.getAcademicRequirements()
                 }
@@ -111,7 +112,12 @@ class MainActivity : AppCompatActivity() {
 		// Launch in a background coroutine keeping with lifecycle states to cancel the process if the user exits the app
 		lifecycleScope.launch(lifecycleScope.coroutineContext + Dispatchers.IO) {
 			// If not logged in, open the login browser, otherwise update UI
-			if (!mainViewModel.isLoggedIn())
+            if (try {
+                    !mainViewModel.isLoggedIn()
+                } catch (e: SSLException) {
+                    true
+                }
+            )
 				MainScope().launch {
 					supportFragmentManager.commit {
 						replace(R.id.content_container, BrowserFragment())
@@ -122,8 +128,11 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun onLoggedIn() =
-		mainViewModel.onLoggedIn().also { gradesViewModel.getAllGrades(); schedulesViewModel.getAllClassSchedules() }
+    private fun onLoggedIn() = with(mainViewModel) {
+        onLoggedIn()
+//		mainViewModel.getCanvasProfileInfo()
+        /*gradesViewModel.getAllGrades(); schedulesViewModel.getAllClassSchedules()*/
+    }
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		// Inflate the menu; this adds items to the action bar if it is present.

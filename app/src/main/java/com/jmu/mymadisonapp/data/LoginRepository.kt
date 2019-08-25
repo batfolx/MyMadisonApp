@@ -17,7 +17,6 @@
 
 package com.jmu.mymadisonapp.data
 
-import com.jmu.mymadisonapp.data.model.LoggedInUser
 import com.jmu.mymadisonapp.log
 import com.jmu.mymadisonapp.net.Result
 import okhttp3.ResponseBody
@@ -30,20 +29,20 @@ import okhttp3.ResponseBody
 class LoginRepository(val dataSource: LoginDataSource) {
 
     // in-memory cache of the loggedInUser object
-    var user: LoggedInUser? = null
-        private set
+//    var user: LoggedInUser? = null
+//        private set
 
-    val isLoggedIn: Boolean
-        get() = user != null
+//    val isLoggedIn: Boolean
+//        get() = user != null
 
     init {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
-        user = null
+//        user = null
     }
 
     fun logout() {
-        user = null
+//        user = null
         dataSource.logout()
     }
 

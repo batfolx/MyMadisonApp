@@ -118,6 +118,7 @@ fun <ResultType> singleResource(block: ResourceBuilder<ResultType, ResultType>.(
 fun <ResultType, RequestType> resource(block: ResourceBuilder<ResultType, RequestType>.() -> Unit): LiveData<Result<ResultType>> =
     ResourceBuilder(block).perform()
 
+@Suppress("UNCHECKED_CAST")
 class ResourceBuilder<ResultType, RequestType>(request: ResourceBuilder<ResultType, RequestType>.() -> Unit) {
     private lateinit var _loadFromDb: () -> LiveData<ResultType?>
     private lateinit var _createCall: () -> Deferred<Response<RequestType>>
@@ -193,4 +194,4 @@ class ResourceBuilder<ResultType, RequestType>(request: ResourceBuilder<ResultTy
 fun <T> Response<T>.isValid() = isSuccessful && body() != null
 
 class ResponseException(response: Response<*>) :
-    Exception(response.errorBody()?.string() ?: "Response code: ${response.code()}")
+    Exception(response.errorBody()?.toString() ?: "Response code: ${response.code()}")
