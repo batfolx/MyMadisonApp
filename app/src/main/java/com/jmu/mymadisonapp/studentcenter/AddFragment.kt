@@ -48,6 +48,7 @@ class AddFragment : Fragment() {
                 .build()
         ).execute().body()?.string()
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         client = get()
@@ -80,21 +81,17 @@ class AddFragment : Fragment() {
                 val ICSID: String =
                     Jsoup.parse(responseBody).select("#ICSID").`val`()
 
-                var formBody = getFirstFormBody(
-                    ICSIDKey = ICSID,
-                    icActionKey = "DERIVED_REGFRM1_LINK_ADD_ENRL\$82\$",
-                    numClasses = 0,
-                    icStateNumKey = ICStateNum
-                )
 
-                service.enrollInAllClasses(formBody)
+                var fieldMap = getAddAllFieldMap(ICSID, ADD_ALL_IC_ACTION)
+
+                service.enrollInAllClasses(fieldMap)
 
                 responseBody = getResponseBody()
                 ICStateNum = Jsoup.parse(responseBody).selectFirst("input[name=ICStateNum]").`val`()
 
-                formBody = getSecondFormData(ICSID, icStateNumKey = ICStateNum, icActionKey = "DERIVED_REGFRM1_SSR_PB_SUBMIT" )
+                fieldMap = getAddAllConfirmFieldMap(ICSID, ICAction = ADD_ALL_CONFIRM_IC_ACTION)
                 // must do a secondary confirm again
-                service.confirmEnrollInAllClasses(formBody)
+                service.confirmEnrollInAllClasses(fieldMap)
 
 
             }
@@ -170,6 +167,31 @@ class AddFragment : Fragment() {
         }
     }
 
+    private fun getAddAllFieldMap(
+        ICSID: String,
+        ICAction: String
+    ): MutableMap<String, String> {
+        var fieldMap: MutableMap<String, String> = mutableMapOf(
+            "ICSID" to ICSID, "ICAction" to ICAction,
+            "DERIVED_SSTSNAV_SSTS_MAIN_GOTO\$27\$" to "0100",
+            "DERIVED_REGFRM1_SSR_CLS_SRCH_TYPE\$252\$" to "10"
+        )
+
+        return fieldMap
+    }
+
+    private fun getAddAllConfirmFieldMap(
+        ICSID: String,
+        ICAction: String
+    ): MutableMap<String, String> {
+
+        var fieldMap: MutableMap<String, String> = mutableMapOf(
+
+        )
+
+        return fieldMap
+    }
+
     private fun getFirstFormBody(
         ICSIDKey: String,
         icStateNumKey: String,
@@ -211,7 +233,7 @@ class AddFragment : Fragment() {
 
         for (i in 0..0) {
             formBody.add("P_SELECT\$chk\$" + i, "Y")
-            formBody.add("P_SELECT\$" + i,"Y")
+            formBody.add("P_SELECT\$" + i, "Y")
             log("P_SELECT\$chk\$" + i)
 
         }
@@ -222,7 +244,8 @@ class AddFragment : Fragment() {
     private fun getSecondFormData(
         ICSIDKey: String,
         icStateNumKey: String,
-        icActionKey: String): FormBody {
+        icActionKey: String
+    ): FormBody {
         var formBody = FormBody.Builder()
             .add("ICAJAX", "1")
             .add("ICNAVTYPEDROPDOWN", "1")

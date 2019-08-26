@@ -24,9 +24,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:text="Description"
         android:textSize="20sp"
-        android:visibility="visible" />
+        android:visibility="visible"
+        tools:text="Description" />
 
     <TextView
         android:id="@+id/class_number_enroll"
@@ -43,11 +43,11 @@
         android:layout_height="wrap_content"
         android:contextClickable="false"
         android:fontFamily="sans-serif-light"
-        android:text="MWF"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColorHighlight="#832525"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        tools:text="MWF" />
 
 
     <TextView
@@ -56,16 +56,16 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
         android:scrollHorizontally="true"
-        android:text="Instructor"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        tools:text="Instructor" />
 
     <TextView
         android:id="@+id/room_number_enroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:text="Room Number"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        tools:text="Room Number" />
 
 
     <TextView
@@ -73,7 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        tools:text="Meeting times"/>
+        tools:text="Meeting times" />
 
     <TextView
         android:id="@+id/status_enroll"
@@ -82,7 +82,11 @@
         android:fontFamily="sans-serif-light"
         tools:text="Status" />
 
-
+    <Button
+        android:id="@+id/drop_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Drop" />
 
 
 </LinearLayout>

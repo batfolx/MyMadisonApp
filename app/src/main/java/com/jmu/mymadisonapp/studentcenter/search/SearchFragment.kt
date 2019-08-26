@@ -191,7 +191,7 @@ class SearchFragment : Fragment() {
                         val secondFieldMap =
                             createConfirmFieldMap(url, SEARCH_SELECT_NEXT_IC_ACTION)
 
-                        service.addClass(secondFieldMap)
+                        service.confirmAddClass(secondFieldMap)
                     }
                     thread.start()
                     thread.join()

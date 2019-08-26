@@ -106,6 +106,9 @@ interface MyMadisonService {
     @GET("/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
     fun getEnrolledClasses(): Deferred<Response<ListOfEnrolledClasses>>
 
+    @GET("/psp/pprd/JMU/SPRD/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL")
+    fun getFormattedEnrolledClasses(): Deferred<Response<ListOfFormattedEnrolledClasses>>
+
     @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/PRJCS_MENU.PRJCS_SCHD_STRT.GBL")
@@ -129,14 +132,20 @@ interface MyMadisonService {
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
     fun addClass(@FieldMap fieldMap: MutableMap<String, String>): Deferred<Response<ResponseBody>> //method used to add a class from the list of search results
 
+    @FormUrlEncoded
+    @Headers("Sec-Fetch-Mode: cors")
+    @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.CLASS_SEARCH.GBL")
+    fun confirmAddClass(@FieldMap fieldMap: MutableMap<String, String>): Deferred<Response<ResponseBody>>
 
+    @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL")
-    fun enrollInAllClasses(@Body body: FormBody): Deferred<Response<ResponseBody>> //method used to add a class from the list of search results
+    fun enrollInAllClasses(@FieldMap fieldMap: MutableMap<String, String>): Deferred<Response<ResponseBody>> //method used to add all classes
 
+    @FormUrlEncoded
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES.SSR_SSENRL_ADD.GBL")
-    fun confirmEnrollInAllClasses(@Body body: FormBody): Deferred<Response<ResponseBody>> //for confirming class addition to SHOPPING CART
+    fun confirmEnrollInAllClasses(@FieldMap fieldMap: MutableMap<String, String>): Deferred<Response<ResponseBody>> //for confirming class addition to SHOPPING CART
 
     @Headers("Sec-Fetch-Mode: cors")
     @POST("https://mymadison.ps.jmu.edu/psc/ecampus/JMU/SPRD/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL")
