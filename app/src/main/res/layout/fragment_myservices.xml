@@ -31,14 +31,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/card_services_big_logo" />
 
-    <ImageView
-        android:layout_width="285dp"
-        android:layout_height="512dp"
-        app:srcCompat="@drawable/jmu_seal_purple"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/meal_plan_transactions_recycler_view"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_services_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/my_services_text_view"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="3dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

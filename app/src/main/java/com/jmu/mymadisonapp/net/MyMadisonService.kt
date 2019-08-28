@@ -22,6 +22,7 @@ import com.jmu.mymadisonapp.studentcenter.*
 import com.jmu.mymadisonapp.studentcenter.search.ListOfListOfSearchResults
 import com.jmu.mymadisonapp.studentcenter.search.ListOfSearchResults
 import com.jmu.mymadisonapp.ui.jaccardservices.CardServices
+import com.jmu.mymadisonapp.ui.jaccardservices.CardServicesInformation
 import com.jmu.mymadisonapp.ui.myaccounts.ListOfMealPlans
 import com.jmu.mymadisonapp.ui.myaccounts.MealPlans
 import com.jmu.mymadisonapp.ui.myaccounts.MyAccountAccounts
@@ -173,6 +174,9 @@ interface MyMadisonService {
      */
     @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?cmd=getCachedPglt&pageletname=JMU_CARDSVC_SSO&tab=JMU_MYSERVICES&PORTALPARAM_COMPWIDTH=Narrow&bNoGlobal=Y&ptlayout=N")
     fun getCardServicesInformation(): Deferred<Response<CardServices>>
+
+    @GET("https://mymadison.ps.jmu.edu/psp/pprd/JMU/CUST/h/?tab=JMU_MYSERVICES")
+    fun getMealPlanInformation(): Deferred<Response<CardServicesInformation>>
 
     /**
      * Gets meal plan information (maybe implement later)

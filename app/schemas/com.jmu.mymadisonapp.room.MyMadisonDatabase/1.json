@@ -1,0 +1,151 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "b4fb2ad9f6626e8f0bab806058be372c",
+    "entities": [
+      {
+        "tableName": "students",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eID` TEXT NOT NULL, `displayName` TEXT NOT NULL, `avatar` TEXT NOT NULL, `holds` INTEGER NOT NULL, `toDos` INTEGER NOT NULL, `cumulativeGPA` REAL NOT NULL, `lastSemesterGPA` REAL NOT NULL, `hoursEnrolled` TEXT NOT NULL, `majors` TEXT NOT NULL, `minors` TEXT NOT NULL, `gpaLastUpdated` TEXT NOT NULL, PRIMARY KEY(`eID`))",
+        "fields": [
+          {
+            "fieldPath": "eID",
+            "columnName": "eID",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "displayName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avatar",
+            "columnName": "avatar",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "holds",
+            "columnName": "holds",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toDos",
+            "columnName": "toDos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cumulativeGPA",
+            "columnName": "cumulativeGPA",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSemesterGPA",
+            "columnName": "lastSemesterGPA",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hoursEnrolled",
+            "columnName": "hoursEnrolled",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "majors",
+            "columnName": "majors",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minors",
+            "columnName": "minors",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gpaLastUpdated",
+            "columnName": "gpaLastUpdated",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "eID"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "terms",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`semester` TEXT NOT NULL, `year` INTEGER NOT NULL, `career` TEXT NOT NULL, `institution` TEXT NOT NULL, `courses` TEXT NOT NULL, `semesterGPA` REAL NOT NULL, `academicStanding` TEXT NOT NULL, PRIMARY KEY(`semester`, `year`))",
+        "fields": [
+          {
+            "fieldPath": "semester",
+            "columnName": "semester",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "career",
+            "columnName": "career",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "institution",
+            "columnName": "institution",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "courses",
+            "columnName": "courses",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "semesterGPA",
+            "columnName": "semesterGPA",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "academicStanding",
+            "columnName": "academicStanding",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "semester",
+            "year"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b4fb2ad9f6626e8f0bab806058be372c\")"
+    ]
+  }
+}
